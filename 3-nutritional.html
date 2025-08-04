@@ -6,37 +6,35 @@
     <title>营养与维生素词汇 | Nutrition & Vitamin Vocabulary</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Serene Health Blue -->
-    <!-- Application Structure Plan: The application is designed as a single-page dashboard. A primary navigation bar at the top allows users to select a vocabulary category. The main content area displays the terms for the selected category in a clear, searchable list. A search bar provides real-time filtering across all terms for quick lookups. -->
-    <!-- Visualization & Content Choices: Report Info: Bilingual medical vocabulary list. Goal: Organize, Inform. Viz/Presentation Method: The vocabulary is presented in interactive lists within tabbed sections, now including Simplified Chinese with Pinyin. Interaction: Users can click tabs to switch categories and use a live search bar to filter terms instantly. Justification: This approach allows for both structured browsing by category and rapid, direct searching, catering to different user needs. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- Chosen Palette: Serene Green -->
     <style>
         body {
             font-family: 'Noto Sans SC', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
+            background-color: #ecfdf5; /* Emerald 50 - A very light, calming green background */
             cursor: default; /* Ensure default cursor */
         }
         .nav-button {
             transition: all 0.3s ease;
         }
         .nav-button.active {
-            background-color: #0ea5e9; /* sky-500 */
+            background-color: #059669; /* Emerald 600 - Deeper green for active state */
             color: white;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
         .nav-button:not(.active):hover {
-            background-color: #f0f9ff; /* sky-50 */
+            background-color: #d1fae5; /* Emerald 100 - Lighter green on hover for inactive buttons */
+            color: #065f46; /* Emerald 800 - Darker text on hover */
         }
         #term-list-container::-webkit-scrollbar {
             width: 8px;
         }
         #term-list-container::-webkit-scrollbar-track {
-            background: #f1f5f9; /* slate-100 */
+            background: #ecfdf5; /* Emerald 50 */
         }
         #term-list-container::-webkit-scrollbar-thumb {
-            background-color: #94a3b8; /* slate-400 */
+            background-color: #34d399; /* Emerald 400 */
             border-radius: 10px;
-            border: 2px solid #f1f5f9; /* slate-100 */
+            border: 2px solid #ecfdf5; /* Emerald 50 */
         }
         .chinese-text {
             display: block;
@@ -46,12 +44,12 @@
         .pinyin-text {
             display: block;
             font-size: 0.8rem;
-            color: #64748b; /* slate-500 */
+            color: #4b5563; /* Gray 600 */
         }
         /* Tooltip styles */
         #tooltip {
             position: fixed; /* Use fixed to stay relative to viewport */
-            background-color: #0ea5e9; /* sky-500 */
+            background-color: #059669; /* Emerald 600 - Consistent with active button */
             color: white;
             padding: 8px 12px;
             border-radius: 8px;
@@ -60,7 +58,6 @@
             z-index: 1000; /* Ensure it's on top */
             opacity: 0;
             transition: opacity 0.2s ease-in-out;
-            /* pointer-events: none; This was removed to allow mouse events on tooltip itself */
             max-width: 250px; /* Limit tooltip width */
             word-wrap: break-word; /* Break long words */
         }
@@ -73,7 +70,7 @@
             transform: translate(-50%, -50%);
             z-index: 1001; /* Above tooltip */
             border: 4px solid #f3f3f3; /* Light grey */
-            border-top: 4px solid #0ea5e9; /* Blue */
+            border-top: 4px solid #059669; /* Emerald 600 */
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -86,19 +83,19 @@
         }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="text-gray-800"> <!-- Changed body text to a slightly darker gray -->
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <header class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-sky-700">营养与维生素词汇 | Nutrition & Vitamin Vocabulary</h1>
-            <p class="mt-2 text-lg text-slate-600">涵盖构成人体营养的基础要素，包括蛋白质、碳水化合物、脂肪、水分等核心术语的中英文对照。Core Chinese-English vocabulary covering essential nutrients such as proteins, carbohydrates, fats, and water that support body function and health.</p>
+            <h1 class="text-3xl sm:text-4xl font-bold text-emerald-800">营养与维生素词汇 | Nutrition & Vitamin Vocabulary</h1> <!-- Darker green for main title -->
+            <p class="mt-2 text-lg text-gray-600">涵盖构成人体营养的基础要素，包括蛋白质、碳水化合物、脂肪、水分等核心术语的中英文对照。Core Chinese-English vocabulary covering essential nutrients such as proteins, carbohydrates, fats, and water that support body function and health.</p>
         </header>
 
         <main>
             <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
                 <div class="mb-6">
-                    <label for="search-input" class="block text-lg font-medium text-slate-700 mb-2">搜索词汇 (Search Terms):</label>
-                    <input type="text" id="search-input" placeholder="例如：Protein 或 蛋白质 (e.g., Protein or 蛋白质)" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-shadow">
+                    <label for="search-input" class="block text-lg font-medium text-gray-700 mb-2">搜索词汇 (Search Terms):</label>
+                    <input type="text" id="search-input" placeholder="例如：Protein 或 蛋白质 (e.g., Protein or 蛋白质)" class="w-full px-4 py-3 border border-emerald-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow"> <!-- Green border and focus ring -->
                 </div>
 
                 <nav id="category-nav" class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
@@ -106,13 +103,13 @@
             </div>
             
             <div id="content-display" class="bg-white p-6 rounded-2xl shadow-lg min-h-[400px]">
-                <h2 id="category-title" class="text-2xl font-bold text-sky-600 mb-4"></h2>
+                <h2 id="category-title" class="text-2xl font-bold text-emerald-700 mb-4"></h2> <!-- Emerald 700 for category title -->
                 <div id="term-list-container" class="overflow-y-auto max-h-[50vh]" style="min-height: 300px;">
                     <table class="w-full border-collapse">
                         <thead>
                             <tr>
-                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tl-lg">英文 (English)</th>
-                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tr-lg">中文 (Chinese)</th>
+                                <th class="p-3 text-left text-sm font-semibold text-gray-600 bg-emerald-50 border-b-2 border-emerald-200 rounded-tl-lg">英文 (English)</th> <!-- Light green header background -->
+                                <th class="p-3 text-left text-sm font-semibold text-gray-600 bg-emerald-50 border-b-2 border-emerald-200 rounded-tr-lg">中文 (Chinese)</th> <!-- Light green header background -->
                             </tr>
                         </thead>
                         <tbody id="term-list">
@@ -122,24 +119,24 @@
             </div>
         </main>
 
-        <footer class="text-center mt-12 py-6 border-t border-slate-200">
-            <p class="text-slate-500 text-sm font-bold">⚠️ 免责声明 / Disclaimer</p>
-            <p class="text-slate-500 text-sm mt-1">本页面内容由AI辅助排版，由本人（非医疗专业人员，仅为语言爱好者）整理自公开来源，仅供语言学习和参考使用，不构成任何医疗建议或诊断。请勿将此信息用于医疗决策。如需医疗帮助，请咨询专业医生。本人对内容的准确性不作保证，不承担因使用该信息所产生的任何责任。</p>
-            <p class="text-slate-500 text-sm mt-1">This page is AI-assisted in layout and compiled by me, a language enthusiast (not a medical professional), based on publicly available sources. It is intended for language learning and reference purposes only and does not constitute medical advice or diagnosis. Please do not use this information for any medical decision-making. I make no guarantees about its accuracy and accept no liability for any consequences resulting from its use. Please consult a licensed healthcare professional for medical concerns.</p>
-            <div class="mt-4 text-sm text-slate-500">
+        <footer class="text-center mt-12 py-6 border-t border-emerald-200"> <!-- Green border for footer -->
+            <p class="text-gray-600 text-sm font-bold">⚠️ 免责声明 / Disclaimer</p>
+            <p class="text-gray-600 text-sm mt-1">本页面内容由AI辅助排版，由本人（非医疗专业人员，仅为语言爱好者）整理自公开来源，仅供语言学习和参考使用，不构成任何医疗建议或诊断。请勿将此信息用于医疗决策。如需医疗帮助，请咨询专业医生。本人对内容的准确性不作保证，不承担因使用该信息所产生的任何责任。</p>
+            <p class="text-gray-600 text-sm mt-1">This page is AI-assisted in layout and compiled by me, a language enthusiast (not a medical professional), based on publicly available sources. It is intended for language learning and reference purposes only and does not constitute medical advice or diagnosis. Please do not use this information for any medical decision-making. I make no guarantees about its accuracy and accept no liability for any consequences resulting from its use. Please consult a licensed healthcare professional for medical concerns.</p>
+            <div class="mt-4 text-sm text-gray-600">
                 <h3 class="font-semibold mb-2">参考来源 (Sources):</h3>
                 <ul class="list-none p-0 m-0">
-                    <li><a href="https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf" target="_blank" class="text-sky-600 hover:underline">1) https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf</a></li>
-                    <li><a href="https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf" target="_blank" class="text-sky-600 hover:underline">2) https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf</a></li>
-                    <li><a href="https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list" target="_blank" class="text-sky-600 hover:underline">3) https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list</a></li>
-                    <li><a href="https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8" target="_blank" class="text-sky-600 hover:underline">4) https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8</a></li>
+                    <li><a href="https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf" target="_blank" class="text-emerald-600 hover:underline">1) https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf</a></li>
+                    <li><a href="https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf" target="_blank" class="text-emerald-600 hover:underline">2) https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf</a></li>
+                    <li><a href="https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list" target="_blank" class="text-emerald-600 hover:underline">3) https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list</a></li>
+                    <li><a href="https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8" target="_blank" class="text-emerald-600 hover:underline">4) https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8</a></li>
                 </ul>
             </div>
         </footer>
     </div>
 
     <!-- Tooltip element -->
-    <div id="tooltip" class="absolute bg-sky-700 text-white p-2 rounded-lg shadow-xl text-sm z-50 opacity-0 transition-opacity 0.2s ease-in-out;"></div>
+    <div id="tooltip" class="absolute bg-emerald-600 text-white p-2 rounded-lg shadow-xl text-sm z-50 opacity-0 transition-opacity 0.2s ease-in-out;"></div> <!-- Emerald 600 for tooltip background -->
 
     <!-- Loading Spinner -->
     <div id="loading-spinner"></div>
@@ -156,7 +153,7 @@
                 { en: "Trans Fat", zh: "反式脂肪", pinyin: "fǎn shì zhī fáng", en_description: "An unhealthy type of fat created through hydrogenation, found in some processed foods.", zh_description: "通过氢化过程产生的一种不健康脂肪，存在于某些加工食品中。" },
                 { en: "Monounsaturated Fat", zh: "单不饱和脂肪", pinyin: "dān bù bǎo hé zhī fáng", en_description: "A healthy type of fat found in olive oil, avocados, and nuts, known for its heart-healthy benefits.", zh_description: "一种健康的脂肪，存在于橄榄油、牛油果和坚果中，对心脏健康有益。" },
                 { en: "Polyunsaturated Fat", zh: "多不饱和脂肪", pinyin: "duō bù bǎo hé zhī fáng", en_description: "A type of healthy fat found in plant-based foods and oils, including omega-3 and omega-6 fatty acids.", zh_description: "一种健康的脂肪，存在于植物性食物和油中，包括欧米伽-3和欧米伽-6脂肪酸。" },
-                { en: "Cholesterol", zh: "胆固醇", pinyin: "dǎn gù chún", en_description: "A waxy, fat-like substance found in all cells of the body, essential for hormone production and digestion.", zh_description: "身体所有细胞中都存在的一种蜡状、脂肪样物质，对激素生成和消化至关重要。" },
+                { en: "Cholesterol", zh: "胆固醇", pinyin: "dǎn gù chún", en_description: "A waxy, fat-like substance found in all cells of the body, essential for hormone production and digestion.", zh_description: "身体所有细胞中发现的一种蜡状、脂肪样物质，对激素生成和消化至关重要。" },
                 { en: "Carbohydrates", zh: "碳水化合物", pinyin: "tàn shuǐ huà hé wù", en_description: "The body's primary source of energy, found in grains, fruits, vegetables, and legumes.", zh_description: "身体主要的能量来源，存在于谷物、水果、蔬菜和豆类中。" },
                 { en: "Sugars", zh: "糖", pinyin: "táng", en_description: "Simple carbohydrates that provide quick energy, but excessive intake can be detrimental to health.", zh_description: "提供快速能量的简单碳水化合物，但过量摄入可能对健康有害。" },
                 { en: "Dietary Fiber", zh: "膳食纤维", pinyin: "shàn shí xiān wéi", en_description: "Indigestible plant material that aids digestion, promotes bowel regularity, and helps regulate blood sugar.", zh_description: "不可消化的植物物质，有助于消化，促进肠道规律性，并帮助调节血糖。" },
@@ -490,7 +487,7 @@
             Object.keys(medicalData).forEach(category => {
                 const button = document.createElement('button');
                 button.textContent = category;
-                button.className = `nav-button px-4 py-2 text-sm sm:text-base font-medium rounded-lg border border-slate-300 ${category === currentCategory ? 'active' : 'bg-white text-slate-700'}`;
+                button.className = `nav-button px-4 py-2 text-sm sm:text-base font-medium rounded-lg border border-emerald-300 ${category === currentCategory ? 'active' : 'bg-white text-gray-700'}`;
                 button.onclick = () => {
                     currentCategory = category;
                     searchInput.value = ''; // Clear search input when changing category
@@ -521,20 +518,20 @@
                 );
 
                 if (termsToDisplay.length === 0) {
-                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-slate-500">找不到相符的词汇。(No matching terms found.)</td></tr>';
+                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-gray-500">找不到相符的词汇。(No matching terms found.)</td></tr>';
                 } else {
                     termsToDisplay.forEach(term => {
                         const row = document.createElement('tr');
-                        row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                        row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
                         // Store the term data directly on the row for easy access during hover
                         row.dataset.term = JSON.stringify(term); 
                         row.innerHTML = `
-                            <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                            <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                 <span class="chinese-text">${term.zh || ''}</span>
                                 <span class="pinyin-text">${term.pinyin || ''}</span>
-                                ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
-                                ${term.category ? `<span class="text-xs text-sky-700 bg-sky-100 px-2 py-1 rounded-full mt-1 inline-block">${term.category}${term.subCategory ? ` - ${term.subCategory}` : ''}</span>` : ''}
+                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                ${term.category ? `<span class="text-xs text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full mt-1 inline-block">${term.category}${term.subCategory ? ` - ${term.subCategory}` : ''}</span>` : ''}
                             </td>
                         `;
                         termList.appendChild(row);
@@ -547,20 +544,20 @@
 
                 if (currentCategoryObj.description && currentCategoryObj.terms) { // Special structure for Minerals
                     const descriptionRow = document.createElement('tr');
-                    descriptionRow.innerHTML = `<td colspan="2" class="p-3 text-left text-base text-slate-600 italic border-b border-slate-200">${currentCategoryObj.description}</td>`;
+                    descriptionRow.innerHTML = `<td colspan="2" class="p-3 text-left text-base text-gray-600 italic border-b border-emerald-200">${currentCategoryObj.description}</td>`;
                     termList.appendChild(descriptionRow);
                     termsToDisplay = currentCategoryObj.terms;
 
                     termsToDisplay.forEach(term => {
                         const row = document.createElement('tr');
-                        row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                        row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
                         row.dataset.term = JSON.stringify(term);
                         row.innerHTML = `
-                            <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                            <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                 <span class="chinese-text">${term.zh || ''}</span>
                                 <span class="pinyin-text">${term.pinyin || ''}</span>
-                                ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
                             </td>
                         `;
                         termList.appendChild(row);
@@ -570,14 +567,14 @@
                     termsToDisplay = currentCategoryObj;
                     termsToDisplay.forEach(term => {
                         const row = document.createElement('tr');
-                        row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                        row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
                         row.dataset.term = JSON.stringify(term);
                         row.innerHTML = `
-                            <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                            <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                 <span class="chinese-text">${term.zh || ''}</span>
                                 <span class="pinyin-text">${term.pinyin || ''}</span>
-                                ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
                             </td>
                         `;
                         termList.appendChild(row);
@@ -588,21 +585,21 @@
 
                         // Add a header for the sub-category
                         const subCategoryHeader = document.createElement('tr');
-                        subCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-lg font-semibold text-sky-700 bg-sky-50/50 border-b border-slate-200 rounded-lg mt-4">${subCategoryKey}</td>`;
+                        subCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-lg font-semibold text-emerald-700 bg-emerald-100/50 border-b border-emerald-200 rounded-lg mt-4">${subCategoryKey}</td>`;
                         termList.appendChild(subCategoryHeader);
 
                         // Check if the subCategoryContent is an array (direct terms)
                         if (Array.isArray(subCategoryContent)) {
                             subCategoryContent.forEach(term => {
                                 const row = document.createElement('tr');
-                                row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                                row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
                                 row.dataset.term = JSON.stringify(term);
                                 row.innerHTML = `
-                                    <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                                    <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                                    <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                                    <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                         <span class="chinese-text">${term.zh || ''}</span>
                                         <span class="pinyin-text">${term.pinyin || ''}</span>
-                                        ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                        ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
                                     </td>
                                 `;
                                 termList.appendChild(row);
@@ -614,20 +611,20 @@
                                 
                                 // Add a header for the nested sub-category
                                 const nestedSubCategoryHeader = document.createElement('tr');
-                                nestedSubCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-base font-medium text-slate-700 bg-slate-50/50 border-b border-slate-100 pl-6">${nestedSubCategoryKey}</td>`;
+                                nestedSubCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-base font-medium text-gray-700 bg-emerald-50/50 border-b border-emerald-100 pl-6">${nestedSubCategoryKey}</td>`;
                                 termList.appendChild(nestedSubCategoryHeader);
 
                                 if (Array.isArray(nestedSubCategoryTerms)) {
                                     nestedSubCategoryTerms.forEach(term => {
                                         const row = document.createElement('tr');
-                                        row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                                        row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
                                         row.dataset.term = JSON.stringify(term);
                                         row.innerHTML = `
-                                            <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                                            <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                                 <span class="chinese-text">${term.zh || ''}</span>
                                                 <span class="pinyin-text">${term.pinyin || ''}</span>
-                                                ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
                                             </td>
                                         `;
                                         termList.appendChild(row);
@@ -638,7 +635,7 @@
                     }
                 }
                 if (termList.children.length === 0) { // Fallback if no terms are found for a category (shouldn't happen with current data)
-                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-slate-500">此类别中没有词汇。(No terms in this category.)</td></tr>';
+                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-gray-500">此类别中没有词汇。(No terms in this category.)</td></tr>';
                 }
             }
         }
