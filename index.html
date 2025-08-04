@@ -9,44 +9,93 @@
     <style>
         body {
             font-family: 'Noto Sans SC', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
+            background-color: #f0f9ff; /* sky-50 - very light blue */
             color: #334155; /* slate-700 */
             line-height: 1.6;
         }
         .container {
             max-width: 1200px;
         }
+        .header-bg {
+            background: linear-gradient(to right, #0ea5e9, #38bdf8); /* Gradient from sky-500 to sky-400 */
+            color: white;
+            padding: 4rem 2rem;
+            border-bottom-left-radius: 2rem;
+            border-bottom-right-radius: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 1s ease-out;
+        }
         .card {
             background-color: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 1px solid #e0f2fe; /* light blue border */
+            overflow: hidden; /* Ensures rounded corners apply to content */
+            animation: fadeInUp 0.8s ease-out forwards; /* Fade in and move up */
+            opacity: 0; /* Start hidden for animation */
         }
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px); /* More pronounced lift */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
         .link-button {
             display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background-color: #0ea5e9; /* sky-500 */
+            padding: 0.85rem 2rem; /* Slightly larger button */
+            background: linear-gradient(to right, #0ea5e9, #38bdf8); /* Gradient button */
             color: white;
-            border-radius: 0.5rem;
-            font-weight: 600;
+            border-radius: 0.75rem; /* More rounded button */
+            font-weight: 700; /* Bolder text */
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
         }
         .link-button:hover {
-            background-color: #0284c7; /* sky-600 */
+            background: linear-gradient(to right, #0284c7, #0ea5e9); /* Darker gradient on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.15), 0 3px 5px -3px rgba(0, 0, 0, 0.1);
         }
+        .footer-text {
+            color: #64748b; /* slate-500 */
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Delay card animations */
+        .card:nth-child(1) { animation-delay: 0.2s; }
+        .card:nth-child(2) { animation-delay: 0.4s; }
+        .card:nth-child(3) { animation-delay: 0.6s; }
+        .card:nth-child(4) { animation-delay: 0.8s; }
+
     </style>
 </head>
 <body class="p-4">
 
     <div class="container mx-auto py-8">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl sm:text-5xl font-bold text-sky-800 mb-4">健康词汇中心 | Health Vocabulary Hub</h1>
-            <p class="text-xl text-slate-600">欢迎来到您的中英健康词汇学习平台。在这里您可以找到关于就医、病状、营养和皮肤护理的专业词汇。(Welcome to your Chinese-English health vocabulary learning platform. Here you can find specialized vocabulary on doctor visits, symptoms, nutrition, and skin care.)</p>
+        <header class="text-center mb-12 header-bg">
+            <h1 class="text-4xl sm:text-5xl font-bold mb-4">健康词汇中心 | Health Vocabulary Hub</h1>
+            <p class="text-xl opacity-90">欢迎来到您的中英健康词汇学习平台。在这里您可以找到关于就医、病状、营养和皮肤护理的专业词汇。(Welcome to your Chinese-English health vocabulary learning platform. Here you can find specialized vocabulary on doctor visits, symptoms, nutrition, and skin care.)</p>
         </header>
 
         <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
