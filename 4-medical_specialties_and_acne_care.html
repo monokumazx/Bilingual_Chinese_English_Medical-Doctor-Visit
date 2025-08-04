@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专科与皮肤护理词汇 | Specialties & Skin Care Vocabulary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            cursor: default; /* Ensure default cursor */
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button.active {
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .nav-button:not(.active):hover {
+            background-color: #f0f9ff; /* sky-50 */
+        }
+        #term-list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #term-list-container::-webkit-scrollbar-track {
+            background: #f1f5f9; /* slate-100 */
+        }
+        #term-list-container::-webkit-scrollbar-thumb {
+            background-color: #94a3b8; /* slate-400 */
+            border-radius: 10px;
+            border: 2px solid #f1f5f9; /* slate-100 */
+        }
+        .chinese-text {
+            display: block;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .pinyin-text {
+            display: block;
+            font-size: 0.8rem;
+            color: #64748b; /* slate-500 */
+        }
+        /* Tooltip styles */
+        #tooltip {
+            position: fixed; /* Use fixed to stay relative to viewport */
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            z-index: 1000; /* Ensure it's on top */
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            /* pointer-events: none; This was removed to allow mouse events on tooltip itself */
+            max-width: 250px; /* Limit tooltip width */
+            word-wrap: break-word; /* Break long words */
+        }
+        /* Loading spinner styles */
+        #loading-spinner {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001; /* Above tooltip */
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #0ea5e9; /* Blue */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-sky-700">专科与皮肤护理词汇 | Specialties & Skin Care Vocabulary</h1>
+            <p class="mt-2 text-lg text-slate-600">收录医学各专科的关键术语，特别强调皮肤病学与痤疮治疗领域，帮助用户掌握常见医疗沟通用语。 A curated set of bilingual terms across medical specialties, with a special focus on dermatology and acne care, supporting clear and informed communication in clinical settings.</p>
+        </header>
+
+        <main>
+            <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
+                <div class="mb-6">
+                    <label for="search-input" class="block text-lg font-medium text-slate-700 mb-2">搜索词汇 (Search Terms):</label>
+                    <input type="text" id="search-input" placeholder="例如：Cardiology 或 心脏病学 (e.g., Cardiology or 心脏病学)" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-shadow">
+                </div>
+
+                <nav id="category-nav" class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
+                    <!-- Navigation buttons for sub-categories will be rendered here -->
+                </nav>
+            </div>
+            
+            <div id="content-display" class="bg-white p-6 rounded-2xl shadow-lg min-h-[400px]">
+                <h2 id="category-title" class="text-2xl font-bold text-sky-600 mb-4"></h2>
+                <div id="term-list-container" class="overflow-y-auto max-h-[50vh]" style="min-height: 300px;">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tl-lg">英文 (English)</th>
+                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tr-lg">中文 (Chinese)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="term-list">
+                            <!-- Terms will be rendered here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center mt-12 py-6 border-t border-slate-200">
+            <p class="text-slate-500 text-sm font-bold">⚠️ 免责声明 / Disclaimer</p>
+            <p class="text-slate-500 text-sm mt-1">本页面内容由AI辅助排版，由本人（非医疗专业人员，仅为语言爱好者）整理自公开来源，仅供语言学习和参考使用，不构成任何医疗建议或诊断。请勿将此信息用于医疗决策。如需医疗帮助，请咨询专业医生。本人对内容的准确性不作保证，不承担因使用该信息所产生的任何责任。</p>
+            <p class="text-slate-500 text-sm mt-1">This page is AI-assisted in layout and compiled by me, a language enthusiast (not a medical professional), based on publicly available sources. It is intended for language learning and reference purposes only and does not constitute medical advice or diagnosis. Please do not use this information for any medical decision-making. I make no guarantees about its accuracy and accept no liability for any consequences resulting from its use. Please consult a licensed healthcare professional for medical concerns.</p>
+            <div class="mt-4 text-sm text-slate-500">
+                <h3 class="font-semibold mb-2">参考来源 (Sources):</h3>
+                <ul class="list-none p-0 m-0">
+                    <li><a href="https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf" target="_blank" class="text-sky-600 hover:underline">1) https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf</a></li>
+                    <li><a href="https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf" target="_blank" class="text-sky-600 hover:underline">2) https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf</a></li>
+                    <li><a href="https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list" target="_blank" class="text-sky-600 hover:underline">3) https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list</a></li>
+                    <li><a href="https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8" target="_blank" class="text-sky-600 hover:underline">4) https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8</a></li>
+                    <li><a href="https://www.nationwidechildrens.org/specialties/jeunes-syndrome-program/faqs/common-terminology" target="_blank" class="text-sky-600 hover:underline">5) https://www.nationwidechildrens.org/specialties/jeunes-syndrome-program/faqs/common-terminology</a></li>
+                    <li><a href="https://www.stanfordchildrens.org/en/topic/default?id=glossary---pediatrics-85-P01018" target="_blank" class="text-sky-600 hover:underline">6) https://www.stanfordchildrens.org/en/topic/default?id=glossary---pediatrics-85-P01018</a></li>
+                    <li><a href="https://www.asge.org" target="_blank" class="text-sky-600 hover:underline">7) https://www.asge.org</a></li>
+                    <li><a href="https://bioportal.bioontology.org" target="_blank" class="text-sky-600 hover:underline">8) https://bioportal.bioontology.org</a></li>
+                    <li><a href="https://www.ncbi.nlm.nih.gov" target="_blank" class="text-sky-600 hover:underline">9) https://www.ncbi.nlm.nih.gov</a></li>
+                    <li><a href="https://www.daytongastro.com" target="_blank" class="text-sky-600 hover:underline">10) https://www.daytongastro.com</a></li>
+                    <li><a href="https://www.gbmc.org" target="_blank" class="text-sky-600 hover:underline">11) https://www.gbmc.org</a></li>
+                    <li><a href="https://ucc.ie" target="_blank" class="text-sky-600 hover:underline">12) https://ucc.ie</a></li>
+                    <li><a href="https://ucc.ie" target="_blank" class="text-sky-600 hover:underline">13) https://gastro1.com</a></li>
+                    <li><a href="https://dermnetnz.org/topics/terminology" target="_blank" class="text-sky-600 hover:underline">14) https://dermnetnz.org/topics/terminology</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Urticaria" target="_blank" class="text-sky-600 hover:underline">15) https://en.wikipedia.org/wiki/Urticaria</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Nevus" target="_blank" class="text-sky-600 hover:underline">16) https://en.wikipedia.org/wiki/Nevus</a></li>
+                    <li><a href="https://www.ucihealth.org/medical-services/dermatology/common-conditions" target="_blank" class="text-sky-600 hover:underline">17) https://www.ucihealth.org/medical-services/dermatology/common-conditions</a></li>
+                    <li><a href="https://www.teenvogue.com/story/common-skin-conditions-teenagers" target="_blank" class="text-sky-600 hover:underline">18) https://www.teenvogue.com/story/common-skin-conditions-teenagers</a></li>
+                    <li><a href="https://www.pcds.org.uk/clinical-guidance/glossary-of-terms" target="_blank" class="text-sky-600 hover:underline">19) https://www.pcds.org.uk/clinical-guidance/glossary-of-terms</a></li>
+                    <li><a href="https://med.stanford.edu/dermatology/education/medical-student-education/dermatology-glossary.html" target="_blank" class="text-sky-600 hover:underline">20) https://med.stanford.edu/dermatology/education/medical-student-education/dermatology-glossary.html</a></li>
+                    <li><a href="https://www.cmuh.cmu.edu.tw/HealthEdus/Detail_EN?no=7134" target="_blank" class="text-sky-600 hover:underline">21) https://www.cmuh.cmu.edu.tw/HealthEdus/Detail_EN?no=7134</a></li>
+                    <li><a href="https://my.clevelandclinic.org/health/diseases/12233-acne" target="_blank" class="text-sky-600 hover:underline">22) https://my.clevelandclinic.org/health/diseases/12233-acne</a></li>
+                    <li><a href="https://dictionary.cambridge.org/dictionary/english-chinese-simplified/acne" target="_blank" class="text-sky-600 hover:underline">23) https://dictionary.cambridge.org/dictionary/english-chinese-simplified/acne</a></li>
+                    <li><a href="https://dictionary.cambridge.org/dictionary/english-chinese-traditional/acne" target="_blank" class="text-sky-600 hover:underline">24) https://dictionary.cambridge.org/dictionary/english-chinese-traditional/acne</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Benzoyl_peroxide" target="_blank" class="text-sky-600 hover:underline">25) https://en.wikipedia.org/wiki/Benzoyl_peroxide</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Azelaic_acid" target="_blank" class="text-sky-600 hover:underline">26) https://en.wikipedia.org/wiki/Azelaic_acid</a></li>
+                    <li><a href="https://dermnetnz.org/topics/azelaic-acid" target="_blank" class="text-sky-600 hover:underline">27) https://dermnetnz.org/topics/azelaic-acid</a></li>
+                    <li><a href="https://cliffordclinic.com/5-acne-fighting-ingredient-combinations-you-need-to-know/" target="_blank" class="text-sky-600 hover:underline">28) https://cliffordclinic.com/5-acne-fighting-ingredient-combinations-you-need-to-know/</a></li>
+                    <li><a href="https://www.neutrogena.com/the-bar/ingredients-that-complement-each-other" target="_blank" class="text-sky-600 hover:underline">29) https://www.neutrogena.com/the-bar/ingredients-that-complement-each-other</a></li>
+                    <li><a href="https://greenvilleob.com/what-your-acne-is-trying-to-tell-you/" target="_blank" class="text-sky-600 hover:underline">30) https://greenvilleob.com/what-your-acne-is-trying-to-tell-you/</a></li>
+                    <li><a href="https://jinheeyooacupuncture.com/dermatology-acupuncture-chinese-medicine/chinese-medicine-differential-diagnosis-of-acne/" target="_blank" class="text-sky-600 hover:underline">31) https://jinheeyooacupuncture.com/dermatology-acupuncture-chinese-medicine/chinese-medicine-differential-diagnosis-of-acne/</a></li>
+                    <li><a href="https://www.webmd.com/vitamins/ai/ingredientmono-1685/glycolic-acid" target="_blank" class="text-sky-600 hover:underline">32) https://www.webmd.com/vitamins/ai/ingredientmono-1685/glycolic-acid</a></li>
+                    <li><a href="https://www.healthline.com/health/beauty-skin-care/niacinamide" target="_blank" class="text-sky-600 hover:underline">33) https://www.healthline.com/health/beauty-skin-care/niacinamide</a></li>
+                    <li><a href="https://dictionary.cambridge.org/dictionary/english-chinese-simplified/inflammation" target="_blank" class="text-sky-600 hover:underline">34) https://dictionary.cambridge.org/dictionary/english-chinese-simplified/inflammation</a></li>
+                    <li><a href="https://dictionary.cambridge.org/dictionary/english-chinese-simplified/sebum" target="_blank" class="text-sky-600 hover:underline">35) https://dictionary.cambridge.org/dictionary/english-chinese-simplified/sebum</a></li>
+                    <li><a href="https://dictionary.cambridge.org/dictionary/english-chinese-traditional/pore" target="_blank" class="text-sky-600 hover:underline">36) https://dictionary.cambridge.org/dictionary/english-chinese-traditional/pore</a></li>
+                    <li><a href="https://pubmed.ncbi.nlm.nih.gov/39338338/" target="_blank" class="text-sky-600 hover:underline">37) https://pubmed.ncbi.nlm.nih.gov/39338338/</a></li>
+                    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11435147/" target="_blank" class="text-sky-600 hover:underline">38) https://pmc.ncbi.nlm.nih.gov/articles/PMC11435147/</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Exfoliation_(cosmetology)" target="_blank" class="text-sky-600 hover:underline">39) https://en.wikipedia.org/wiki/Exfoliation_(cosmetology)</a></li>
+                    <li><a href="https://go.drugbank.com/drugs/DB00755" target="_blank" class="text-sky-600 hover:underline">40) https://go.drugbank.com/drugs/DB00755</a></li>
+                    <li><a href="https://www.studysmarter.co.uk/explanations/medicine/anatomy/keratinization/" target="_blank" class="text-sky-600 hover:underline">41) https://www.studysmarter.co.uk/explanations/medicine/anatomy/keratinization/</a></li>
+                    <li><a href="https://dictionary.cambridge.org/us/dictionary/english-chinese-traditional/hyperpigmentation" target="_blank" class="text-sky-600 hover:underline">42) https://dictionary.cambridge.org/us/dictionary/english-chinese-traditional/hyperpigmentation</a></li>
+                    <li><a href="https://www.lesielle.com/int/en/blog/glycolic-acid-what-is-benefits-for-skin-side-effects-how-to-use-107" target="_blank" class="text-sky-600 hover:underline">43) https://www.lesielle.com/int/en/blog/glycolic-acid-what-is-benefits-for-skin-side-effects-how-to-use-107</a></li>
+                    <li><a href="https://www.skincancer.org/blog/what-you-need-to-know-about-photosensitivity/" target="_blank" class="text-sky-600 hover:underline">44) https://www.skincancer.org/blog/what-you-need-to-know-about-photosensitivity/</a></li>
+                    <li><a href="https://www.collinsdictionary.com/zh/dictionary/english/comedogenic" target="_blank" class="text-sky-600 hover:underline">45) https://www.collinsdictionary.com/zh/dictionary/english/comedogenic</a></li>
+                    <li><a href="https://www.sweetcare.com/cn/non-comedogenic-g-73" target="_blank" class="text-sky-600 hover:underline">46) https://www.sweetcare.com/cn/non-comedogenic-g-73</a></li>
+                    <li><a href="https://flychem.com/blogs/articles/alpha-arbutin-the-complete-guide-to-safer-skin-brightening" target="_blank" class="text-sky-600 hover:underline">47) https://flychem.com/blogs/articles/alpha-arbutin-the-complete-guide-to-safer-skin-brightening</a></li>
+                    <li><a href="https://dictionary.cambridge.org/us/dictionary/english-chinese-simplified/dermatologist" target="_blank" class="text-sky-600 hover:underline">48) https://dictionary.cambridge.org/us/dictionary/english-chinese-simplified/dermatologist</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Triclosan" target="_blank" class="text-sky-600 hover:underline">49) https://en.wikipedia.org/wiki/Triclosan</a></li>
+                    <li><a href="https://www.drguanptap.com/chinese-herbal-medicines-with-anti-inflammatory-effects/" target="_blank" class="text-sky-600 hover:underline">50) https://www.drguanptap.com/chinese-herbal-medicines-with-anti-inflammatory-effects/</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Tretinoin" target="_blank" class="text-sky-600 hover:underline">51) https://en.wikipedia.org/wiki/Tretinoin</a></li>
+                    <li><a href="https://dermnetnz.org/topics/topical-retinoids" target="_blank" class="text-sky-600 hover:underline">52) https://dermnetnz.org/topics/topical-retinoids</a></li>
+                    <li><a href="https://www.vinmec.com/eng/blog/tretinoin-for-acne-how-to-use-uses-effectiveness-and-side-effects-en" target="_blank" class="text-sky-600 hover:underline">53) https://www.vinmec.com/eng/blog/tretinoin-for-acne-how-to-use-uses-effectiveness-and-side-effects-en</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Adapalene" target="_blank" class="text-sky-600 hover:underline">54) https://en.wikipedia.org/wiki/Adapalene</a></li>
+                    <li><a href="https://www.healthline.com/health/beauty-skin-care/how-does-retinol-work" target="_blank" class="text-sky-600 hover:underline">55) https://www.healthline.com/health/beauty-skin-care/how-does-retinol-work</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Nicotinic_acid" target="_blank" class="text-sky-600 hover:underline">56) https://en.wikipedia.org/wiki/Nicotinic_acid</a></li>
+                    <li><a href="https://reference.medscape.com/drug/differin-adapalene-343537" target="_blank" class="text-sky-600 hover:underline">57) https://reference.medscape.com/drug/differin-adapalene-343537</a></li>
+                    <li><a href="https://www.medcentral.com/drugs/monograph/6662-381043/isotretinoin-oral" target="_blank" class="text-sky-600 hover:underline">58) https://www.medcentral.com/drugs/monograph/6662-381043/isotretinoin-oral</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Isotretinoin" target="_blank" class="text-sky-600 hover:underline">59) https://en.wikipedia.org/wiki/Isotretinoin</a></li>
+                    <li><a href="https://www.goodrx.com/conditions/acne/best-value-acne-medications" target="_blank" class="text-sky-600 hover:underline">60) https://www.goodrx.com/conditions/acne/best-value-acne-medications</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Tazarotene" target="_blank" class="text-sky-600 hover:underline">61) https://en.wikipedia.org/wiki/Tazarotene</a></li>
+                    <li><a href="https://www.mayoclinic.org/drugs-supplements/tazarotene-topical-route/description/drg-20067364" target="_blank" class="text-sky-600 hover:underline">62) https://www.mayoclinic.org/drugs-supplements/tazarotene-topical-route/description/drg-20067364</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Trifarotene" target="_blank" class="text-sky-600 hover:underline">63) https://en.wikipedia.org/wiki/Trifarotene</a></li>
+                    <li><a href="https://reference.medscape.com/drug/aklief-trifarotene-4000014" target="_blank" class="text-sky-600 hover:underline">64) https://reference.medscape.com/drug/aklief-trifarotene-4000014</a></li>
+                    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10395635/" target="_blank" class="text-sky-600 hover:underline">65) https://pmc.ncbi.nlm.nih.gov/articles/PMC10395635/</a></li>
+                    <li><a href="https://www.pnrjournal.com/index.php/home/article/download/5333/6386/6558" target="_blank" class="text-sky-600 hover:underline">66) https://www.pnrjournal.com/index.php/home/article/download/5333/6386/6558</a></li>
+                    <li><a href="https://www.mayoclinic.org/drugs-supplements/salicylic-acid-topical-route/description/drg-20066030" target="_blank" class="text-sky-600 hover:underline">67) https://www.mayoclinic.org/drugs-supplements/salicylic-acid-topical-route/description/drg-20066030</a></li>
+                    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11731319/" target="_blank" class="text-sky-600 hover:underline">68) https://pmc.ncbi.nlm.nih.gov/articles/PMC11731319/</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Dapsone" target="_blank" class="text-sky-600 hover:underline">69) https://en.wikipedia.org/wiki/Dapsone</a></li>
+                    <li><a href="https://drugs.ncats.io/drug/B0F91K5U4N" target="_blank" class="text-sky-600 hover:underline">70) https://drugs.ncats.io/drug/B0F91K5U4N</a></li>
+                    <li><a href="https://dokodemo.world/en/item/40265/" target="_blank" class="text-sky-600 hover:underline">71) https://dokodemo.world/en/item/40265/</a></li>
+                    <li><a href="https://patentimages.storage.googleapis.com/55/c3/18/35562d7981ab39/US8426386.pdf" target="_blank" class="text-sky-600 hover:underline">72) https://patentimages.storage.googleapis.com/55/c3/18/35562d7981ab39/US8426386.pdf</a></li>
+                    <li><a href="https://seoulceuticals.com/blogs/news/what-does-alpha-arbutin-do-to-your-skin-the-surprising-truth" target="_blank" class="text-sky-600 hover:underline">73) https://seoulceuticals.com/blogs/articles/alpha-arbutin-the-complete-guide-to-safer-skin-brightening</a></li>
+                    <li><a href="https://www.webmd.com/vitamins/ai/ingredientmono-1001/vitamin-c-ascorbic-acid" target="_blank" class="text-sky-600 hover:underline">74) https://www.webmd.com/vitamins/ai/ingredientmono-1001/vitamin-c-ascorbic-acid</a></li>
+                    <li><a href="https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.00819/full" target="_blank" class="text-sky-600 hover:underline">75) https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.00819/full</a></li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+
+    <div id="tooltip" class="absolute bg-sky-700 text-white p-2 rounded-lg shadow-xl text-sm z-50 opacity-0 transition-opacity 0.2s ease-in-out;"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner"></div>
+
+    <script>
+        // Consolidated medical data from all files
+        const medicalData = {
+            "专科医生 (Specialist Doctors)": [
+                { en: "Anesthesiologist", zh: "麻醉师", pinyin: "má zuì shī", en_description: "A doctor who administers anesthesia.", zh_description: "负责麻醉的医生。" },
+                { en: "Geneticist", zh: "遗传学家", pinyin: "yí chuán xué jiā", en_description: "A specialist in genetics and hereditary conditions.", zh_description: "专攻遗传学和遗传性疾病的专家。" },
+                { en: "Hematologist", zh: "血液科医生", pinyin: "xuè yè kē yī shēng", en_description: "A doctor specializing in blood disorders.", zh_description: "专攻血液疾病的医生。" },
+                { en: "Hospice and palliative medicine specialist", zh: "临终关怀与姑息治疗专家", pinyin: "lín zhōng guān huái yǔ gū xī zhì liáo zhuān jiā", en_description: "A specialist providing care to improve quality of life for patients with serious illnesses.", zh_description: "为重症患者提供改善生活质量护理的专家。" },
+                { en: "Infectious disease physician", zh: "传染病医生", pinyin: "chuán rǎn bìng yī shēng", en_description: "A doctor specializing in infectious diseases.", zh_description: "专攻传染病的医生。" },
+                { en: "Internal Medicine", zh: "内科医生", pinyin: "nèi kē yī shēng", en_description: "A doctor specializing in internal organs and general medical conditions.", zh_description: "专攻内脏器官和常见内科疾病的医生。" },
+                { en: "Nephrologist", zh: "肾脏科医生", pinyin: "shèn zàng kē yī shēng", en_description: "A doctor specializing in kidney conditions.", zh_description: "专攻肾脏疾病的医生。" },
+                { en: "Neurologist", zh: "神经科医生", pinyin: "shén jīng kē yī shēng", en_description: "A doctor specializing in nervous system disorders.", zh_description: "专攻神经系统疾病的医生。" },
+                { en: "Obstetrician/gynecologist (OBGYNs)", zh: "妇产科医生", pinyin: "fù chǎn kē yī shēng", en_description: "A doctor specializing in pregnancy, childbirth, and women's reproductive health.", zh_description: "专攻妊娠、分娩和女性生殖健康的医生。" },
+                { en: "Oncologist", zh: "肿瘤科医生", pinyin: "zhǒng liú kē yī shēng", en_description: "A doctor specializing in cancer treatment.", zh_description: "专攻癌症治疗的医生。" },
+                { en: "Orthopedic surgeon", zh: "骨科医生", pinyin: "gǔ kē yī shēng", en_description: "A surgeon specializing in conditions of the musculoskeletal system.", zh_description: "专攻肌肉骨骼系统疾病的外科医生。" },
+                { en: "Orthopedist", zh: "骨科医生", pinyin: "gǔ kē yī shēng", en_description: "A doctor specializing in conditions of the musculoskeletal system.", zh_description: "专攻肌肉骨骼系统疾病的医生。" },
+                { en: "Osteopath", zh: "整骨医生", pinyin: "zhěng gǔ yī shēng", en_description: "A doctor who uses osteopathic manipulative treatment alongside traditional medicine.", zh_description: "结合传统医学和整骨疗法的医生。" },
+                { en: "Otolaryngologist", zh: "耳鼻喉科医生", pinyin: "ěr bí hóu kē yī shēng", en_description: "A doctor specializing in ear, nose, and throat conditions.", zh_description: "专攻耳、鼻、喉疾病的医生。" },
+                { en: "Pathologist", zh: "病理学家", pinyin: "bìng lǐ xué jiā", en_description: "A doctor who diagnoses diseases by analyzing tissue samples.", zh_description: "通过分析组织样本诊断疾病的医生。" },
+                { en: "Physician executive", zh: "医疗行政人员", pinyin: "yī liáo xíng zhèng rén yuán", en_description: "A doctor holding a leadership or management role in a healthcare organization.", zh_description: "在医疗机构中担任领导或管理职务的医生。" },
+                { en: "Plastic surgeon", zh: "整形外科医生", pinyin: "zhěng xíng wài kē yī shēng", en_description: "A surgeon specializing in reconstructive or cosmetic procedures.", zh_description: "专攻整形或美容手术的外科医生。" },
+                { en: "Podiatrist", zh: "足病医生", pinyin: "zú bìng yī shēng", en_description: "A doctor specializing in foot, ankle, and lower leg conditions.", zh_description: "专攻足部、踝部和下肢疾病的医生。" },
+                { en: "Psychiatrist", zh: "精神科医生", pinyin: "jīng shén kē yī shēng", en_description: "A doctor specializing in mental health disorders.", zh_description: "专攻精神健康障碍的医生。" },
+                { en: "Pulmonologist", zh: "肺科医生", pinyin: "fèi kē yī shēng", en_description: "A doctor specializing in respiratory system conditions.", zh_description: "专攻呼吸系统疾病的医生。" },
+                { en: "Radiologist", zh: "放射科医生", pinyin: "fàng shè kē yī shēng", en_description: "A doctor specializing in medical imaging (X-rays, CT, MRI).", zh_description: "专攻医学影像（X光、CT、MRI）的医生。" },
+                { en: "Rheumatologist", zh: "风湿科医生", pinyin: "fēng shí kē yī shēng", en_description: "A doctor specializing in rheumatic diseases affecting joints and muscles.", zh_description: "专攻影响关节和肌肉的风湿性疾病的医生。" },
+                { en: "Sleep medicine specialist", zh: "睡眠医学专家", pinyin: "shuì mián yī xué zhuān jiā", en_description: "A specialist in diagnosing and treating sleep disorders.", zh_description: "诊断和治疗睡眠障碍的专家。" },
+                { en: "Surgeon", zh: "外科医生", pinyin: "wài kē yī shēng", en_description: "A doctor who performs operations.", zh_description: "进行手术的医生。" },
+                { en: "Urologist", zh: "泌尿科医生", pinyin: "mì niào kē yī shēng", en_description: "A doctor specializing in urinary tract and male reproductive system conditions.", zh_description: "专攻泌尿系统和男性生殖系统疾病的医生。" }
+            ],
+            "儿科学 (Pediatrics)": [
+                { en: "Pediatrician", zh: "儿科医生", pinyin: "ér kē yī shēng", en_description: "A doctor specializing in the care of children.", zh_description: "专攻儿童医疗保健的医生。" },
+                { en: "Well-child visit", zh: "儿童健康检查", pinyin: "ér tóng jiàn kāng jiǎn chá", en_description: "Routine check-up for healthy children.", zh_description: "健康儿童的常规检查。" },
+                { en: "Vaccination", zh: "疫苗接种", pinyin: "yì miáo jiē zhòng", en_description: "Immunization to prevent childhood diseases.", zh_description: "预防儿童疾病的免疫接种。" },
+                { en: "Growth chart", zh: "生长曲线图", pinyin: "shēng zhǎng qū xiàn tú", en_description: "Chart used to track a child's growth over time.", zh_description: "用于追踪儿童生长情况的图表。" },
+                { en: "Fever", zh: "发烧", pinyin: "fā shāo", en_description: "Elevated body temperature in children.", zh_description: "儿童体温升高。" },
+                { en: "Common cold", zh: "普通感冒", pinyin: "pǔ tōng gǎn mào", en_description: "A mild viral infection of the nose and throat.", zh_description: "鼻子和喉咙的轻微病毒感染。" },
+                { en: "Ear infection", zh: "耳朵感染", pinyin: "ěr duǒ gǎn rǎn", en_description: "Infection of the middle ear, common in children.", zh_description: "中耳感染，儿童常见。" },
+                { en: "Asthma", zh: "哮喘", pinyin: "xiào chuǎn", en_description: "A chronic respiratory condition causing difficulty breathing.", zh_description: "导致呼吸困难的慢性呼吸道疾病。" },
+                { en: "Allergy", zh: "过敏", pinyin: "guò mǐn", en_description: "An immune system reaction to a substance.", zh_description: "免疫系统对某种物质的反应。" },
+                { en: "Developmental milestones", zh: "发展里程碑", pinyin: "fā zhǎn lǐ chéng bēi", en_description: "Key skills a child achieves at certain ages.", zh_description: "儿童在特定年龄达到的关键技能。" },
+                { en: "Childhood obesity", zh: "儿童肥胖症", pinyin: "ér tóng féi pàng zhèng", en_description: "Excess body fat in children.", zh_description: "儿童体内脂肪过多。" },
+                { en: "Apnea", zh: "呼吸暂停", pinyin: "hū xī zàn tíng", en_description: "Temporary cessation of breathing, especially during sleep.", zh_description: "暂时性呼吸停止，尤其是在睡眠期间。" },
+                { en: "Areola", zh: "乳晕", pinyin: "rǔ yūn", en_description: "The pigmented area around the nipple.", zh_description: "乳头周围的色素区域。" },
+                { en: "Asphyxia", zh: "窒息", pinyin: "zhì xī", en_description: "A condition of severely deficient supply of oxygen to the body that arises from abnormal breathing.", zh_description: "身体严重缺氧的状态，由异常呼吸引起。" },
+                { en: "Asphyxiating", zh: "窒息的", pinyin: "zhì xī de", en_description: "Causing suffocation or difficulty in breathing.", zh_description: "引起窒息或呼吸困难的。" },
+                { en: "Aspiration", zh: "吸入", pinyin: "xī rù", en_description: "The act of drawing breath, or in medicine, the entry of foreign material into the respiratory tract.", zh_description: "吸入的动作，在医学上指异物进入呼吸道。" },
+                { en: "Calcification", zh: "钙化", pinyin: "gài huà", en_description: "The process of calcium salt deposition in tissues.", zh_description: "钙盐在组织中沉积的过程。" },
+                { en: "Cartilage", zh: "软骨", pinyin: "ruǎn gǔ", en_description: "A flexible connective tissue found in various parts of the body.", zh_description: "身体各部位发现的一种柔韧的结缔组织。" },
+                { en: "Chest roentegenographs", zh: "胸部X光片", pinyin: "xiōng bù X guāng piàn", en_description: "X-ray images of the chest.", zh_description: "胸部的X光图像。" },
+                { en: "CT Scan / Imaging", zh: "CT扫描 / 成像", pinyin: "CT sǎo miáo / chéng xiàng", en_description: "A medical imaging technique that uses X-rays to create detailed cross-sectional images of the body.", zh_description: "一种医学成像技术，利用X射线创建身体详细的横截面图像。" },
+                { en: "Dwarfism", zh: "侏儒症", pinyin: "zhū rú zhèng", en_description: "A condition of short stature, typically resulting from a genetic or medical condition.", zh_description: "身材矮小的状况，通常由遗传或医学状况引起。" },
+                { en: "Hydrocephalus", zh: "脑积水", pinyin: "nǎo jī shuǐ", en_description: "A condition in which excess cerebrospinal fluid accumulates in the brain.", zh_description: "脑部脑脊液过多积聚的状况。" },
+                { en: "Lung tissue disease", zh: "肺组织疾病", pinyin: "fèi zǔ zhī jí bìng", en_description: "Any disease affecting the tissues of the lungs.", zh_description: "任何影响肺部组织的疾病。" },
+                { en: "Neonatal", zh: "新生儿的", pinyin: "xīn shēng ér de", en_description: "Relating to newborn infants.", zh_description: "与新生儿相关的。" },
+                { en: "Pectus Carinatum", zh: "鸡胸", pinyin: "jī xiōng", en_description: "A chest wall deformity characterized by a protrusion of the sternum and ribs.", zh_description: "一种胸壁畸形，表现为胸骨和肋骨突出。" },
+                { en: "Pectus Excavatum", zh: "漏斗胸", pinyin: "lòu dòu xiōng", en_description: "A chest wall deformity characterized by a sunken appearance of the sternum.", zh_description: "一种胸壁畸形，表现为胸骨凹陷。" },
+                { en: "Pelvis", zh: "骨盆", pinyin: "gǔ pén", en_description: "The large bony structure near the base of the spine to which the hind limbs or legs are attached.", zh_description: "脊柱底部附近的大骨结构，连接后肢或腿部。" },
+                { en: "Phalanges", zh: "指骨/趾骨", pinyin: "zhǐ gǔ / zhǐ gǔ", en_description: "The bones of the fingers and toes.", zh_description: "手指和脚趾的骨骼。" },
+                { en: "Plastic surgery", zh: "整形外科", pinyin: "zhěng xíng wài kē", en_description: "A surgical specialty involved with the restoration, reconstruction, or alteration of the human body.", zh_description: "涉及人体修复、重建或改造的人体外科专业。" },
+                { en: "Pulmonary hypertension", zh: "肺动脉高压", pinyin: "fèi dòng mài gāo yā", en_description: "High blood pressure in the arteries of the lungs.", zh_description: "肺部动脉血压高。" },
+                { en: "Pulmonary hypoplasia", zh: "肺发育不全", pinyin: "fèi fā yù bù quán", en_description: "Underdevelopment of the lungs, often leading to respiratory problems.", zh_description: "肺部发育不全，常导致呼吸问题。" },
+                { en: "Renal dysfunction", zh: "肾功能障碍", pinyin: "shèn gōng néng zhàng ài", en_description: "Impaired function of the kidneys.", zh_description: "肾脏功能受损。" },
+                { en: "Sternum", zh: "胸骨", pinyin: "xiōng gǔ", en_description: "The breastbone, a flat bone located in the central part of the chest.", zh_description: "胸骨，位于胸部中央的扁平骨。" },
+                { en: "Subcutaneous", zh: "皮下的", pinyin: "pí xià de", en_description: "Located or applied under the skin.", zh_description: "位于皮肤下或应用于皮肤下。" },
+                { en: "Thoracic", zh: "胸部的", pinyin: "xiōng bù de", en_description: "Relating to the thorax or chest.", zh_description: "与胸部相关的。" },
+                { en: "Thoracic cage", zh: "胸廓", pinyin: "xiōng kuò", en_description: "The bony and cartilaginous framework of the chest, enclosing the heart and lungs.", zh_description: "胸部的骨骼和软骨框架，包裹心脏和肺部。" },
+                { en: "Thoracic surgery", zh: "胸外科", pinyin: "xiōng wài kē", en_description: "A surgical specialty dealing with organs inside the thorax.", zh_description: "处理胸腔内器官的外科专业。" },
+                { en: "Thorax", zh: "胸", pinyin: "xiōng", en_description: "The part of the body between the neck and the abdomen, including the cavity enclosed by the ribs, breastbone, and dorsal vertebrae.", zh_description: "颈部和腹部之间的身体部分，包括由肋骨、胸骨和胸椎包围的腔。" },
+                { en: "Tomography", zh: "断层扫描", pinyin: "duàn céng sǎo miáo", en_description: "A technique for displaying a representation of a cross section through a human body or other solid object using X-rays or ultrasound.", zh_description: "一种利用X射线或超声波显示人体或其他固体物体横截面表示的技术。" },
+                { en: "Tracheostomy", zh: "气管切开术", pinyin: "qì guǎn qiē kāi shù", en_description: "A surgical procedure to create an opening into the trachea.", zh_description: "在气管上创建开口的手术程序。" },
+                { en: "Ventilator", zh: "呼吸机", pinyin: "hū xī jī", en_description: "A machine designed to move breathable air into and out of the lungs.", zh_description: "一种旨在将可呼吸空气送入和排出肺部的机器。" },
+                { en: "Acne", zh: "痤疮", pinyin: "cuó chuāng", en_description: "a chronic disorder of the hair follicles and sebaceous glands. Acne is characterized by black heads, pimple outbreaks, cysts, infected abscesses, and (sometimes) scarring.", zh_description: "一种毛囊和皮脂腺的慢性疾病。痤疮的特征是黑头、痘痘爆发、囊肿、感染性脓肿，有时还会留下疤痕。" },
+                { en: "Air bags", zh: "安全气囊", pinyin: "ān quán qì náng", en_description: "safety devices installed in most newer vehicles that inflate to protect the driver and/or passenger in certain collisions.", zh_description: "安装在大多数新型车辆中的安全装置，在某些碰撞中充气以保护驾驶员和/或乘客。" },
+                { en: "Allergen", zh: "过敏原", pinyin: "guò mǐn yuán", en_description: "the substance that triggers an allergic reaction.", zh_description: "引发过敏反应的物质。" },
+                { en: "Allergic conjunctivitis", zh: "过敏性结膜炎", pinyin: "guò mǐn xìng jié mó yán", en_description: "red, itchy, watery eyes; a result of an exposure to an allergen or an irritant.", zh_description: "眼睛发红、发痒、流泪；暴露于过敏原或刺激物的结果。" },
+                { en: "Allergy", zh: "过敏", pinyin: "guò mǐn", en_description: "a physiological reaction caused when the immune system mistakenly identifies a normally harmless substance as damaging to the body.", zh_description: "当免疫系统错误地将通常无害的物质识别为对身体有害时引起的生理反应。" },
+                { en: "American National Standards Institute (ANSI)", zh: "美国国家标准协会 (ANSI)", pinyin: "měi guó guó jiā biāo zhǔn xié huì (ANSI)", en_description: "an organization that evaluates and approves helmets.", zh_description: "一个评估和批准头盔的组织。" },
+                { en: "American Society for Testing and Materials (ASTM)", zh: "美国材料试验协会 (ASTM)", pinyin: "měi guó cái liào shì yàn xié huì (ASTM)", en_description: "an organization that evaluates and approves helmets.", zh_description: "一个评估和批准头盔的组织。" },
+                { en: "Anorexia nervosa (also called anorexia)", zh: "神经性厌食症 (也称厌食症)", pinyin: "shén jīng xìng yàn shí zhèng (yě chēng yàn shí zhèng)", en_description: "an eating disorder characterized by low body weight (less than 85 percent of normal weight for height and age), a distorted body image, and an intense fear of gaining weight.", zh_description: "一种饮食失调，其特征是体重过低（低于身高和年龄正常体重的85%）、身体形象扭曲以及对体重增加的强烈恐惧。" },
+                { en: "Antibiotic", zh: "抗生素", pinyin: "kàng shēng sù", en_description: "chemical substances produced by living organisms or synthesized (created) in laboratories for the purpose of killing other organisms that cause disease.", zh_description: "由活生物体产生或在实验室中合成（创建）的化学物质，用于杀死引起疾病的其他生物体。" },
+                { en: "Atopic dermatitis", zh: "特应性皮炎", pinyin: "tè yìng xìng pí yán", en_description: "red, itchy, dry skin most common in infants; a result of an exposure to an allergen or an irritant.", zh_description: "婴儿最常见的红色、发痒、干燥皮肤；暴露于过敏原或刺激物的结果。" },
+                { en: "Attention-deficit/hyperactivity disorder (ADHD)", zh: "注意力缺陷/多动障碍 (ADHD)", pinyin: "zhù yì lì quē xiàn / duō dòng zhàng ài (ADHD)", en_description: "a syndrome (a group of symptoms or signs) that is usually characterized by serious and persistent difficulties, resulting in inattentiveness or distractibility, impulsivity, and hyperactivity.", zh_description: "一种综合征（一组症状或体征），通常以严重和持续的困难为特征，导致注意力不集中或分心、冲动和多动。" },
+                { en: "Birthmark", zh: "胎记", pinyin: "tāi jì", en_description: "abnormality of the skin that is present at birth or shortly afterward.", zh_description: "出生时或出生后不久出现的皮肤异常。" },
+                { en: "Blister", zh: "水泡", pinyin: "shuǐ pào", en_description: "a raised area on the skin containing fluid. The fluid can be blood or serum, the clear liquid portion of the blood.", zh_description: "皮肤上含有液体的凸起区域。液体可以是血液或血清，即血液的清澈液体部分。" },
+                { en: "Booster seat", zh: "增高座椅", pinyin: "zēng gāo zuò yǐ", en_description: "a seat to help raise a child in a vehicle so that the vehicle's seat belt fits properly.", zh_description: "一种用于帮助儿童在车辆中升高以便车辆安全带正确安装的座椅。" },
+                { en: "Bruise (also called contusion)", zh: "瘀伤 (也称挫伤)", pinyin: "yū shāng (yě chēng cuò shāng)", en_description: "a collection of blood due to broken blood vessels underneath the skin usually caused by trauma. A bruise causes discoloration and swelling in the area.", zh_description: "由于皮肤下血管破裂而导致的血液积聚，通常由创伤引起。瘀伤导致该区域变色和肿胀。" },
+                { en: "Bulimia nervosa (also known as bulimia)", zh: "神经性贪食症 (也称贪食症)", pinyin: "shén jīng xìng tān shí zhèng (yě chēng tān shí zhèng)", en_description: "a disease in which there is uncontrolled episodes of overeating that are usually followed with purging (self-induced vomiting), misuse of laxatives, enemas, or medications that cause increased production of urine, fasting, or excessive exercise to control weight.", zh_description: "一种疾病，其特点是无法控制的暴饮暴食发作，通常随后通过清除（自我催吐）、滥用泻药、灌肠剂或导致尿液分泌增加的药物、禁食或过度运动来控制体重。" },
+                { en: "Cardiopulmonary resuscitation (CPR)", zh: "心肺复苏 (CPR)", en_description: "an emergency method of life-saving. Artificial respirations and chest compressions are used to restart the heart and lungs.", zh_description: "一种紧急生命抢救方法。通过人工呼吸和胸外按压来使心肺复苏。" },
+                { en: "Cephalohematoma", zh: "头颅血肿", pinyin: "tóu lú xuè zhǒng", en_description: "an area of bleeding underneath one of the cranial bones that appears as raised lump on the baby's head.", zh_description: "颅骨下方出血区域，表现为婴儿头部凸起的肿块。" },
+                { en: "Chemical burns", zh: "化学烧伤", pinyin: "huà xué shāo shāng", en_description: "burns due to strong acids or alkalies coming into contact with the skin and/or eyes.", zh_description: "强酸或强碱接触皮肤和/或眼睛引起的烧伤。" },
+                { en: "Chickenpox", zh: "水痘", pinyin: "shuǐ dòu", en_description: "a highly viral infectious disease, usually associated with childhood. By adulthood, more than 95 percent of Americans have had chickenpox. The disease is caused by the varicella-zoster virus (VZV). Transmission occurs from person-to-person by direct contact or through the air.", zh_description: "一种高度病毒性传染病，通常与儿童时期相关。到成年时，超过95%的美国人曾患水痘。该病由水痘-带状疱疹病毒（VZV）引起。通过直接接触或空气传播。" },
+                { en: "Child safety seat", zh: "儿童安全座椅", pinyin: "ér tóng ān quán zuò yǐ", en_description: "special seats for infants and toddlers that are secured in a vehicle with seat belts or special anchors to increase the safety of the child in the event of a crash.", zh_description: "用于婴儿和幼儿的特殊座椅，通过安全带或特殊固定装置固定在车辆中，以提高儿童在发生碰撞时的安全性。" },
+                { en: "Circumcision", zh: "包皮环切术", pinyin: "bāo pí huán qiē shù", en_description: "surgical procedure to remove the skin covering the end of the penis, called the foreskin.", zh_description: "切除阴茎末端皮肤（包皮）的手术。" },
+                { en: "Colic", zh: "肠绞痛", pinyin: "cháng jiǎo tòng", en_description: "a condition in an otherwise healthy baby characterized by excessive crying.", zh_description: "健康婴儿的一种状况，特征是过度哭闹。" },
+                { en: "Congenital", zh: "先天性的", pinyin: "xiān tiān xìng de", en_description: "present at birth.", zh_description: "出生时存在的。" },
+                { en: "Conjunctivitis", zh: "结膜炎", pinyin: "jié mó yán", en_description: "inflammation of the conjunctiva of the eye.", zh_description: "眼睛结膜发炎。" },
+                { en: "Contact dermatitis", zh: "接触性皮炎", pinyin: "jiē chù xìng pí yán", en_description: "itchy rash; a result of an exposure to an allergen or an irritant.", zh_description: "发痒的皮疹；暴露于过敏原或刺激物的结果。" },
+                { en: "Cystitis", zh: "膀胱炎", pinyin: "páng guāng yán", en_description: "inflammation of the bladder, usually caused by a bacterial infection.", zh_description: "膀胱炎症，通常由细菌感染引起。" },
+                { en: "Deciduous teeth", zh: "乳牙", pinyin: "rǔ yá", en_description: "also known as \"baby\" or primary teeth.", zh_description: "也称为“乳牙”或原牙。" },
+                { en: "Diaper rash", zh: "尿布疹", pinyin: "niào bù zhěn", en_description: "an irritation of the skin in the diaper area.", zh_description: "尿布区域皮肤刺激。" },
+                { en: "Diarrhea", zh: "腹泻", pinyin: "fù xiè", en_description: "increase in frequency of stools compared to normal, or looser bowel movements than usual; causes include infections of the digestive system, medications such as antibiotics, malabsorption, and irritable bowel syndrome.", zh_description: "与正常相比排便频率增加，或比平时更稀的排便；原因包括消化系统感染、抗生素等药物、吸收不良和肠易激综合征。" },
+                { en: "Diphtheria", zh: "白喉", pinyin: "bái hóu", en_description: "a serious, infectious disease that produces a toxin (poison) and an inflammation in the membrane lining of the throat, nose, trachea, and other tissues.", zh_description: "一种严重的传染病，产生毒素（毒物）并在喉咙、鼻子、气管和其他组织的膜衬里引起炎症。" },
+                { en: "E. coli O157:H7 (also called E. coli. or Escherichia coli)", zh: "大肠杆菌O157:H7 (也称大肠杆菌)", pinyin: "dà cháng gǎn jūn O157:H7 (yě chēng dà cháng gǎn jūn)", en_description: "Species of bacteria found in the intestines of man and healthy cattle; often the cause of urinary tract infections, diarrhea in infants, and wound infections.", zh_description: "在人类和健康牛的肠道中发现的细菌种类；常引起尿路感染、婴儿腹泻和伤口感染。" },
+                { en: "Electrical burns", zh: "电烧伤", pinyin: "diàn shāo shāng", en_description: "burns due to contact with an electrical current.", zh_description: "接触电流引起的烧伤。" },
+                { en: "Encopresis", zh: "遗粪症", pinyin: "yí fèn zhèng", en_description: "constipation and intestinal obstruction (blockage) lead to an involuntary leakage of loose stool.", zh_description: "便秘和肠梗阻（阻塞）导致不自主地漏出稀便。" },
+                { en: "Enuresis", zh: "遗尿症", pinyin: "yí niào zhèng", en_description: "loss of urine, especially at night in bed.", zh_description: "尿液失禁，尤其是在夜间床上。" },
+                { en: "Epilepsy", zh: "癫痫", pinyin: "diān xián", en_description: "a condition in which there is a problem with the brain that causes long-term seizures in the child.", zh_description: "一种大脑问题导致的儿童长期癫痫发作的状况。" },
+                { en: "Fever (also called pyrexia)", zh: "发烧 (也称发热)", pinyin: "fā shāo (yě chēng fā rè)", en_description: "an abnormal temperature of the body. A fever generally indicates that there is an abnormal process occurring in the body.", zh_description: "体温异常。发烧通常表示身体正在发生异常过程。" },
+                { en: "Fluoride", zh: "氟化物", pinyin: "fú huà wù", en_description: "a natural chemical that strengthens enamel - the hard outer coating on teeth - helps prevent tooth decay, and helps repair early damage to teeth.", zh_description: "一种天然化学物质，可强化牙釉质（牙齿坚硬的外层），有助于预防蛀牙，并有助于修复牙齿的早期损伤。" },
+                { en: "Food allergy", zh: "食物过敏", pinyin: "shí wù guò mǐn", en_description: "a physiological reaction caused when the immune system mistakenly identifies a normally harmless food as damaging to the body.", zh_description: "当免疫系统错误地将通常无害的食物识别为对身体有害时引起的生理反应。" },
+                { en: "Food intolerance", zh: "食物不耐受", pinyin: "shí wù bù nài shòu", en_description: "an adverse reaction of the body to a certain food(s) that does not affect the immune system, although some symptoms may be the same as in food allergy.", zh_description: "身体对某种食物的不良反应，不影响免疫系统，尽管某些症状可能与食物过敏相同。" },
+                { en: "Fractures", zh: "骨折", pinyin: "gǔ zhé", en_description: "a partial or complete break in the bone.", zh_description: "骨骼部分或完全断裂。" },
+                { en: "Haemophilus influenzae (also called H. influenzae)", zh: "流感嗜血杆菌 (也称H. influenzae)", pinyin: "liú gǎn shì xuè gǎn jūn (yě chēng H. influenzae)", en_description: "Represents a group of bacteria that may cause different types of infections in infants and children. H. influenzae most commonly causes ear, eye, or sinus infections, and pneumonia.", zh_description: "代表一组可能导致婴儿和儿童不同类型感染的细菌。流感嗜血杆菌最常引起耳部、眼部或鼻窦感染以及肺炎。" },
+                { en: "Headache", zh: "头痛", pinyin: "tóu tòng", en_description: "pain or discomfort in the head or face area. Headaches can be single or recurrent in nature, and localized to one or more areas of the head and face.", zh_description: "头部或面部区域的疼痛或不适。头痛可以是单次或复发性的，并局限于头部和面部的一个或多个区域。" },
+                { en: "Heat exhaustion", zh: "中暑", pinyin: "zhòng shǔ", en_description: "a form of heat-related illness that is more severe than heat cramps and results from a loss of water and salt in the body. It occurs in conditions of extreme heat and excessive sweating without adequate fluid and salt replacement. Heat exhaustion occurs when the body is unable to cool itself properly. If left untreated, heat exhaustion can progress to heat stroke.", zh_description: "一种与热相关的疾病，比热痉挛更严重，是由于身体水分和盐分流失造成的。它发生在极端高温和过度出汗而没有充足液体和盐分补充的情况下。当身体无法正常散热时，就会发生中暑。如果不及时治疗，中暑可能会发展为热射病。" },
+                { en: "Hepatitis", zh: "肝炎", pinyin: "gān yán", en_description: "inflammation of the liver that sometimes causes permanent damage; caused by viruses, medicines, or alcohol.", zh_description: "肝脏炎症，有时会导致永久性损伤；由病毒、药物或酒精引起。" },
+                { en: "Immunizations (vaccines)", zh: "免疫接种 (疫苗)", pinyin: "miǎn yì jiē zhòng (yì miáo)", en_description: "a set of shots given to children at different ages to help keep them from developing dangerous childhood diseases.", zh_description: "在不同年龄段给儿童接种的一系列疫苗，以帮助他们避免患上危险的儿童疾病。" },
+                { en: "Impetigo", zh: "脓疱疮", pinyin: "nóng pào chuāng", en_description: "a bacterial skin infection characterized by microscopic pus-filled blisters.", zh_description: "一种细菌性皮肤感染，其特征是微小的充满脓液的水泡。" },
+                { en: "Influenza (also called the flu)", zh: "流感 (也称流感)", pinyin: "liú gǎn (yě chēng liú gǎn)", en_description: "a viral respiratory tract infection. The influenza viruses are divided into three types: A, B, and C.", zh_description: "一种病毒性呼吸道感染。流感病毒分为三种类型：A、B和C。" },
+                { en: "Inguinal hernia", zh: "腹股沟疝", pinyin: "fù gǔ gōu shàn", en_description: "part of the small intestine that pushes through an opening in the abdominal muscle, causing a bulge underneath the skin in the groin area.", zh_description: "小肠的一部分通过腹部肌肉的开口突出，导致腹股沟区域皮肤下方出现肿块。" },
+                { en: "Intravenous pyelogram", zh: "静脉肾盂造影", pinyin: "jìng mài shèn yú zào yǐng", en_description: "a test that examines the urinary system using a contrast medium that can be seen on X-rays to show possible obstructions, tumors, cysts, stones, and other abnormalities.", zh_description: "一种使用造影剂检查泌尿系统的检查，造影剂可在X光片上看到，以显示可能的梗阻、肿瘤、囊肿、结石和其他异常。" },
+                { en: "Jaundice", zh: "黄疸", pinyin: "huáng dǎn", en_description: "a yellow color of the skin and eyes that is caused by too much bilirubin in the bloodstream due to liver problems.", zh_description: "皮肤和眼睛发黄，由肝脏问题导致血液中胆红素过多引起。" },
+                { en: "Kidney and bladder ultrasound", zh: "肾脏和膀胱超声", pinyin: "shèn zàng hé páng guāng chāo shēng", en_description: "a diagnostic imaging technique that examines the kidney and bladder using high-frequency sound waves; to detect certain abnormalities.", zh_description: "一种诊断成像技术，使用高频声波检查肾脏和膀胱；用于检测某些异常。" },
+                { en: "Learning disability (LD)", zh: "学习障碍 (LD)", pinyin: "xué xí zhàng ài (LD)", en_description: "a disorder that affects people's ability to either interpret what they see and hear or to link information from different parts of the brain. These limitations are characterized by difficulty in reading, writing, and arithmetic.", zh_description: "一种影响人们解释所见所闻或将大脑不同部分的信息联系起来的能力的障碍。这些限制的特征是阅读、写作和算术困难。" },
+                { en: "Lice", zh: "虱子", pinyin: "shī zi", en_description: "tiny parasites that can infest the skin; characterized by intense itching.", zh_description: "可以侵染皮肤的微小寄生虫；特征是剧烈瘙痒。" },
+                { en: "Locking clip", zh: "锁定夹", pinyin: "suǒ dìng jiā", en_description: "a special device used when the vehicle's lap/shoulder belts do not lock. A locking clip will help secure a child safety seat tightly into a vehicle.", zh_description: "当车辆的腰部/肩部安全带无法锁定时使用的特殊装置。锁定夹将有助于将儿童安全座椅牢固地固定在车辆中。" },
+                { en: "Measles", zh: "麻疹", pinyin: "má zhěn", en_description: "a very contagious viral illness characterized by a distinct rash and a fever; spread through airborne droplets of nasal secretions.", zh_description: "一种具有明显皮疹和发烧特征的极具传染性的病毒性疾病；通过鼻分泌物的空气飞沫传播。" },
+                { en: "Meconium", zh: "胎粪", pinyin: "tāi fèn", en_description: "a sticky, greenish-black substance that forms in the intestines during fetal development and is the first bowel movement of a newborn.", zh_description: "一种粘稠的、绿黑色物质，在胎儿发育期间在肠道中形成，是新生儿的第一次排便。" },
+                { en: "Meningitis", zh: "脑膜炎", pinyin: "nǎo mó yán", en_description: "an inflammation of the membrane that covers the brain and spinal cord.", zh_description: "覆盖大脑和脊髓的膜的炎症。" },
+                { en: "Milia", zh: "粟粒疹", pinyin: "sù lì zhěn", en_description: "tiny, white, hard spots that look like pimples on a newborn's nose.", zh_description: "新生儿鼻子上看起来像粉刺的微小、白色、坚硬的斑点。" },
+                { en: "Mongolian spots", zh: "蒙古斑", pinyin: "méng gǔ bān", en_description: "blue or purple-colored splotches on the baby's lower back and buttocks; common in darker-skinned babies.", zh_description: "婴儿下背部和臀部的蓝色或紫色斑点；在肤色较深的婴儿中常见。" },
+                { en: "Moro reflex", zh: "莫罗反射", pinyin: "mò luó fǎn shè", en_description: "movement of arms and legs that occurs when a newborn is startled by a loud sound or movement.", zh_description: "新生儿被巨响或移动惊吓时发生的胳膊和腿的运动。" },
+                { en: "Molding", zh: "塑形", pinyin: "sù xíng", en_description: "elongation of the shape of a baby's head due to delivery through the birth canal.", zh_description: "由于通过产道分娩导致婴儿头部形状的拉长。" },
+                { en: "Mumps", zh: "腮腺炎", pinyin: "sāi xiàn yán", en_description: "an acute and highly contagious viral illness that usually occurs in childhood. Spread by airborne droplets from the upper respiratory tract, the disease usually takes two to three weeks to appear.", zh_description: "一种急性和高度传染性病毒性疾病，通常发生在儿童时期。通过上呼吸道空气飞沫传播，该病通常需要两到三周才能出现。" },
+                { en: "Myringotomy", zh: "鼓膜切开术", pinyin: "gǔ mó qiē kāi shù", en_description: "a surgical opening of the eardrum to release pressure on the middle ear.", zh_description: "切开鼓膜以减轻中耳压力的手术。" },
+                { en: "Orthodontics", zh: "正畸学", pinyin: "zhèng qí xué", en_description: "the dental specialty that focuses on the development, prevention, and correction of irregularities of the teeth, bite, and jaws.", zh_description: "专注于牙齿、咬合和颌骨不规则发育、预防和矫正的牙科专业。" },
+                { en: "Otitis externa", zh: "外耳炎", pinyin: "wài ěr yán", en_description: "inflammation of the outer part of the ear extending to the auditory canal.", zh_description: "外耳部分延伸至耳道的炎症。" },
+                { en: "Otitis media", zh: "中耳炎", pinyin: "zhōng ěr yán", en_description: "inflammation of the middle ear caused by infection.", zh_description: "由感染引起的中耳炎症。" },
+                { en: "Otoscope", zh: "耳镜", pinyin: "ěr jìng", en_description: "a lighted instrument that allows the physician to see inside the ear.", zh_description: "一种带照明的器械，允许医生观察耳内。" },
+                { en: "Outer ear", zh: "外耳", pinyin: "wài ěr", en_description: "external portion of the ear, consisting of the pinna, or auricle, and the ear canal.", zh_description: "耳的外部，由耳廓和耳道组成。" },
+                { en: "Overuse conditions", zh: "过度使用状况", pinyin: "guò dù shǐ yòng zhuàng kuàng", en_description: "injuries due to minor trauma involving soft tissue injuries -injuries that affect the bone, muscles, ligaments, and/or tendons.", zh_description: "由于轻微创伤引起的软组织损伤——影响骨骼、肌肉、韧带和/或肌腱的损伤。" },
+                { en: "Peak flow monitoring", zh: "峰值流量监测", pinyin: "fēng zhí liú liàng jiān cè", en_description: "a measure of lung function.", zh_description: "肺功能的一种测量方法。" },
+                { en: "Pediatrics", zh: "儿科学", pinyin: "ér kē xué", en_description: "the branch of medicine that deals with diagnosis, treatment, and prevention of diseases in children.", zh_description: "处理儿童疾病的诊断、治疗和预防的医学分支。" },
+                { en: "Personal flotation device (PFD)", zh: "个人漂浮装置 (PFD)", pinyin: "gè rén piāo fú zhuāng zhì (PFD)", en_description: "any type of item that keeps a person afloat in water. Only U.S. Coast Guard-approved PFDs should be used on boats.", zh_description: "任何能使人在水中漂浮的物品。只有美国海岸警卫队批准的个人漂浮装置才应在船上使用。" },
+                { en: "Pertussis (also called whooping cough)", zh: "百日咳 (也称whooping cough)", pinyin: "bǎi rì ké (yě chēng whooping cough)", en_description: "mainly affects infants and young children; caused by a bacterium, it is characterized by paroxysms of coughing that end with the characteristic whoop as air is inhaled. Pertussis caused thousands of deaths in the 1930s and 1940s, but with the advent of a vaccine, the rate of death has declined dramatically.", zh_description: "主要影响婴儿和幼儿；由细菌引起，其特征是阵发性咳嗽，以吸气时特有的“吼”声结束。百日咳在1930年代和1940年代导致数千人死亡，但随着疫苗的出现，死亡率急剧下降。" },
+                { en: "Pneumatic otoscope", zh: "气动耳镜", pinyin: "qì dòng ěr jìng", en_description: "an instrument that blows a puff of air into the ear to test eardrum movement.", zh_description: "一种向耳朵吹气以测试鼓膜运动的仪器。" },
+                { en: "Poliomyelitis", zh: "脊髓灰质炎", pinyin: "jí suǐ huī zhì yán", en_description: "a highly contagious infectious disease caused by various types of poliovirus. Spread though feces and airborne particles, the poliovirus usually causes no more than a mild illness. However, some of the more serious manifestations of the disease include meningitis, which can lead to extensive paralysis.", zh_description: "一种由各种脊髓灰质炎病毒引起的高度传染性疾病。通过粪便和空气传播，脊髓灰质炎病毒通常只会引起轻微疾病。然而，该病一些更严重的表现包括脑膜炎，可能导致广泛瘫痪。" },
+                { en: "Puberty", zh: "青春期", pinyin: "qīng chūn qī", en_description: "a sequence of events by which a child becomes a young adult; characterized by secretions of hormones, development of secondary sexual characteristics, reproductive functions, and growth spurts.", zh_description: "儿童成长为年轻成年人的一系列事件；其特征是荷尔蒙分泌、第二性征发育、生殖功能和生长加速。" },
+                { en: "Pyelonephritis", zh: "肾盂肾炎", pinyin: "shèn yú shèn yán", en_description: "an infection of the kidney.", zh_description: "肾脏感染。" },
+                { en: "Reye syndrome", zh: "瑞氏综合征", pinyin: "ruì shì zōng hé zhēng", en_description: "a potentially fatal disease that causes severe problems with the brain and other organs. Although the exact cause of the disease is not known, there has been an association with giving aspirin to children and developing the disease. It is now advised not to give aspirin to children during illnesses, unless prescribed by your child's physician.", zh_description: "一种可能致命的疾病，会导致大脑和其他器官出现严重问题。尽管该病的确切病因尚不清楚，但已发现给儿童服用阿司匹林与该病的发生有关。现在建议儿童在生病期间不要服用阿司匹林，除非由您的儿科医生开具处方。" },
+                { en: "Rhinitis", zh: "鼻炎", pinyin: "bí yán", en_description: "an inflammation of the mucous membrane that lines the nose; often due to allergy to pollen, dust, or other airborne substances; causes sneezing, itching, a runny nose, and nasal congestion.", zh_description: "鼻腔内粘膜的炎症；通常是由于对花粉、灰尘或其他空气传播物质过敏引起的；导致打喷嚏、瘙痒、流鼻涕和鼻塞。" },
+                { en: "Rubella (also called German measles)", zh: "风疹 (也称德国麻疹)", pinyin: "fēng zhěn (yě chēng dé guó má zhěn)", en_description: "an acute viral infection that causes a mild illness in children and a slightly more severe illness in adults. The disease is spread person-to-person through airborne particles and takes two to three weeks to incubate.", zh_description: "一种急性病毒感染，在儿童中引起轻度疾病，在成人中引起稍严重的疾病。该病通过空气传播的颗粒在人与人之间传播，潜伏期为两到三周。" },
+                { en: "Sinusitis", zh: "鼻窦炎", pinyin: "bí dòu yán", en_description: "inflammation of the membranes lining the facial sinuses; often caused by a bacterial or viral infection, or an allergic reaction.", zh_description: "面部鼻窦内膜的炎症；通常由细菌或病毒感染或过敏反应引起。" },
+                { en: "Stork bite or salmon patch", zh: "鹳吻痕或鲑鱼斑", pinyin: "guàn wěn hén huò guī yú bān", en_description: "small pink or red patches often found on a baby's eyelids, between the eyes, upper lip, and back of the neck.", zh_description: "婴儿眼睑、眼睛之间、上唇和颈后常见的粉红色或红色小斑点。" },
+                { en: "Strawberry hemangioma", zh: "草莓状血管瘤", pinyin: "cǎo méi zhuàng xuè guǎn liú", en_description: "a bright or dark red, raised or swollen, bumpy area on the skin of a baby or child.", zh_description: "婴儿或儿童皮肤上鲜红色或深红色、凸起或肿胀、凹凸不平的区域。" },
+                { en: "Sudden infant death syndrome (SIDS)", zh: "婴儿猝死综合征 (SIDS)", pinyin: "yīng ér cù sǐ zōng hé zhèng (SIDS)", en_description: "unexplained, sudden death of an infant up to 1 year of age.", zh_description: "1岁以下婴儿无法解释的突然死亡。" },
+                { en: "Sunburn", zh: "晒伤", pinyin: "shài shāng", en_description: "a visible reaction of the skin to overexposure to the sun's invisible ultraviolet (UV) rays.", zh_description: "皮肤对过度暴露于太阳不可见紫外线（UV）的可见反应。" },
+                { en: "Sunscreen", zh: "防晒霜", pinyin: "fáng shài shuāng", en_description: "a product that protects the skin again sunburns by blocking the penetration of the sun's ultraviolet (UV) rays.", zh_description: "一种通过阻挡太阳紫外线（UV）的渗透来保护皮肤免受晒伤的产品。" },
+                { en: "Syrup of ipecac", zh: "吐根糖浆", pinyin: "tǔ gēn táng jiāng", en_description: "an emetic made from the dried root of a plant called ipecacuanha, which is grown in Brazil. An emetic is an agent that causes vomiting.", zh_description: "一种由生长在巴西的吐根植物的干根制成的催吐剂。催吐剂是引起呕吐的药剂。" },
+                { en: "Tetanus", zh: "破伤风", pinyin: "pò shāng fēng", en_description: "an acute, sometimes fatal, disease of the central nervous system; caused by the toxin of the tetanus bacterium, which usually enters the body through an open wound. The tetanus bacterium live in soil and manure, but also can be found in the human intestine and other places.", zh_description: "一种急性、有时致命的中枢神经系统疾病；由破伤风杆菌的毒素引起，通常通过开放性伤口进入体内。破伤风杆菌生活在土壤和粪便中，但也可以在人体肠道和其他地方发现。" },
+                { en: "Thermal burns", zh: "热烧伤", pinyin: "rè shāo shāng", en_description: "burns due to external heat sources which raise the temperature of the skin and tissues and cause tissue cell death or charring. Hot metals, scalding liquids, steam, and flames, when coming in contact with the skin, cause thermal burns.", zh_description: "由于外部热源导致皮肤和组织温度升高并引起组织细胞死亡或炭化的烧伤。热金属、烫伤液体、蒸汽和火焰接触皮肤时会引起热烧伤。" },
+                { en: "Tourette's syndrome", zh: "抽动秽语综合征", pinyin: "chōu dòng huì yǔ zōng hé zhèng", en_description: "an abnormal condition characterized by tics and other movements such as eye blinks or facial twitches that cannot be controlled.", zh_description: "一种以抽动和其他无法控制的运动（如眨眼或面部抽搐）为特征的异常状况。" },
+                { en: "Tuberculosis (TB)", zh: "结核病 (TB)", pinyin: "jié hé bìng (TB)", en_description: "an infectious disease that was once a major killer worldwide. The predominant TB organism is Mycobacterium tuberculosis (M. tuberculosis). Spread person-to-person in airborne droplets caused by sneezing or coughing, the bacteria usually infects the lungs. However, due to improved nutrition, housing, sanitation, medical care, and the introduction of antibiotics this century, reported TB cases in the U.S. have declined dramatically.", zh_description: "一种曾经在世界范围内导致大量死亡的传染病。主要的结核病病原体是结核分枝杆菌（M. tuberculosis）。细菌通过打喷嚏或咳嗽引起的空气传播飞沫在人与人之间传播，通常感染肺部。然而，由于本世纪营养、住房、卫生、医疗的改善以及抗生素的引入，美国报告的结核病病例急剧下降。" },
+                { en: "Tympanometry", zh: "鼓室导抗检查", pinyin: "gǔ shì dǎo kàng jiǎn chá", en_description: "a test that allows for air and sound to be directed into the middle ear.", zh_description: "一种允许空气和声音进入中耳的测试。" },
+                { en: "Umbilical hernia", zh: "脐疝", pinyin: "qí shàn", en_description: "a weakness in the abdominal muscles.", zh_description: "腹部肌肉薄弱。" },
+                { en: "Urethritis", zh: "尿道炎", pinyin: "niào dào yán", en_description: "an infection limited to the urethra.", zh_description: "仅限于尿道的感染。" },
+                { en: "Urticaria (also called hives)", zh: "荨麻疹 (也称风团)", pinyin: "xún má zhěn (yě chēng fēng tuán)", en_description: "a condition in which red, itchy, and swollen areas appear on the skin - usually as an allergic reaction from eating certain foods or taking certain medications.", zh_description: "皮肤出现红色、发痒、肿胀区域的状况——通常是由于食用某些食物或服用某些药物引起的过敏反应。" },
+                { en: "Vomiting", zh: "呕吐", pinyin: "ǒu tù", en_description: "the release of stomach contents through the mouth; also known as throwing-up.", zh_description: "胃内容物通过口腔排出；也称为呕吐。" },
+                { en: "X-ray", zh: "X光", pinyin: "X guāng", en_description: "a diagnostic test which uses invisible electromagnetic energy beams to produce images of internal tissues, bones, and organs onto film.", zh_description: "一种诊断测试，使用不可见的电磁能量束在胶片上生成内部组织、骨骼和器官的图像。" }
+            ],
+            "胃肠病学 (Gastroenterology)": [
+                { en: "Gastroenterologist", zh: "肠胃科医生", pinyin: "cháng wèi kē yī shēng", en_description: "A doctor specializing in digestive system disorders.", zh_description: "专攻消化系统疾病的医生。" },
+                { en: "stomach", zh: "胃", pinyin: "wèi", en_description: "Main digestive organ; many problems originate here.", zh_description: "主要消化器官，很多问题起源于此。" },
+                { en: "intestine", zh: "肠", pinyin: "cháng", en_description: "Includes small and large intestines.", zh_description: "包括小肠与大肠。" },
+                { en: "bowel movement", zh: "排便", pinyin: "pái biàn", en_description: "Often asked if it's regular.", zh_description: "常问你是否规律。" },
+                { en: "bloating", zh: "腹胀", pinyin: "fù zhàng", en_description: "Feeling of fullness or discomfort in the abdomen.", zh_description: "肚子感觉鼓鼓的、不舒服。" },
+                { en: "diarrhea", zh: "腹泻", pinyin: "fù xiè", en_description: "Frequent loose or watery bowel movements; a common symptom.", zh_description: "大便稀、水样，常见症状。" },
+                { en: "constipation", zh: "便秘", pinyin: "biàn mì", en_description: "Difficulty or infrequency in emptying the bowels.", zh_description: "大便不顺或困难。" },
+                { en: "nausea", zh: "恶心", pinyin: "ě xīn", en_description: "A feeling of sickness with an inclination to vomit, but may not result in actual vomiting.", zh_description: "想吐，但可能没吐出来。" },
+                { en: "vomiting", zh: "呕吐", pinyin: "ǒu tù", en_description: "Forcible expulsion of stomach contents through the mouth.", zh_description: "胃内容物反上来。" },
+                { en: "reflux", zh: "反流", pinyin: "fǎn liú", en_description: "Stomach acid flowing back into the esophagus, causing a burning sensation.", zh_description: "胃酸倒流到食道，引起灼烧感。" },
+                { en: "heartburn", zh: "胃灼热", pinyin: "wèi zhuó rè", en_description: "A burning sensation in the chest caused by acid reflux, clearly indicated by ASGE as a chief complaint related to acid reflux.", zh_description: "胃酸上涌时的烧灼感觉，ASGE 清楚指出与胃酸反流相连的主诉症状。" },
+                { en: "colonoscopy", zh: "结肠镜检查", pinyin: "jié cháng jìng jiǎn chá", en_description: "An examination to view the inside of the large intestine, clearly explained by Wikipedia and UCC glossaries regarding its purpose and procedure.", zh_description: "查看大肠内部的检查，Wikipedia 与 UCC 术语表对术语讲解清晰，介绍目的与流程。" },
+                { en: "endoscopy", zh: "内窥镜检查", pinyin: "nèi kuī jìng jiǎn chá", en_description: "A procedure to examine the digestive tract using a flexible tube with a camera.", zh_description: "使用带摄像头的软管检查消化道的程序。" },
+                { en: "IBS (Irritable Bowel Syndrome)", zh: "肠易激综合征", pinyin: "cháng yì jī zōng hé zhèng", en_description: "A common but complex functional bowel disorder, described by Wikipedia as a functional bowel disease where patients commonly complain of abdominal pain and altered bowel habits.", zh_description: "常见但复杂的功能性肠病，Wikipedia 上说明为功能性肠病，患者投诉常见症状为腹痛、改变的排便习惯。" },
+                { en: "gastritis", zh: "胃炎", pinyin: "wèi yán", en_description: "Inflammation of the stomach lining, explained by Stanford Children's Hospital 'Digestive and Liver' glossary as an inflammatory state of the stomach lining.", zh_description: "胃黏膜发炎，斯坦福儿童医院“消化与肝脏”术语表解释胃炎为胃黏膜发炎状态。" },
+                { en: "ulcer", zh: "溃疡", pinyin: "kuì yáng", en_description: "Often refers to stomach or duodenal ulcers.", zh_description: "常指胃或十二指肠溃疡。" },
+                { en: "Acid reflux / GERD", zh: "胃酸反流 / 胃食管反流病", pinyin: "wèi suān fǎn liú / wèi shí guǎn fǎn liú bìng", en_description: "Terminology from ASGE, explaining common adult symptoms in both English and Chinese.", zh_description: "来自 ASGE 的术语表，中英文均使用成人常见症状解释。" },
+                { en: "Gastroenteritis", zh: "胃肠炎", pinyin: "wèi cháng yán", en_description: "Inflammation of the gastrointestinal tract, often associated with symptoms like diarrhea and abdominal pain.", zh_description: "胃肠道炎症，与腹泻、腹痛等症状相关。" },
+                { en: "Gastroscopy (EGD)", zh: "胃镜 / 上消化道镜检查", pinyin: "wèi jìng / shàng xiāo huà dào jìng jiǎn chá", en_description: "A medical procedure to examine the upper digestive tract (esophagus, stomach, and duodenum) using an endoscope, explicitly listed by ASGE and Stanford Children's Hospital glossaries.", zh_description: "使用内窥镜检查上消化道（食道、胃和十二指肠）的医学程序，ASGE 与 Stanford 儿童医院术语表明确列出此医学程序名称。" },
+                { en: "Helicobacter pylori (H. pylori)", zh: "幽门螺杆菌", pinyin: "yōu mén luó gǎn jūn", en_description: "This bacterium is mentioned in the Stanford Glossary in association with stomach ulcers.", zh_description: "斯坦福术语表中提及这种细菌与胃溃疡关联。" },
+                { en: "Colon polyps", zh: "结肠息肉", pinyin: "jié cháng xī ròu", en_description: "Multiple sources mention polyps and the risk of precancerous lesions; patients often learn about them during screening.", zh_description: "多个来源提到息肉与癌前病变的风险，病人常在筛查中得知。" },
+                { en: "Cirrhosis", zh: "肝硬化", pinyin: "gān yìng huà", en_description: "Wikipedia mentions it as one of the common digestive-related diseases, with liver conditions managed by gastroenterology.", zh_description: "Wikipedia 提及为常见消化相关疾病之一，肝病部分由胃肠科管理。" }
+            ],
+            "眼科学 (Ophthalmology)": [
+                { en: "Ophthalmologist", zh: "眼科医生", pinyin: "yǎn kē yī shēng", en_description: "A doctor specializing in eye and vision care.", zh_description: "专攻眼部和视力护理的医生。" },
+                // Common vision problems and corrections
+                { en: "Myopia (Nearsightedness)", zh: "近视", pinyin: "jìn shì", en_description: "Difficulty seeing distant objects clearly.", zh_description: "看远物模糊。" },
+                { en: "Hyperopia (Farsightedness)", zh: "远视", pinyin: "yuǎn shì", en_description: "Difficulty seeing close objects clearly.", zh_description: "看近物模糊。" },
+                { en: "Astigmatism", zh: "散光", pinyin: "sǎn guāng", en_description: "Blurred vision due to an irregularly shaped cornea or lens.", zh_description: "角膜或晶状体形状不规则导致的视力模糊。" },
+                { en: "Eyeglasses", zh: "眼镜", pinyin: "yǎn jìng", en_description: "Lenses worn in front of the eyes to correct vision.", zh_description: "戴在眼前用于矫正视力的镜片。" },
+                { en: "Contact lenses", zh: "隐形眼镜", pinyin: "yǐn xíng yǎn jìng", en_description: "Thin lenses placed directly on the surface of the eye.", zh_description: "直接放置在眼球表面的薄镜片。" },
+                { en: "LASIK surgery", zh: "准分子激光手术", pinyin: "zhǔn fēn zǐ jī guāng shǒu shù", en_description: "A popular laser refractive surgery used to correct vision problems like nearsightedness, farsightedness, and astigmatism.", zh_description: "现代人熟悉的矫正视力（如近视、远视、散光）的激光屈光手术。" },
+                // Common eye conditions and symptoms
+                { en: "Dry eye", zh: "干眼症", pinyin: "gān yǎn zhèng", en_description: "A common condition where the eyes don't produce enough tears or the tears evaporate too quickly, often seen in the screen era.", zh_description: "眼睛泪液不足或泪液蒸发过快的常见状况，屏幕时代常见问题。" },
+                { en: "Floaters", zh: "飞蚊症", pinyin: "fēi wén zhèng", en_description: "Small specks or strands that appear to float in your field of vision, usually harmless.", zh_description: "眼睛中看到的小黑点或斑块，通常无害。" },
+                { en: "Conjunctivitis (Pink Eye)", zh: "结膜炎 (红眼病)", pinyin: "jié mó yán (hóng yǎn bìng)", en_description: "Inflammation of the conjunctiva, often causing redness and discharge.", zh_description: "结膜发炎，常导致眼睛发红和分泌物。" },
+                { en: "Cataract", zh: "白内障", pinyin: "bái nèi zhàng", en_description: "Clouding of the eye's natural lens.", zh_description: "眼睛晶状体混浊。" },
+                { en: "Glaucoma", zh: "青光眼", pinyin: "qīng guāng yǎn", en_description: "A group of eye conditions that damage the optic nerve.", zh_description: "损害视神经的一组眼部疾病。" },
+                { en: "Diabetic Retinopathy", zh: "糖尿病视网膜病变", pinyin: "táng niǎo bìng shì wǎng mó bìng biàn", en_description: "Damage to the blood vessels in the retina due to diabetes.", zh_description: "糖尿病引起的视网膜血管损伤。" },
+                { en: "Macular Degeneration", zh: "黄斑变性", pinyin: "huáng bàn biàn xìng", en_description: "Deterioration of the macula, leading to blurred central vision.", zh_description: "黄斑退化，导致中心视力模糊。" },
+                { en: "Retinal detachment", zh: "视网膜脱落", pinyin: "shì wǎng mó tuō luò", en_description: "A serious eye condition where the retina pulls away from the back of the eye, leading to significant vision loss; an emergency term.", zh_description: "视网膜从眼球后部脱离的严重眼部疾病，导致严重的视力丧失；一个紧急词汇。" },
+                { en: "Amblyopia", zh: "弱视（懒惰眼）", pinyin: "ruò shì (lǎn duò yǎn)", en_description: "A decrease in vision in one or both eyes due to abnormal development of vision in infancy or childhood.", zh_description: "婴儿或儿童时期视力异常发育导致单眼或双眼视力下降。" },
+                // Diagnostic terms
+                { en: "Eye exam", zh: "眼科检查", pinyin: "yǎn kē jiǎn chá", en_description: "Routine examination of the eyes, often for general check-up or before prescribing corrective lenses.", zh_description: "常用于体检或配镜前的常规眼睛检查。" },
+                { en: "Visual acuity", zh: "视力", pinyin: "shì lì", en_description: "Sharpness of vision, a key term used during vision tests.", zh_description: "检查视力时使用的术语，指视力的清晰度。" },
+                { en: "Snellen chart", zh: "视力表", pinyin: "shì lì biǎo", en_description: "A chart used to measure visual acuity, typically with rows of letters that decrease in size.", zh_description: "检查视力时使用的图表，通常有大小递减的字母行。" },
+                { en: "Pupil dilation", zh: "瞳孔扩张", pinyin: "tóng kǒng kuò zhāng", en_description: "Widening of the pupil, often done during eye examinations to allow better view of the retina.", zh_description: "瞳孔扩大，眼底检查中常做，以便更好地观察视网膜。" },
+                { en: "Intraocular pressure", zh: "眼压", pinyin: "yǎn yā", en_description: "The fluid pressure inside the eye, an important factor in diagnosing and managing glaucoma.", zh_description: "眼内液体的压力，诊断和管理青光眼的重要因素。" },
+                { en: "Accommodation", zh: "调节（聚焦）", pinyin: "tiáo jié (jù jiāo)", en_description: "The process by which the eye changes optical power to maintain a clear image or focus on an object as its distance varies.", zh_description: "眼睛改变光学能力以在物体距离变化时保持清晰图像或聚焦的过程。" },
+                { en: "Eye drops", zh: "眼药水", pinyin: "yǎn yào shuǐ", en_description: "Liquid medication applied to the eye, commonly used by almost all patients.", zh_description: "几乎每位患者都会用到的液体药物，用于滴入眼睛。" },
+                // Eye Anatomy Vocabulary
+                { en: "Eye Anatomy Vocabulary", zh: "眼睛结构词汇", pinyin: "yǎn jīng jié gòu cí huì", en_description: "Terms related to the parts of the eye.", zh_description: "与眼睛各部分相关的词汇。", isSubheader: true },
+                { en: "Retina", zh: "视网膜", pinyin: "shì wǎng mó", en_description: "The light-sensitive layer at the back of the eye that covers about 65 percent of its interior surface.", zh_description: "眼球内部感光的部分，接收光线并传递视觉信号。" },
+                { en: "Cornea", zh: "角膜", pinyin: "jiǎo mó", en_description: "The transparent front part of the eye that covers the iris, pupil, and anterior chamber. It helps to refract light.", zh_description: "眼睛最外面的透明结构，帮助聚焦光线。" },
+                { en: "Lens", zh: "晶状体", pinyin: "jīng zhuàng tǐ", en_description: "A transparent, biconvex structure in the eye that, along with the cornea, helps to refract light to be focused on the retina.", zh_description: "眼睛内部可变形的“镜片”，调节远近焦点。" },
+                { en: "Iris", zh: "虹膜", pinyin: "hóng mó", en_description: "The colored part of the eye that surrounds the pupil and controls the amount of light entering the eye.", zh_description: "控制瞳孔大小的有色部分。" },
+                { en: "Pupil", zh: "瞳孔", pinyin: "tóng kǒng", en_description: "The opening in the center of the iris that allows light to enter the eye.", zh_description: "虹膜中间的黑色小孔，调节进光量。" },
+                { en: "Optic nerve", zh: "视神经", pinyin: "shì shén jīng", en_description: "A bundle of nerve fibers that transmits visual information from the retina to the brain.", zh_description: "连接眼睛与大脑的神经，传输视觉信息。" },
+                { en: "Eyelid", zh: "眼睑", pinyin: "yǎn jiǎn", en_description: "A movable fold of skin that covers and protects the eye.", zh_description: "眼睛的“盖子”，保护眼球。" },
+                { en: "Tear duct", zh: "泪管", pinyin: "lèi guǎn", en_description: "A small tube that drains tears from the eye into the nasal cavity.", zh_description: "输送泪水的通道。" }
+            ],
+            "心脏病学 (Cardiology)": [
+                { en: "Cardiologist", zh: "心脏科医生", pinyin: "xīn zàng kē yī shēng", en_description: "A doctor specializing in heart conditions.", zh_description: "专攻心脏疾病的医生。" },
+                { en: "Hypertension (High Blood Pressure)", zh: "高血压", pinyin: "gāo xuè yā", en_description: "A condition in which the force of the blood against the artery walls is too high.", zh_description: "血液对动脉壁的压力过高的状况。" },
+                { en: "Coronary Artery Disease (CAD)", zh: "冠状动脉疾病", pinyin: "guān zhuàng dòng mài jí bìng", en_description: "A disease in which plaque builds up inside the coronary arteries.", zh_description: "冠状动脉内斑块积聚的疾病。" },
+                { en: "Heart attack (Myocardial Infarction)", zh: "心脏病发作 (心肌梗死)", pinyin: "xīn zàng bìng fā zuò (xīn jī gěng sǐ)", en_description: "Occurs when blood flow to a part of your heart is blocked.", zh_description: "心脏某部分血流受阻。" },
+                { en: "Arrhythmia", zh: "心律失常", pinyin: "xīn lǜ shī cháng", en_description: "An irregular heartbeat.", zh_description: "心跳不规则。" },
+                { en: "Heart failure", zh: "心力衰竭", pinyin: "xīn lì shuāi jié", en_description: "A chronic condition in which the heart doesn't pump blood as well as it should.", zh_description: "心脏泵血功能不足的慢性疾病。" },
+                { en: "Cholesterol", zh: "胆固醇", pinyin: "dǎn gù chún", en_description: "A waxy, fat-like substance found in all cells of the body.", zh_description: "身体所有细胞中发现的一种蜡状脂肪类物质。" },
+                { en: "Angina", zh: "心绞痛", pinyin: "xīn jiǎo tòng", en_description: "Chest pain or discomfort caused by reduced blood flow to the heart.", zh_description: "心脏血流减少引起的胸痛或不适。" },
+                { en: "Echocardiogram", zh: "超声心动图", pinyin: "chāo shēng xīn dòng tú", en_description: "An ultrasound of the heart.", zh_description: "心脏的超声检查。" },
+                { en: "Stent", zh: "支架", pinyin: "zhī jià", en_description: "A small mesh tube used to treat narrow or weak arteries.", zh_description: "用于治疗狭窄或虚弱动脉的小网状管。" },
+                { en: "Bypass surgery", zh: "搭桥手术", pinyin: "dā qiáo shǒu shù", en_description: "A surgical procedure to restore normal blood flow to an obstructed coronary artery.", zh_description: "恢复阻塞冠状动脉正常血流的手术。" },
+                // New additions for Cardiology based on user's notes
+                { en: "Common Tests & Indicators", zh: "常见检查与指标类", pinyin: "cháng jiàn jiǎn chá yǔ zhǐ biāo lèi", en_description: "Terms related to common diagnostic tests and measurements.", zh_description: "与常见诊断测试和测量相关的词汇。", isSubheader: true },
+                { en: "Electrocardiogram (ECG/EKG)", zh: "心电图", pinyin: "xīn diàn tú", en_description: "A test that measures the electrical activity of the heartbeat.", zh_description: "测量心跳电活动的检查。" },
+                { en: "Blood pressure", zh: "血压", pinyin: "xuè yā", en_description: "The pressure of circulating blood against the walls of blood vessels.", zh_description: "血液在血管壁上循环的压力。" },
+                { en: "Pulse", zh: "脉搏", pinyin: "mài bó", en_description: "A rhythmic throbbing of arteries as blood is propelled through them.", zh_description: "血液通过动脉时有节奏的搏动。" },
+                { en: "Heart rate", zh: "心率", pinyin: "xīn lǜ", en_description: "The number of times the heart beats per minute.", zh_description: "心脏每分钟跳动的次数。" },
+                { en: "Plaque (arterial)", zh: "动脉斑块", pinyin: "dòng mài bān kuài", en_description: "A buildup of fatty deposits, cholesterol, and other substances in the arteries.", zh_description: "动脉中脂肪沉积物、胆固醇和其他物质的堆积。" },
+                { en: "Risk Factors & Symptoms", zh: "风险因素与症状类", pinyin: "fēng xiǎn yīn sù yǔ zhèng zhuàng lèi", en_description: "Terms related to factors that increase risk and common signs of heart conditions.", zh_description: "与增加风险的因素和常见心脏病症状相关的词汇。", isSubheader: true },
+                { en: "Chest pain", zh: "胸痛", pinyin: "xiōng tòng", en_description: "Discomfort or pain in the chest area, often a symptom of heart problems.", zh_description: "胸部区域的不适或疼痛，常是心脏问题的症状。" },
+                { en: "Shortness of breath", zh: "呼吸急促", pinyin: "hū xī jí cù", en_description: "Difficulty breathing or feeling like you can't get enough air.", zh_description: "呼吸困难或感觉吸不到足够的空气。" },
+                { en: "Fatigue", zh: "疲劳", pinyin: "pí láo", en_description: "Extreme tiredness resulting from mental or physical exertion or illness.", zh_description: "由精神或身体劳累或疾病引起的极度疲倦。" },
+                { en: "Dizziness", zh: "头晕", pinyin: "tóu yūn", en_description: "A sensation of spinning or feeling lightheaded, often related to blood flow to the brain.", zh_description: "头晕目眩或头重脚轻的感觉，常与大脑血流有关。" },
+                { en: "Common Treatments", zh: "常见治疗类", pinyin: "cháng jiàn zhì liáo lèi", en_description: "Terms related to common medical treatments for heart conditions.", zh_description: "与常见心脏病治疗相关的词汇。", isSubheader: true },
+                { en: "Pacemaker", zh: "起搏器", pinyin: "qǐ bó qì", en_description: "A small device placed in the chest to help control abnormal heart rhythms.", zh_description: "放置在胸部的小型设备，用于帮助控制异常心律。" },
+                { en: "Blood thinner", zh: "抗凝药", pinyin: "kàng níng yào", en_description: "Medication that helps prevent blood clots from forming or growing.", zh_description: "有助于防止血栓形成或增大的药物。" },
+                { en: "Beta-blocker", zh: "β-受体阻断剂", pinyin: "β shòu tǐ zǔ duàn jì", en_description: "A type of medication that slows the heart rate and lowers blood pressure.", zh_description: "一种减慢心率和降低血压的药物。" }
+            ],
+            "皮肤病学 (Dermatology)": [
+                { en: "Dermatologist", zh: "皮肤科医生", pinyin: "pí fū kē yī shēng", en_description: "A doctor specializing in skin conditions.", zh_description: "专攻皮肤疾病的医生。" },
+                { en: "Acne", zh: "痤疮 / 痘痘", pinyin: "cuó chuāng / dòu dòu", en_description: "A skin condition that occurs when hair follicles plug with oil and dead skin cells.", zh: "毛囊被油脂和死皮细胞堵塞引起的皮肤病。" },
+                { en: "Eczema", zh: "湿疹", pinyin: "shī zhěn", en_description: "A condition that causes the skin to become itchy, inflamed, and dry.", zh: "导致皮肤发痒、发炎和干燥的状况。" },
+                { en: "Psoriasis", zh: "牛皮癣 / 银屑病", pinyin: "niú pí xuǎn / yín xiè bìng", en_description: "A chronic skin disease characterized by red, itchy, scaly patches.", zh: "以红色、发痒、鳞状斑块为特征的慢性皮肤病。" },
+                { en: "Dermatitis", zh: "皮炎", pinyin: "pí yán", en_description: "General term for inflammation of the skin.", zh_description: "皮肤炎症的总称。" },
+                { en: "Mole", zh: "痣", pinyin: "zhì", en_description: "A small, dark spot or growth on the skin.", zh_description: "皮肤上的小黑点或生长物。" },
+                { en: "Skin rash", zh: "皮疹", pinyin: "pí zhěn", en_description: "An area of irritated or inflamed skin.", zh_description: "皮肤受刺激或发炎的区域。" },
+                { en: "Sunburn", zh: "晒伤", pinyin: "shài shāng", en_description: "Inflammation of the skin caused by overexposure to ultraviolet radiation.", zh_description: "过度暴露于紫外线辐射引起的皮肤炎症。" },
+                { en: "Hair loss", zh: "脱发", pinyin: "tuō fà", en_description: "The partial or complete loss of hair from the head or body.", zh_description: "头部或身体毛发部分或完全脱落。" },
+                { en: "Fungal infection", zh: "真菌感染", pinyin: "zhēn jūn gǎn rǎn", en_description: "An infection caused by a fungus.", zh_description: "由真菌引起的感染。" },
+                { en: "Biopsy (skin)", zh: "皮肤活检", pinyin: "pí fū huó jiǎn", en_description: "Removal of a small piece of skin for examination under a microscope.", zh_description: "切除一小块皮肤在显微镜下检查。" },
+                // New additions for Dermatology based on user's notes
+                { en: "Common Skin Conditions & Symptoms", zh: "常见皮肤病与症状", pinyin: "cháng jiàn pí fū bìng yǔ zhèng zhuàng", en_description: "Terms related to common skin conditions and their symptoms.", zh_description: "与常见皮肤病及其症状相关的词汇。", isSubheader: true },
+                { en: "Hives (Urticaria)", zh: "荨麻疹", pinyin: "xuán má zhěn", en_description: "An allergic skin reaction characterized by itchy, red, and swollen welts, often caused by drugs or food.", zh_description: "常见过敏性瘙痒性红疹，常由药物或食物引起。" },
+                { en: "Mole (Nevus)", zh: "痣（胎记）", pinyin: "zhì (tāi jì)", en_description: "A common benign skin mark, whose changes should be monitored for skin cancer risk.", zh_description: "常见良性皮肤标志物，变化需警惕皮肤癌风险。" },
+                { en: "Alopecia", zh: "脱发", pinyin: "tuō fà", en_description: "A common type of hair loss, such as alopecia areata and totalis, often mentioned by patients.", zh_description: "常见脱发类型，如斑秃和全秃，患者常提及。" },
+                { en: "Cellulitis", zh: "蜂窝织炎", pinyin: "fēng wō zhī yán", en_description: "A bacterial skin infection characterized by red, hot, swollen skin, requiring timely treatment.", zh_description: "皮肤细菌感染，皮红热肿，需及时治疗。" },
+                { en: "Rosacea", zh: "酒糟鼻（红血丝）", pinyin: "jiǔ zāo bí (hóng xuè sī)", en_description: "Facial flushing and dilated blood vessels, common in adults.", zh_description: "面部潮红、血管扩张，常见于成年人。" },
+                { en: "Seborrheic Dermatitis", zh: "脂溢性皮炎", pinyin: "zhī yì xìng pí yán", en_description: "Dandruff and facial erythema, a common skin condition.", zh_description: "头皮屑、面部红斑，常见皮肤状况。" },
+                { en: "Atopic dermatitis", zh: "特应性皮炎（湿疹）", pinyin: "tè yìng xìng pí yán (shī zhěn)", en_description: "A common type of eczema, accompanied by itching and impaired skin barrier function.", zh_description: "湿疹常见类型，伴瘙痒、皮肤屏障损伤。" },
+                { en: "Lesion / Papule / Plaque", zh: "皮损 / 丘疹 / 斑块", pinyin: "pí sǔn / qiū zhěn / bān kuài", en_description: "Basic morphological terms used to describe skin manifestations, used by doctors for diagnosis.", zh_description: "描述皮肤表现的基础形态词，医生诊断时会用到。" },
+                { en: "Structure of the Skin", zh: "皮肤结构", pinyin: "pí fū jié gòu", en_description: "Terms related to the layers and components of the skin.", zh_description: "与皮肤分层和组成部分相关的词汇。", isSubheader: true, note: "Source: dermnetnz.org/topics/terminology" },
+                { en: "Epidermis", zh: "表皮", pinyin: "biǎo pí", en_description: "The outer protective layer of the skin, made of keratinocytes.", zh_description: "皮肤最外层的保护层，由角质形成细胞构成。" },
+                { en: "Dermis", zh: "真皮", pinyin: "zhēn pí", en_description: "The middle layer of the skin, providing support and nutrients to the epidermis.", zh_description: "皮肤的中间层，为表皮提供支持和营养。" },
+                { en: "Subcutaneous tissue (Subcutis)", zh: "皮下组织", pinyin: "pí xià zǔ zhī", en_description: "The deepest layer of the skin, primarily composed of fat cells (adipose cells).", zh_description: "皮肤最深层，主要由脂肪细胞组成。" },
+                { en: "Keratinocytes", zh: "角质形成细胞", pinyin: "jiǎo zhì xíng chéng xì bāo", en_description: "Cells in the epidermis that produce keratin.", zh_description: "表皮中产生角蛋白的细胞。" },
+                { en: "Melanocytes", zh: "黑色素细胞", pinyin: "hēi sè sù xì bāo", en_description: "Pigment-producing cells in the epidermis.", zh_description: "表皮中产生色素的细胞。" },
+                { en: "Collagen", zh: "胶原蛋白", pinyin: "jiāo yuán dàn bái", en_description: "A structural protein that forms the bulk of the dermis, providing strength.", zh_description: "构成真皮主体结构蛋白，提供强度。" },
+                { en: "Elastin", zh: "弹性蛋白", pinyin: "tán xìng dàn bái", en_description: "A protein that forms elastic fibers, allowing skin to return to its original shape.", zh_description: "构成弹性纤维的蛋白质，使皮肤恢复原有形状。" },
+                { en: "Sebaceous glands", zh: "皮脂腺", pinyin: "pí zhī xiàn", en_description: "Glands in the skin that produce sebum (oily substance).", zh_description: "皮肤中产生皮脂（油性物质）的腺体。" },
+                { en: "Hair follicle", zh: "毛囊", pinyin: "máo náng", en_description: "A sheath of cells and tissue that surrounds the root of a hair.", zh_description: "包围毛发根部的细胞和组织鞘。" },
+                { en: "Distribution of Lesions", zh: "皮损分布", pinyin: "pí sǔn fēn bù", en_description: "Terms describing how skin lesions are scattered or spread out on the body.", zh_description: "描述皮肤病变在身体上如何分散或扩散的术语。", isSubheader: true, note: "Source: dermnetnz.org/topics/terminology" },
+                { en: "Acral", zh: "肢端", pinyin: "zhī duān", en_description: "Relating to or affecting the distal extremities (e.g., ears, fingers, toes, nose).", zh_description: "与肢体远端（如耳朵、手指、脚趾、鼻子）相关或影响这些部位。" },
+                { en: "Dermatomal", zh: "皮节分布", pinyin: "pí jié fēn bù", en_description: "Lesions confined to skin segments innervated by a single spinal nerve.", zh_description: "病变局限于由单一脊神经支配的皮肤区域。" },
+                { en: "Flexural", zh: "屈侧", pinyin: "qū cè", en_description: "Related to skin folds, such as the backs of knees, armpits, elbow creases, and groin.", zh_description: "与皮肤褶皱相关，如膝盖后部、腋窝、肘部褶皱和腹股沟。" },
+                { en: "Generalised", zh: "泛发性", pinyin: "fàn fā xìng", en_description: "Lesions distributed randomly over most of the body surface area.", zh_description: "病变随机分布于身体大部分表面。" },
+                { en: "Photosensitive", zh: "光敏性", pinyin: "guāng mǐn xìng", en_description: "Increased reactivity of the skin to sunlight.", zh_description: "皮肤对阳光的反应性增加。" },
+                { en: "Symmetrical", zh: "对称性", pinyin: "duì chèn xìng", en_description: "Affecting both sides of the body in a similar way.", zh_description: "以相似方式影响身体两侧。" },
+                { en: "Unilateral", zh: "单侧", pinyin: "dān cè", en_description: "The rash affects only one side of the body.", zh_description: "皮疹仅影响身体一侧。" },
+                { en: "Configuration of Lesions", zh: "皮损形态", pinyin: "pí sǔn xíng tài", en_description: "Terms describing the shape or outline of skin lesions.", zh_description: "描述皮肤病变形状或轮廓的术语。", isSubheader: true, note: "Source: dermnetnz.org/topics/terminology" },
+                { en: "Nummular (Discoid)", zh: "钱币状", pinyin: "qián bì zhuàng", en_description: "Round or coin-shaped lesions.", zh_description: "圆形或钱币状病变。" },
+                { en: "Linear (Striate)", zh: "线状", pinyin: "xiàn zhuàng", en_description: "Lesions with a linear shape, often due to external reasons like scratching.", zh_description: "呈线状的病变，常因抓挠等外部原因引起。" },
+                { en: "Target lesion (Iris lesion)", zh: "靶形病变", pinyin: "bǎ xíng bìng biàn", en_description: "Concentric rings like a dartboard.", zh_description: "同心环状，像靶盘一样。" },
+                { en: "Annular", zh: "环状", pinyin: "huán zhuàng", en_description: "Lesions grouped in a circle.", zh_description: "病变呈圆形排列。" },
+                { en: "Colour (Skin)", zh: "皮肤颜色", pinyin: "pí fū yán sè", en_description: "Descriptive terms used to describe the color of skin lesions.", zh_description: "描述皮肤病变颜色的术语。", isSubheader: true, note: "Source: dermnetnz.org/topics/terminology" },
+                { en: "Hyperpigmentation", zh: "色素沉着", pinyin: "sè sù chén zhuó", en_description: "Darkened skin compared to normal.", zh_description: "皮肤颜色比正常情况变深。" },
+                { en: "Hypopigmentation", zh: "色素减退", pinyin: "sè sù jiǎn tuì", en_description: "Skin color that is paler than normal.", zh_description: "皮肤颜色比正常情况苍白。" },
+                { en: "Erythema", zh: "红斑", pinyin: "hóng bān", en_description: "Red skin due to an increased blood supply.", zh_description: "因血供增加导致的皮肤发红。" },
+                { en: "Jaundice", zh: "黄疸", pinyin: "huáng dǎn", en_description: "Yellowing of the skin and whites of the eyes due to bile pigment buildup.", zh_description: "因胆汁色素积聚导致皮肤和眼白发黄。" },
+                { en: "Purpura", zh: "紫癜", pinyin: "zǐ diǎn", en_description: "Bleeding into the skin, appearing as small red, purple, or brown spots (petechiae) or bruises (ecchymoses); does not blanch with pressure.", zh_description: "皮肤出血，表现为小红点、紫点或棕点（瘀点）或瘀斑（瘀斑）；按压不褪色。" },
+                { en: "Morphology (Skin Lesions)", zh: "皮损形态学", pinyin: "pí sǔn xíng tài xué", en_description: "The form or structure of an individual skin lesion.", zh_description: "单个皮肤病变的形态或结构。", isSubheader: true, note: "Source: dermnetnz.org/topics/terminology" },
+                { en: "Macule", zh: "斑疹", pinyin: "bān zhěn", en_description: "A small, flat patch of skin that is altered in color, but not elevated.", zh_description: "皮肤上颜色改变但未隆起的小块区域。" },
+                { en: "Papule", zh: "丘疹", pinyin: "qiū zhěn", en_description: "An elevated, solid, palpable lesion that is ≤ 1 cm in diameter.", zh_description: "直径≤1厘米的隆起、实性、可触及的病变。" },
+                { en: "Nodule", zh: "结节", pinyin: "jié jié", en_description: "An elevated, solid, palpable lesion > 1 cm, usually located deeper in the skin.", zh_description: "直径>1厘米的隆起、实性、可触及的病变，通常位于皮肤深层。" },
+                { en: "Cyst", zh: "囊肿", pinyin: "náng zhǒng", en_description: "A papule or nodule that contains fluid or semi-fluid material.", zh_description: "含有液体或半液体物质的丘疹或结节。" },
+                { en: "Plaque", zh: "斑块", pinyin: "bān kuài", en_description: "A circumscribed, palpable lesion > 1 cm, often elevated, resulting from coalescence of papules.", zh_description: "直径>1厘米的局限性、可触及病变，常隆起，由丘疹融合形成。" },
+                { en: "Vesicle", zh: "水疱", pinyin: "shuǐ páo", en_description: "A small blister; a circumscribed lesion ≤ 1 cm in diameter that contains liquid.", zh_description: "小水泡；直径≤1厘米的局限性病变，内含液体。" },
+                { en: "Pustule", zh: "脓疱", pinyin: "nóng páo", en_description: "A circumscribed lesion that contains pus.", zh_description: "内含脓液的局限性病变。" },
+                { en: "Bulla", zh: "大疱", pinyin: "dà páo", en_description: "A large blister; a circumscribed lesion > 1 cm in diameter that contains liquid.", zh_description: "大水泡；直径>1厘米的局限性病变，内含液体。" },
+                { en: "Abscess", zh: "脓肿", pinyin: "nóng zhǒng", en_description: "A localized collection of pus.", zh_description: "局部脓液积聚。" },
+                { en: "Weal (Wheal)", zh: "风团", pinyin: "fēng tuán", en_description: "A transient elevation of the skin due to dermal edema, often pale centrally with a red rim.", zh_description: "因真皮水肿引起的短暂性皮肤隆起，常中央苍白，边缘发红。" },
+                { en: "Skin Surface Changes", zh: "皮肤表面变化", pinyin: "pí fū biǎo miàn biàn huà", en_description: "Terms describing changes on the surface of skin lesions.", zh_description: "描述皮肤病变表面变化的术语。", isSubheader: true, note: "Source: dermnetnz.org/topics/terminology" },
+                { en: "Scaling (Hyperkeratosis)", zh: "脱屑（角化过度）", pinyin: "tuō xiè (jiǎo huà guò dù)", en_description: "An increase in the dead cells on the surface of the skin (stratum corneum).", zh_description: "皮肤表面死细胞（角质层）增加。" },
+                { en: "Desquamation", zh: "脱皮", pinyin: "tuō pí", en_description: "Skin coming off in scales.", zh_description: "皮肤呈鳞片状脱落。" },
+                { en: "Exfoliation", zh: "剥脱", pinyin: "bō tuō", en_description: "Peeling skin.", zh_description: "皮肤剥落。" },
+                { en: "Maceration", zh: "浸渍", pinyin: "jìn zì", en_description: "Moist peeling skin, often due to prolonged exposure to moisture.", zh_description: "潮湿的脱皮皮肤，常因长时间暴露于水分引起。" },
+                { en: "Secondary Changes", zh: "继发性改变", pinyin: "jì fā xìng gǎi biàn", en_description: "Terms describing changes that occur to primary skin lesions.", zh_description: "描述原发性皮肤病变发生的改变的术语。", isSubheader: true, note: "Source: dermnetnz.org/topics/terminology" },
+                { en: "Lichenification", zh: "苔藓样变", pinyin: "tái xiǎn yàng biàn", en_description: "Thickened skin with increased skin markings due to chronic rubbing.", zh_description: "因长期摩擦导致皮肤增厚，皮纹加深。" },
+                { en: "Crusting", zh: "结痂", pinyin: "jié jiā", en_description: "The result of plasma exuding through an eroded epidermis, forming a rough, yellow or brown surface.", zh_description: "血浆渗出受损表皮后形成，表面粗糙，呈黄色或棕色。" },
+                { en: "Excoriation", zh: "抓痕", pinyin: "zhuā hén", en_description: "A loss of epidermis and part of the dermis due to scratching or injury.", zh_description: "因抓挠或损伤导致表皮和部分真皮缺失。" },
+                { en: "Erosion", zh: "糜烂", pinyin: "mí làn", en_description: "A sore due to superficial or partial destruction of surface tissue.", zh_description: "因表面组织浅表或部分破坏而形成的溃疡。" },
+                { en: "Fissure", zh: "裂隙", pinyin: "liè xì", en_description: "A split, crack, erosion, or narrow ulceration of the skin.", zh_description: "皮肤的裂口、裂缝、糜烂或狭窄溃疡。" },
+                { en: "Ulcer", zh: "溃疡", pinyin: "kuì yáng", en_description: "Full-thickness loss of the epidermis plus at least a portion of the dermis; heals with a scar.", zh_description: "表皮全层以及至少部分真皮缺失；愈合后留下疤痕。" },
+                { en: "Granuloma", zh: "肉芽肿", pinyin: "ròu yá zhǒng", en_description: "A type of inflammation characterized by histiocytes.", zh_description: "一种以组织细胞为特征的炎症类型。" },
+                { en: "Hypertrophy", zh: "肥大", pinyin: "féi dà", en_description: "Explains that some component of the skin, such as a scar, is enlarged or has grown excessively.", zh_description: "指皮肤的某个组成部分（如疤痕）增大或过度生长。" }
+            ],
+            "痤疮治疗 (Acne Treatment)": [
+                // Combined content from "痘痘治疗词 (Acne Treatment Vocabulary)" and "痤疮治疗 (Acne Treatment)"
+                { en: "A Simple Path to Clearer Skin", zh: "简单的净肤之路", pinyin: "jiǎn dān de jìng fū zhī lù", en_description: "A general overview of acne treatment approaches.", zh_description: "痤疮治疗方法的总体概述。", isSubheader: true },
+                { en: "Acne Vulgaris", zh: "寻常痤疮", pinyin: "xún cháng cuó chuāng", en_description: "Acne, also known as acne vulgaris, is a chronic inflammatory condition of the hair follicle and sebaceous glands. It often affects teenagers and appears as comedones, papules, pustules, nodules, or cysts. If not treated properly, it can lead to hyperpigmentation or scarring.", zh_description: "青春痘，又称痤疮，是毛囊皮脂腺单位的慢性炎症性皮肤病，常见于青少年。表现为粉刺、丘疹、脓疱、结节、囊肿等。若处理不当，可能留下色素沉着或瘢痕。" },
+                { en: "Dark Spots (Hyperpigmentation)", zh: "黑斑（色素沉着）", pinyin: "hēi bān (sè sù chén zhuó)", en_description: "Refers to areas of skin that become darker than the surrounding skin due to excess melanin. Common after acne or sun exposure.", zh_description: "指由于黑色素过度沉积而形成的皮肤变黑区域，常见于痘印、晒斑、老年斑等。" },
+                { en: "Acne Treatment Levels", zh: "痤疮治疗分级", pinyin: "cuó chuāng zhì liáo fēn jí", en_description: "Recommended treatments based on acne severity.", zh_description: "根据痤疮严重程度推荐的治疗方案。", isSubheader: true },
+                { en: "Mild Acne", zh: "轻度痤疮", pinyin: "qīng dù cuó chuāng", en_description: "Characterized by blackheads, whiteheads, and a few papules. Try: Salicylic Acid (BHA) or Benzoyl Peroxide (Low concentration).", zh_description: "表现为白头粉刺、黑头粉刺和少量丘疹。建议尝试：水杨酸 (BHA) 或低浓度过氧化苯甲酰。" },
+                { en: "Moderate Acne", zh: "中度痤疮", pinyin: "zhōng dù cuó chuāng", en_description: "Characterized by more frequent breakouts and pustules. Consider: Adapalene (Retinoid) or stronger Benzoyl Peroxide. Add a soothing agent like Niacinamide.", zh_description: "表现为更频繁的爆发和脓疱。考虑：阿达帕林 (维A酸类) 或更高浓度过氧化苯甲酰。可添加烟酰胺等舒缓剂。" },
+                { en: "Severe / Persistent Acne or Dark Spots", zh: "重度/顽固性痤疮或黑斑", pinyin: "zhòng dù / wán gù xìng cuó chuāng huò hēi bān", en_description: "Characterized by nodules, cysts, scarring, and hyperpigmentation. Consult a Dermatologist. They may prescribe stronger treatments like Tretinoin, Isotretinoin, or specific pigment-fading therapies.", zh_description: "表现为结节、囊肿、瘢痕和色素沉着。请咨询皮肤科医生。他们可能会开具更强效的治疗方案，如维甲酸、异维A酸或特定的淡斑疗法。" },
+                { en: "Acne Treatments (Medications and Ingredients)", zh: "痤疮治疗药物与成分", pinyin: "cuó chuāng zhì liáo yào wù yǔ chéng fèn", en_description: "Detailed analysis of key active ingredients used in acne treatment.", zh_description: "痤疮治疗中关键活性成分的详细分析。", isSubheader: true },
+                { en: "Niacinamide", zh: "烟酰胺", pinyin: "yān xiān àn", en_description: "Anti-inflammatory, reduces redness, hydrates, brightens skin. Often combined with retinoids to mitigate irritation.", zh_description: "抗炎、减轻泛红、保湿、美白。常与维A酸类合用以减轻刺激。" },
+                { en: "Glycolic Acid", zh: "甘醇酸", pinyin: "gān chún suān", en_description: "Exfoliates, improves texture/tone, fades pigmentation. Increases UV sensitivity, so sunscreen is crucial.", zh_description: "去角质、改善肤质与肤色、淡斑。增加紫外线敏感性，防晒至关重要。" },
+                { en: "Salicylic Acid", zh: "水杨酸", pinyin: "shuǐ yáng suān", en_description: "Oil-soluble exfoliant, unclogs pores, fights acne. Topical lotions typically 0.5% to 2%.", zh_description: "脂溶性去角质剂，清洁毛孔，对抗粉刺。外用乳液通常为0.5%至2%。" },
+                { en: "Benzoyl Peroxide", zh: "过氧化苯甲酰", pinyin: "guò yǎng huà běn jiǎ xiān", en_description: "Antibacterial and anti-inflammatory, ideal for inflamed acne. Concentrations typically 2.5% to 10%.", zh_description: "抑菌抗炎，适合炎症型痤疮。浓度通常为2.5%至10%。" },
+                { en: "Ibuprofen Piconol", zh: "布洛芬吡啶甲", pinyin: "bù luò fēn pí dìng jiǎ", en_description: "Analgesic & Anti-inflammatory. Helps relieve pain, redness, and inflammation caused by primary burns, sunburn, and acne.", zh_description: "镇痛抗炎。缓解因原发性热灼伤、晒伤及痘痘引起的疼痛、红肿与炎症。" },
+                { en: "Isopropylmethylphenol", zh: "百里酚", pinyin: "bǎi lǐ fēn", en_description: "Has antiseptic, antibacterial, antifungal, and antiviral properties; also helps control oil, reduce acne, and prevent skin infections.", zh_description: "具有防腐、抗菌、抗真菌及抗病毒功效，同时帮助控油祛痘，预防皮肤感染。" },
+                { en: "Retinol (A醇)", zh: "视黄醇 (A醇)", pinyin: "shì huáng chún (A chún)", en_description: "A precursor to tretinoin, gentler but slower acting. Commonly used for anti-aging, brightening, refining pores, and fading acne marks. Causes photosensitivity.", zh_description: "维A酸（Tretinoin）的前体，温和但见效较慢。常用于抗老、美白、改善毛孔与痘印。会引起光敏感。" },
+                { en: "Retinoids (维A酸类)", zh: "维A酸类", pinyin: "wéi A suān lèi", en_description: "A class of compounds derived from Vitamin A, promoting cell turnover, collagen production, and treating acne. Categorized into generations with varying potency and irritation.", zh_description: "维生素A的衍生物统称，促进细胞更新、胶原蛋白生成，改善痤疮。按代划分，效力与刺激性不同。" },
+                { en: "Tretinoin (First-generation retinoid)", zh: "维甲酸 (第一代维A酸)", pinyin: "wéi jiǎ suān", en_description: "Strong topical retinoid, prescription required. Causes skin irritation, redness, and photosensitivity.", zh_description: "强效外用A酸，处方药。引起皮肤刺激、泛红和光敏感。" },
+                { en: "Isotretinoin (Second-generation retinoid)", zh: "异维A酸 (第二代维A酸)", pinyin: "yì wéi A suān", en_description: "Oral treatment for severe acne. Highly effective but with many side effects including teratogenicity.", zh_description: "口服治疗重度痤疮。高效但副作用多，包括致畸性。" },
+                { en: "Adapalene (Third-generation retinoid)", zh: "阿达帕林 (第三代维A酸)", pinyin: "ā dá pà lín", en_description: "Topical medication for mild to moderate acne and acne scars. Can be bought over-the-counter or with prescription.", zh_description: "外用药物，用于治疗轻中度痤疮、痘印。可在药房购买，但处方皆有。" },
+                { en: "Trifarotene (Fourth-generation retinoid)", zh: "三氟罗汀 (第四代维A酸)", pinyin: "sān fú luó tíng", en_description: "Highly selective for RAR-γ, good for body acne. Local side effects usually confined and short-lived.", zh_description: "选择RAR-γ，对躯干有效。局部副作用通常局限且短暂。" },
+                { en: "Clascoterone", zh: "克拉斯可酮", pinyin: "kè lā sī kě tóng", en_description: "New topical agent; androgen receptor antagonist, reduces sebum production.", zh_description: "新型外用剂；雄激素受体拮抗剂，控油。" },
+                { en: "Clindamycin / Doxycycline", zh: "克林霉素 / 多西环素", pinyin: "kè lín méi sù / duō xī huán sù", en_description: "Antibiotics; antibacterial and anti-inflammatory, often used with Benzoyl Peroxide to avoid resistance.", zh_description: "抗生素；抗菌消炎，常与过氧化苯甲酰合用以避免耐药性。" },
+                { en: "Spironolactone", zh: "螺内酯", pinyin: "luó nèi zhǐ", en_description: "Female-specific therapy; oral anti-androgen for hormonal acne in women.", zh_description: "女性专用治疗；女性激素型痘痘口服药。" },
+                { en: "Alpha Arbutin", zh: "α-熊果苷", pinyin: "Alpha Xióng guǒ gān", en_description: "Skin-brightening ingredient; safely and gently inhibits melanin production.", zh_description: "安全温和地抑制黑色素。" },
+                { en: "Azelaic Acid", zh: "壬二酸", pinyin: "rén èr suān", en_description: "Brightening, mild exfoliant, anti-inflammatory; possesses multiple functions including lightening dark spots, anti-inflammation, and acne treatment.", zh_description: "具备淡斑、美白、抗炎与抗痘多重功效，常用于治疗痤疮与色素沉着。" },
+                { en: "Vitamin C", zh: "维生素C", pinyin: "wéi shēng sù C", en_description: "Antioxidant, brightening, pigment-fading; offers multiple benefits such as brightening, fading acne marks, evening out skin tone, and accelerating skin repair.", zh_description: "具备美白、淡化痘印、均匀肤色、抗氧化与加速肌肤修复等多重功效，有助于改善皱纹与色素沉着。" },
+                { en: "Kojic Acid", zh: "曲酸", pinyin: "qǔ suān", en_description: "Tyrosinase inhibitor; inhibits melanin production, lightens pigmentation.", zh_description: "抑制黑色素生成，淡化色素。" },
+                { en: "Tranexamic Acid", zh: "传明酸", pinyin: "chuán míng suān", en_description: "Pigment Inhibitor / Melasma Treatment; reduces melanin production, anti-pigmentation.", zh_description: "抑制色素沉着形成，抗色素沉着。" },
+                { en: "Dipotassium Glycyrrhizate", zh: "甘草酸二钾", pinyin: "gān cǎo suān èr jiǎ", en_description: "Soothing / Anti-inflammatory / Skin Tone Balancing; soothes irritation, supports pigment reduction.", zh_description: "舒缓、辅助淡斑。" },
+                { en: "Example of Dark Spot Serum (Niacinamide + Glycolic + Kojic)", zh: "复合精华例（烟酰胺 + 果酸 + 曲酸）", pinyin: "fù hé jīng huá lì (yān xiān àn + guǒ suān + qǔ suān)", en_description: "A combined serum that targets dark spots and acne.", zh_description: "结合多种成分抗痘淡斑。" },
+                { en: "Pimple", zh: "痘痘 / 粉刺", pinyin: "dòu dòu / fěn cì", en_description: "A small, inflamed spot on the skin.", zh_description: "皮肤上小的发炎点。" },
+                { en: "Blackhead", zh: "黑头", pinyin: "hēi tóu", en_description: "A small bump on the skin caused by a clogged hair follicle, with a dark surface.", zh_description: "毛囊堵塞引起的皮肤小凸起，表面呈黑色。" },
+                { en: "Whitehead", zh: "白头", pinyin: "bái tóu", en_description: "A small, pale bump on the skin caused by a clogged hair follicle, with a white surface.", zh_description: "毛囊堵塞引起的皮肤小凸起，表面呈白色。" },
+                { en: "Cystic acne", zh: "囊肿性痤疮", pinyin: "náng zhǒng xìng cuó chuāng", en_description: "A severe form of acne with large, painful, pus-filled cysts.", zh_description: "一种严重的痤疮，伴有大而疼痛的充满脓液的囊肿。" },
+                { en: "Acne scar", zh: "痘疤 / 痤疮疤痕", pinyin: "dòu bā / cuó chuāng bā hén", en_description: "Marks left on the skin after acne lesions heal.", zh_description: "痤疮愈合后留在皮肤上的痕迹。" },
+                { en: "Topical cream", zh: "外用药膏", pinyin: "wài yòng yào gāo", en_description: "A cream applied to the skin for treatment.", zh_description: "涂抹在皮肤上用于治疗的药膏。" },
+                { en: "Oral medication", zh: "口服药", pinyin: "kǒu fú yào", en_description: "Medication taken by mouth.", zh_description: "通过口服的药物。" },
+                { en: "Laser therapy", zh: "激光治疗", pinyin: "jī guāng zhì liáo", en_description: "A treatment using focused light to reduce acne and scars.", zh_description: "使用聚焦光线减少痤疮和疤痕的治疗。" },
+                { en: "Chemical peel", zh: "化学换肤", pinyin: "huà xué huàn fū", en_description: "A procedure that uses a chemical solution to improve the appearance of the skin.", zh_description: "使用化学溶液改善皮肤外观的程序。" },
+                { en: "Types of Acne Lesions", zh: "暗疮种类", pinyin: "àn chuāng zhǒng lèi", en_description: "Different classifications of acne lesions.", zh_description: "痤疮病变的不同分类。", isSubheader: true },
+                { en: "Closed comedone (whitehead)", zh: "白头粉刺", pinyin: "bái tóu fěn cì", en_description: "Blocked follicle under the skin surface.", zh_description: "闭口，不接触空气，皮脂堵塞。" },
+                { en: "Open comedone (blackhead)", zh: "黑头粉刺", pinyin: "hēi tóu fěn cì", en_description: "Open pore exposed to air, oxidized sebum.", zh_description: "开口氧化变黑。" },
+                { en: "Papule", zh: "丘疹", pinyin: "qiū zhěn", en_description: "Small red bump, no pus.", zh_description: "红色小疹，无脓。" },
+                { en: "Pustule", zh: "脓疱", pinyin: "nóng páo", en_description: "Red bump with white pus tip.", zh_description: "含脓红疹。" },
+                { en: "Nodule", zh: "结节", pinyin: "jié jié", en_description: "Deep, firm painful lump.", zh_description: "深层硬块，可能疼痛。" },
+                { en: "Cyst", zh: "囊肿", pinyin: "náng zhǒng", en_description: "Deep, pus-filled lump that may scar.", zh_description: "深部囊肿，易留疤。" },
+                { en: "Acne conglobata", zh: "聚合性痤疮", pinyin: "jù hé xìng cuó chuāng", en_description: "Severe form with interconnected nodules and cysts.", zh_description: "多囊融合，严重发炎。" },
+                { en: "Hormonal acne", zh: "激素型痘", pinyin: "jī sù xíng dòu", en_description: "Often cyclical and appears around the jaw/chin, related to hormones.", zh_description: "女性下巴周围周期性爆发。" }
+            ]
+        };
+
+        // Get all top-level category keys from the medicalData object
+        const categories = Object.keys(medicalData);
+        // Set the initial current category to the first one in the list
+        let currentCategory = categories[0]; 
+
+        const categoryNav = document.getElementById('category-nav');
+        const categoryTitle = document.getElementById('category-title');
+        const termList = document.getElementById('term-list');
+        const searchInput = document.getElementById('search-input');
+        const tooltip = document.getElementById('tooltip'); // Get tooltip element
+        const loadingSpinner = document.getElementById('loading-spinner'); // Get loading spinner element
+
+        let currentAudio = null; // To keep track of the currently playing audio
+        let tooltipHideTimeout; // To manage tooltip visibility on hover
+
+        // Function to convert base64 to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Function to convert PCM (Int16Array) to WAV Blob
+        function pcmToWav(pcm16, sampleRate) {
+            const numChannels = 1; // Mono audio
+            const bytesPerSample = 2; // 16-bit PCM
+
+            const dataLength = pcm16.length * bytesPerSample;
+            const buffer = new ArrayBuffer(44 + dataLength);
+            const view = new DataView(buffer);
+
+            // RIFF chunk descriptor
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataLength, true); // file size
+            writeString(view, 8, 'WAVE');
+
+            // FMT sub-chunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true); // sub-chunk size
+            view.setUint16(20, 1, true); // audio format (1 = PCM)
+            view.setUint16(22, numChannels, true); // number of channels
+            view.setUint32(24, sampleRate, true); // byte rate
+            view.setUint16(32, numChannels * bytesPerSample, true); // block align
+            view.setUint16(34, 16, true); // bits per sample
+
+            // Data sub-chunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataLength, true); // data size
+
+            // Write PCM data
+            for (let i = 0; i < pcm16.length; i++) {
+                view.setInt16(44 + i * bytesPerSample, pcm16[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // Function to play audio using TTS API
+        async function playAudio(text, language) {
+            if (!text) {
+                console.warn("No text provided for audio playback.");
+                return;
+            }
+
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                // Do NOT set currentAudio to null here, it will be reassigned shortly
+            }
+
+            loadingSpinner.style.display = 'block'; // Show spinner
+
+            let retries = 0;
+            const maxRetries = 3;
+            const baseDelay = 1000; // 1 second
+
+            while (retries < maxRetries) {
+                try {
+                    const payload = {
+                        contents: [{
+                            parts: [{ text: text }]
+                        }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: {
+                                    prebuiltVoiceConfig: { voiceName: language === 'zh-Hans' ? "Kore" : "Zephyr" } // Use Kore for Chinese, Zephyr for English
+                                }
+                            }
+                        },
+                        model: "gemini-2.5-flash-preview-tts"
+                    };
+
+                    const apiKey = ""; // Leave as-is, Canvas will provide it
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+
+                    if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
+                        // Extract sample rate from mimeType, e.g., "audio/L16;rate=16000"
+                        const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                        const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000; // Default to 16kHz
+
+                        const pcmData = base64ToArrayBuffer(audioData);
+                        const pcm16 = new Int16Array(pcmData);
+                        const wavBlob = pcmToWav(pcm16, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+
+                        const newAudio = new Audio(audioUrl);
+                        currentAudio = newAudio; // Assign the new audio to the global variable immediately
+                        
+                        currentAudio.play().catch(e => console.error("Audio playback error:", e));
+                        currentAudio.onended = () => {
+                            URL.revokeObjectURL(audioUrl); // Clean up the Blob URL
+                            if (currentAudio === newAudio) { // Only null if it's still the current audio
+                                currentAudio = null;
+                            }
+                        };
+                        loadingSpinner.style.display = 'none'; // Hide spinner on success
+                        return; // Exit loop on success
+                    } else {
+                        throw new Error("Invalid audio data received from TTS API.");
+                    }
+                } catch (error) {
+                    console.error(`Attempt ${retries + 1} failed:`, error);
+                    retries++;
+                    if (retries < maxRetries) {
+                        const delay = baseDelay * Math.pow(2, retries - 1); // Exponential backoff
+                        await new Promise(res => setTimeout(res, delay));
+                    } else {
+                        loadingSpinner.style.display = 'none'; // Hide spinner on final failure
+                        console.error("Failed to play audio after multiple retries.");
+                    }
+                }
+            }
+        }
+
+        // Function to get all terms from all categories for comprehensive searching
+        function getAllTerms() {
+            let allTerms = [];
+            for (const categoryKey of categories) {
+                const categoryContent = medicalData[categoryKey];
+                // Handle nested structures for categories like "皮肤病学 (Dermatology)" and "痤疮治疗 (Acne Treatment)"
+                if (Array.isArray(categoryContent)) {
+                    categoryContent.forEach(term => {
+                        allTerms.push({ ...term, category: categoryKey });
+                    });
+                } else if (typeof categoryContent === 'object' && categoryContent !== null) {
+                    for (const subCategoryKey in categoryContent) {
+                        const subCategoryTerms = categoryContent[subCategoryKey];
+                        if (Array.isArray(subCategoryTerms)) {
+                            subCategoryTerms.forEach(term => {
+                                allTerms.push({ ...term, category: categoryKey, subCategory: subCategoryKey });
+                            });
+                        }
+                    }
+                }
+            }
+            // Remove duplicates based on English term if they exist across categories
+            const seen = new Set();
+            return allTerms.filter(term => {
+                const duplicate = seen.has(term.en);
+                seen.add(term.en);
+                return !duplicate;
+            });
+        }
+
+        // Renders the navigation buttons based on the categories
+        function renderNav() {
+            categoryNav.innerHTML = ''; // Clear existing navigation
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.textContent = category; // Display the category name on the button
+                // Apply active class if it's the current selected category
+                button.className = `nav-button px-4 py-2 text-sm sm:text-base font-medium rounded-lg border border-slate-300 ${category === currentCategory ? 'active' : 'bg-white text-slate-700'}`;
+                button.onclick = () => {
+                    currentCategory = category; // Update the current category
+                    searchInput.value = ''; // Clear search input when changing category
+                    renderNav(); // Re-render nav to update active state
+                    renderTerms(); // Render terms for the newly selected category
+                };
+                categoryNav.appendChild(button);
+            });
+        }
+
+        // Renders the terms in the table based on the current category or search filter
+        function renderTerms(filter = '') {
+            termList.innerHTML = ''; // Clear existing list
+            const lowerCaseFilter = filter.toLowerCase().trim(); // Trim whitespace from filter
+
+            let termsToDisplay = [];
+
+            if (lowerCaseFilter) { // If there's a filter, perform search across all terms
+                categoryTitle.textContent = `搜索 "${filter}" 的结果 (Search Results for "${filter}")`;
+                const allAvailableTerms = getAllTerms(); // Get all terms for searching
+                
+                termsToDisplay = allAvailableTerms.filter(term =>
+                    (term.en && term.en.toLowerCase().includes(lowerCaseFilter)) ||
+                    (term.zh && term.zh.includes(filter.trim())) || 
+                    (term.pinyin && term.pinyin.toLowerCase().includes(lowerCaseFilter)) ||
+                    (term.note && term.note.includes(filter.trim())) ||
+                    (term.en_description && term.en_description.toLowerCase().includes(lowerCaseFilter)) || // Added description search
+                    (term.zh_description && term.zh_description.includes(filter.trim())) // Added description search
+                );
+
+                if (termsToDisplay.length === 0) {
+                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-slate-500">找不到相符的词汇。(No matching terms found.)</td></tr>';
+                }
+            } else { // No filter, render terms for the currently selected category
+                categoryTitle.textContent = currentCategory; // Display the current category title
+                const currentCategoryContent = medicalData[currentCategory];
+
+                if (Array.isArray(currentCategoryContent)) {
+                    termsToDisplay = currentCategoryContent;
+                } else if (typeof currentCategoryContent === 'object' && currentCategoryContent !== null) {
+                    // Handle nested categories (like Dermatology, Acne Treatment)
+                    for (const subCategoryKey in currentCategoryContent) {
+                        const subCategoryTerms = currentCategoryContent[subCategoryKey];
+                        if (Array.isArray(subCategoryTerms)) {
+                            // Add a subheader row for the sub-category
+                            const subHeaderRow = document.createElement('tr');
+                            subHeaderRow.innerHTML = `
+                                <td colspan="2" class="p-3 text-left text-lg font-semibold text-sky-700 bg-sky-50/50 border-b border-slate-200 rounded-lg mt-4">
+                                    ${subCategoryKey}
+                                </td>
+                            `;
+                            termList.appendChild(subHeaderRow);
+                            termsToDisplay.push(...subCategoryTerms); // Add terms from this sub-category
+                        }
+                    }
+                }
+
+                if (termsToDisplay.length === 0 && !lowerCaseFilter) { // Only show "no terms" if no filter and category is truly empty
+                     termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-slate-500">此类别中没有词汇。(No terms in this category.)</td></tr>';
+                }
+            }
+
+            // Render the filtered or selected terms (excluding subheaders if they were already added)
+            termsToDisplay.forEach(term => {
+                if (term.isSubheader && !lowerCaseFilter) { // If it's a subheader and not in search mode, it's already added
+                    return; 
+                }
+
+                const row = document.createElement('tr');
+                row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                // Store the term data directly on the row for easy access during hover
+                row.dataset.term = JSON.stringify(term); 
+                
+                // If it's a subheader and we are in search mode, display it as a regular term with category info
+                if (term.isSubheader && lowerCaseFilter) {
+                     row.innerHTML = `
+                        <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
+                        <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                            <span class="chinese-text">${term.zh || ''}</span>
+                            <span class="pinyin-text">${term.pinyin || ''}</span>
+                            ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                            ${term.category ? `<span class="text-xs text-sky-700 bg-sky-100 px-2 py-1 rounded-full mt-1 inline-block">${term.category}${term.subCategory ? ` - ${term.subCategory}` : ''}</span>` : ''}
+                        </td>
+                    `;
+                } else if (!term.isSubheader) { // Regular term
+                    row.innerHTML = `
+                        <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
+                        <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                            <span class="chinese-text">${term.zh || ''}</span>
+                            <span class="pinyin-text">${term.pinyin || ''}</span>
+                            ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                            ${filter && term.category ? `<span class="text-xs text-sky-700 bg-sky-100 px-2 py-1 rounded-full mt-1 inline-block">${term.category}${term.subCategory ? ` - ${term.subCategory}` : ''}</span>` : ''}
+                        </td>
+                    `;
+                }
+                termList.appendChild(row);
+            });
+        }
+        
+        // Event listener for mouseover on the entire table body (event delegation)
+        termList.addEventListener('mouseover', (e) => {
+            const targetRow = e.target.closest('tr');
+            if (!targetRow || !targetRow.dataset.term) {
+                clearTimeout(tooltipHideTimeout);
+                tooltip.style.opacity = '0';
+                return;
+            }
+
+            const termData = JSON.parse(targetRow.dataset.term);
+            // If it's a subheader, don't show tooltip
+            if (termData.isSubheader) {
+                clearTimeout(tooltipHideTimeout);
+                tooltip.style.opacity = '0';
+                return;
+            }
+
+            let tooltipContent = '';
+
+            // Check if hovering over the English column (first td with class 'english-term')
+            if (e.target.classList.contains('english-term')) {
+                if (termData.en_description) {
+                    tooltipContent = termData.en_description;
+                } else {
+                    tooltipContent = termData.zh || ''; // Fallback to Chinese translation
+                }
+            } 
+            // Check if hovering over the Chinese/Pinyin column (second td with class 'chinese-pinyin-term' or its children spans)
+            else if (e.target.classList.contains('chinese-pinyin-term') || e.target.closest('.chinese-text') || e.target.closest('.pinyin-text')) {
+                if (termData.zh_description) {
+                    tooltipContent = termData.zh_description;
+                } else {
+                    tooltipContent = termData.en || ''; // Fallback to English translation
+                }
+            } else {
+                clearTimeout(tooltipHideTimeout);
+                tooltip.style.opacity = '0';
+                return;
+            }
+
+            clearTimeout(tooltipHideTimeout); // Clear any pending hide
+            tooltip.innerHTML = tooltipContent;
+            tooltip.style.left = `${e.clientX + 15}px`; // Offset from cursor
+            tooltip.style.top = `${e.clientY + 15}px`;
+            tooltip.style.opacity = '1';
+        });
+
+        // Event listener for mouseout on the entire table body
+        termList.addEventListener('mouseout', (e) => {
+            // If the mouse is moving to the tooltip itself, don't hide yet
+            if (e.relatedTarget === tooltip || tooltip.contains(e.relatedTarget)) {
+                return;
+            }
+            // Set a timeout to hide the tooltip, allowing mouse to move to tooltip
+            tooltipHideTimeout = setTimeout(() => {
+                tooltip.style.opacity = '0';
+            }, 200); // 200ms delay
+        });
+
+        // Event listener for mouseover on the tooltip itself to keep it visible
+        tooltip.addEventListener('mouseover', () => {
+            clearTimeout(tooltipHideTimeout); // Clear any pending hide
+            tooltip.style.opacity = '1'; // Ensure it stays visible
+        });
+
+        // Event listener for mouseout on the tooltip itself to hide it
+        tooltip.addEventListener('mouseout', () => {
+            tooltip.style.opacity = '0';
+        });
+
+        // Event listener for mousemove to update tooltip position
+        termList.addEventListener('mousemove', (e) => {
+            // Update position only if tooltip is visible
+            if (tooltip.style.opacity === '1') {
+                tooltip.style.left = `${e.clientX + 15}px`;
+                tooltip.style.top = `${e.clientY + 15}px`;
+            }
+        });
+
+        // Click event listener for the entire table body (event delegation for audio playback)
+        termList.addEventListener('click', (e) => {
+            const targetRow = e.target.closest('tr');
+            if (!targetRow || !targetRow.dataset.term) {
+                return;
+            }
+
+            const termData = JSON.parse(targetRow.dataset.term);
+            // Do not play audio for subheaders
+            if (termData.isSubheader) {
+                return;
+            }
+
+            let textToSpeak = '';
+            let languageToSpeak = '';
+
+            if (e.target.classList.contains('english-term')) {
+                textToSpeak = `${termData.en || ''}. ${termData.en_description || ''}`;
+                languageToSpeak = 'en-US';
+            } else if (e.target.classList.contains('chinese-pinyin-term') || e.target.closest('.chinese-text') || e.target.closest('.pinyin-text')) {
+                textToSpeak = `${termData.zh || ''}. ${termData.zh_description || ''}`;
+                languageToSpeak = 'zh-Hans';
+            }
+
+            if (textToSpeak) {
+                playAudio(textToSpeak, languageToSpeak);
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value;
+            if (searchTerm.trim()) { // Only deactivate buttons if there's actual search text
+                 document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+            } else {
+                renderNav(); // Re-render nav to reactivate the current category button if search is cleared
+            }
+            renderTerms(searchTerm); // Render terms based on search input
+        });
+
+        // Initial rendering when the window loads
+        window.onload = () => {
+            renderNav(); // Render navigation buttons
+            renderTerms(); // Render terms for the default category
+        };
+    </script>
+</body>
+</html>

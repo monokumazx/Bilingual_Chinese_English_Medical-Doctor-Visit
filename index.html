@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Vocabulary Hub | 健康词汇中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        .link-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .link-button:hover {
+            background-color: #0284c7; /* sky-600 */
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="container mx-auto py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl sm:text-5xl font-bold text-sky-800 mb-4">健康词汇中心 | Health Vocabulary Hub</h1>
+            <p class="text-xl text-slate-600">欢迎来到您的中英健康词汇学习平台。在这里您可以找到关于就医、病状、营养和皮肤护理的专业词汇。(Welcome to your Chinese-English health vocabulary learning platform. Here you can find specialized vocabulary on doctor visits, symptoms, nutrition, and skin care.)</p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            <!-- Card for 1-doctorvisit.html -->
+            <div class="card p-6 text-center">
+                <h2 class="text-2xl font-semibold text-sky-700 mb-4">医疗与就诊词汇 | Medical & Doctor Visit Vocabulary</h2>
+                <p class="text-slate-700 mb-6">了解在就医和诊断过程中常用的中英文词汇。<br/>(Learn common Chinese and English vocabulary used during medical visits and diagnosis.)</p>
+                <a href="1-doctorvisit.html" class="link-button">前往学习</a>
+            </div>
+
+            <!-- Card for 2-common diseases.html -->
+            <div class="card p-6 text-center">
+                <h2 class="text-2xl font-semibold text-sky-700 mb-4">常见疾病与状况 | Common Diseases & Conditions</h2>
+                <p class="text-slate-700 mb-6">掌握各种常见疾病和身体状况的中英文表达。<br/>(Master Chinese and English expressions for various common diseases and physical conditions.)</p>
+                <a href="2-common diseases.html" class="link-button">前往学习</a>
+            </div>
+
+            <!-- Card for 3-nutritional.html -->
+            <div class="card p-6 text-center">
+                <h2 class="text-2xl font-semibold text-sky-700 mb-4">营养与维生素词汇 | Nutrition & Vitamin Vocabulary</h2>
+                <p class="text-slate-700 mb-6">探索营养物质、维生素和矿物质的中英文术语。<br/>(Explore Chinese and English terms for nutrients, vitamins, and minerals.)</p>
+                <a href="3-nutritional.html" class="link-button">前往学习</a>
+            </div>
+
+            <!-- Card for 4-medical_specialties_and_acne_care.html -->
+            <div class="card p-6 text-center">
+                <h2 class="text-2xl font-semibold text-sky-700 mb-4">专科与皮肤护理词汇 | Specialties & Skin Care Vocabulary</h2>
+                <p class="text-slate-700 mb-6">学习不同专科医生和皮肤护理（特别是痤疮治疗）相关的词汇。<br/>(Learn vocabulary related to different medical specialties and skin care, especially acne treatment.)</p>
+                <a href="4-medical_specialties_and_acne_care.html" class="link-button">前往学习</a>
+            </div>
+
+        </main>
+
+        <footer class="text-center mt-16 py-6 border-t border-slate-200 text-slate-500 text-sm">
+            <p>&copy; 2024 Health Vocabulary Hub. All rights reserved.</p>
+            <p class="mt-2">本页面内容仅供语言学习和参考使用，不构成任何医疗建议。请咨询专业医生获取医疗帮助。</p>
+            <p>This content is for language learning and reference only, and does not constitute medical advice. Please consult a professional doctor for medical assistance.</p>
+        </footer>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗与就诊词汇 | Medical & Doctor Visit Vocabulary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            cursor: default; /* Ensure default cursor */
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button.active {
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .nav-button:not(.active):hover {
+            background-color: #f0f9ff; /* sky-50 */
+        }
+        #term-list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #term-list-container::-webkit-scrollbar-track {
+            background: #f1f5f9; /* slate-100 */
+        }
+        #term-list-container::-webkit-scrollbar-thumb {
+            background-color: #94a3b8; /* slate-400 */
+            border-radius: 10px;
+            border: 2px solid #f1f5f9; /* slate-100 */
+        }
+        .chinese-text {
+            display: block;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .pinyin-text {
+            display: block;
+            font-size: 0.8rem;
+            color: #64748b; /* slate-500 */
+        }
+        /* Tooltip styles */
+        #tooltip {
+            position: fixed; /* Use fixed to stay relative to viewport */
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            z-index: 1000; /* Ensure it's on top */
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            /* pointer-events: none; This was removed to allow mouseover/mouseout on tooltip itself */
+            max-width: 250px; /* Limit tooltip width */
+            word-wrap: break-word; /* Break long words */
+        }
+        /* Loading spinner styles */
+        #loading-spinner {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001; /* Above tooltip */
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #0ea5e9; /* Blue */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-sky-700">医疗与就诊词汇 | Medical & Doctor Visit Vocabulary</h1>
+            <p class="mt-2 text-lg text-slate-600">收录在医院或诊所就诊时常用的表达，包括挂号、问诊、体征描述等实用中英文术语。
+Common Chinese-English phrases used during medical visits, including registration, consultations, symptom descriptions, and more.</p>
+        </header>
+
+        <main>
+            <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
+                <div class="mb-6">
+                    <label for="search-input" class="block text-lg font-medium text-slate-700 mb-2">搜索词汇 (Search Terms):</label>
+                    <input type="text" id="search-input" placeholder="例如：Biopsy 或 活组织检查 (e.g., Biopsy or 活组织检查)" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-shadow">
+                </div>
+
+                <nav id="category-nav" class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
+                </nav>
+            </div>
+            
+            <div id="content-display" class="bg-white p-6 rounded-2xl shadow-lg min-h-[400px]">
+                <h2 id="category-title" class="text-2xl font-bold text-sky-600 mb-4"></h2>
+                <div id="term-list-container" class="overflow-y-auto max-h-[50vh]" style="min-height: 300px;">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tl-lg">英文 (English)</th>
+                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tr-lg">中文 (Chinese)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="term-list">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center mt-12 py-6 border-t border-slate-200">
+            <p class="text-slate-500 text-sm font-bold">⚠️ 免责声明 / Disclaimer</p>
+            <p class="text-slate-500 text-sm mt-1">本页面内容由AI辅助排版，由本人（非医疗专业人员，仅为语言爱好者）整理自公开来源，仅供语言学习和参考使用，不构成任何医疗建议或诊断。请勿将此信息用于医疗决策。如需医疗帮助，请咨询专业医生。本人对内容的准确性不作保证，不承担因使用该信息所产生的任何责任。</p>
+            <p class="text-slate-500 text-sm mt-1">This page is AI-assisted in layout and compiled by me, a language enthusiast (not a medical professional), based on publicly available sources. It is intended for language learning and reference purposes only and does not constitute medical advice or diagnosis. Please do not use this information for any medical decision-making. I make no guarantees about its accuracy and accept no liability for any consequences resulting from its use. Please consult a licensed healthcare professional for medical concerns.</p>
+            <div class="mt-4 text-sm text-slate-500">
+                <h3 class="font-semibold mb-2">参考来源 (Sources):</h3>
+                <ul class="list-none p-0 m-0">
+                    <li><a href="https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf" target="_blank" class="text-sky-600 hover:underline">1) https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf</a></li>
+                    <li><a href="https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf" target="_blank" class="text-sky-600 hover:underline">2) https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf</a></li>
+                    <li><a href="https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list" target="_blank" class="text-sky-600 hover:underline">3) https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list</a></li>
+                    <li><a href="https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8" target="_blank" class="text-sky-600 hover:underline">4) https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8</a></li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Tooltip element -->
+    <div id="tooltip" class="absolute bg-sky-700 text-white p-2 rounded-lg shadow-xl text-sm z-50 opacity-0 transition-opacity 0.2s ease-in-out;"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner"></div>
+
+    <script>
+        const medicalData = {
+            "医疗与就诊词汇 (Medical & Doctor Visit Vocabulary)": {
+                "就诊常用词汇 (Doctor's Visit Vocabulary)": [
+                    { en: "Patient", zh: "病人 / 患者", pinyin: "bìng rén / huàn zhě", en_description: "An individual receiving medical care or treatment.", zh_description: "【名】接受医疗照护或治疗的个人。" },
+                    { en: "Doctor's visit", zh: "看医生", pinyin: "kàn yī shēng", en_description: "Seeing a doctor for diagnosis or treatment.", zh_description: "就医、接受诊断或治疗。" },
+                    { en: "Follow-up visit", zh: "复诊", pinyin: "fù zhěn", en_description: "Return visit; follow-up consultation. A second or subsequent medical visit after an initial diagnosis.", zh_description: "【动】病人在初次就诊后，再次就医接受诊治。" },
+                    { en: "Re-examination", zh: "复查", pinyin: "fù chá", en_description: "Re-examine; recheck. To examine again to confirm previous results or observe changes.", zh_description: "【动】再次进行检查，以确认原有结果或观察变化。" },
+                    { en: "Clinic", zh: "诊所", pinyin: "zhěn suǒ", en_description: "A small outpatient medical facility.", zh_description: "提供门诊服务的小型医疗机构。" },
+                    { en: "Outpatient", zh: "门诊", pinyin: "mén zhěn", en_description: "Medical service without hospital admission.", zh_description: "不需要住院的就诊形式。" },
+                    { en: "General check-up", zh: "体检", pinyin: "tǐ jiǎn", en_description: "A routine health examination.", zh_description: "常规的身体健康检查。" },
+                    { en: "Annual physical exam", zh: "年检 / 年度体检", pinyin: "nián jiǎn / nián dù tǐ jiǎn", en_description: "A yearly complete health assessment.", zh_description: "每年一次的全面健康检查。" },
+                    { en: "Routine check-up", zh: "常规体检", pinyin: "cháng guī tǐ jiǎn", en_description: "A non-urgent, regular exam to monitor health.", zh_description: "用于健康监测的定期检查。" },
+                    { en: "Medical consultation", zh: "医疗咨询", pinyin: "yī liáo zī xún", en_description: "Seeking professional medical advice.", zh_description: "向医生咨询医疗建议。" },
+                    { en: "Chief complaint", zh: "主诉", pinyin: "zhǔ sù", en_description: "The main issue the patient reports.", zh_description: "患者描述的主要症状或问题。" },
+                    { en: "Medical history", zh: "病史", pinyin: "bìng shǐ", en_description: "Record of past illnesses and treatments.", zh_description: "患者过去的疾病和治疗记录。" },
+                    { en: "Symptoms", zh: "症状", pinyin: "zhèng zhuàng", en_description: "Signs of illness experienced by the patient.", zh_description: "患者感受到的身体异常表现。" },
+                    { en: "Diagnosis", zh: "诊断", pinyin: "zhěn duàn", en_description: "The doctor’s identification of the illness.", zh_description: "医生对疾病的判断结果。" },
+                    { en: "Prescription", zh: "处方", pinyin: "chǔ fāng", en_description: "A written order for medication.", zh_description: "医生开的药品使用说明。" },
+                    { en: "Medication", zh: "药物 / 药品", pinyin: "yào wù / yào pǐn", en_description: "Drugs used to treat illness.", zh_description: "用于治疗疾病的药品。" },
+                    { en: "Over-the-counter medicine", zh: "非处方药", pinyin: "fēi chǔ fāng yào", en_description: "Medicine available without a prescription.", zh_description: "无需医生处方即可购买的药品。" },
+                    { en: "Injection", zh: "注射", pinyin: "zhù shè", en_description: "Medicine given with a needle.", zh_description: "用针将药物注入体内的方式。" },
+                    { en: "IV drip", zh: "打点滴", pinyin: "dǎ diǎn dī", en_description: "Medicine or fluids delivered via vein.", zh_description: "通过静脉注入药液的治疗方法。" },
+                    { en: "Vaccination", zh: "疫苗接种", pinyin: "yì miáo jiē zhòng", en_description: "Immunization to prevent disease.", zh_description: "通过注射疫苗预防疾病。" },
+                    { en: "Appointment", zh: "预约", pinyin: "yù yuē", en_description: "A scheduled visit to a doctor.", zh_description: "提前安排的就诊时间。" },
+                    { en: "Walk-in", zh: "无预约看诊", pinyin: "wú yù yuē kàn zhěn", en_description: "Visiting a clinic without prior booking.", zh_description: "无需提前预约的就诊方式。" },
+                    { en: "Referral", zh: "转诊", pinyin: "zhuǎn zhěn", en_description: "Transfer to another doctor or specialist.", zh_description: "转到其他医生或专科的建议。" },
+                    { en: "Medical certificate", zh: "医疗证明", pinyin: "yī liáo zhèng míng", en_description: "Official document confirming a medical condition.", zh_description: "证明健康状况的正式文件。" },
+                    { en: "Health report", zh: "健康报告", pinyin: "jiàn kāng bào gào", en_description: "Summary of health check-up or test results.", zh_description: "健康检查或检测的总结报告。" },
+                    { en: "Consent form", zh: "同意书", pinyin: "tóng yì shū", en_description: "Document giving permission for treatment.", zh_description: "同意接受治疗的书面文件。" },
+                    { en: "Health insurance", zh: "医疗保险", pinyin: "yī liáo bǎo xiǎn", en_description: "Financial coverage for medical costs.", zh_description: "用于报销医疗费用的保险。" },
+                    // Newly added terms from user
+                    { en: "Allergen test", zh: "过敏原测试 / 检测", pinyin: "guò mǐn yuán cè shì / jiǎn cè", en_description: "A test to find allergy triggers.", zh_description: "用于检测过敏源的检查。" },
+                    { en: "Blood pressure measurement", zh: "血压测量", pinyin: "xuè yā cè liáng", en_description: "Checking the force of blood flow.", zh_description: "测量血液对血管的压力。" },
+                    { en: "Physical examination", zh: "体格检查", pinyin: "tǐ gé jiǎn chá", en_description: "A doctor’s evaluation of the body.", zh_description: "医生对身体状态的评估。" },
+                    { en: "Inpatient", zh: "住院病人", pinyin: "zhù yuàn bìng rén", en_description: "A patient staying in the hospital.", zh_description: "需要住院治疗的患者。" },
+                    { en: "Hospitalization", zh: "住院", pinyin: "zhù yuàn", en_description: "Being admitted to the hospital.", zh_description: "进入医院接受住院治疗。" },
+                    { en: "Second opinion", zh: "第二诊断意见", pinyin: "dì èr zhěn duàn yì jiàn", en_description: "Another doctor’s view on a diagnosis.", zh_description: "对诊断结果的再次确认意见。" },
+                    { en: "Health record", zh: "健康档案", pinyin: "jiàn kāng dàng àn", en_description: "A record of a person’s medical history.", zh_description: "存储个人健康信息的档案。" },
+                    { en: "Emergency", zh: "急诊", pinyin: "jí zhěn", en_description: "Immediate medical care for urgent cases.", zh_description: "需要立即处理的紧急医疗情况。" },
+                    { en: "Pain scale", zh: "疼痛等级", pinyin: "téng tòng děng jí", en_description: "Rating system for pain intensity.", zh_description: "用于评估疼痛程度的等级系统。" },
+                    { en: "Sick leave note", zh: "病假条", pinyin: "bìng jià tiáo", en_description: "A note excusing someone from work due to illness.", zh_description: "因病请假的医生证明。" },
+                    { en: "Return-to-work note", zh: "复工证明", pinyin: "fù gōng zhèng míng", en_description: "Proof that a patient is fit to return to work.", zh_description: "表明已康复可复工的证明。" },
+                    { en: "School excuse note", zh: "学校请假条", pinyin: "xué xiào qǐng jià tiáo", en_description: "A note for school absence due to illness.", zh_description: "因病请假的学校用条。" },
+                    // New terms from "Clinic Visit Essentials"
+                    { en: "Vital signs", zh: "生命体征", pinyin: "shēng mìng tǐ zhēng", en_description: "Key indicators like pulse, temperature, BP.", zh_description: "反映基本生命状态的指标。" },
+                    { en: "Temperature check", zh: "量体温", pinyin: "liáng tǐ wēn", en_description: "Measuring body temperature.", zh_description: "测量身体温度。" },
+                    { en: "Height and weight", zh: "身高体重", pinyin: "shēn gāo tǐ zhòng", en_description: "Basic body measurements.", zh_description: "记录身体基本数据。" },
+                    { en: "BMI (Body Mass Index)", zh: "体质指数", pinyin: "tǐ zhì zhǐ sù", en_description: "A measure of body fat using height and weight.", zh_description: "身高与体重计算出的身体指数。" },
+                    { en: "Lab test", zh: "实验室检查", pinyin: "shí yàn shì jiǎn chá", en_description: "Test on samples like blood or urine.", zh_description: "对血液、尿液等样本的化验检查。" },
+                    { en: "Test results", zh: "检查结果 / 化验结果", pinyin: "jiǎn chá jié guǒ / huà yàn jié guǒ", en_description: "The outcome of a medical test.", zh_description: "医学检查的结果。" },
+                    { en: "Medical chart", zh: "病历", pinyin: "bìng lì", en_description: "A patient’s medical documentation.", zh_description: "记录病情和治疗过程的文件。" },
+                    { en: "Waiting room", zh: "候诊室", pinyin: "hòu zhěn shì", en_description: "Where patients wait to be seen.", zh_description: "等待医生看诊的地方。" },
+                    { en: "Nurse", zh: "护士", pinyin: "hù shì", en_description: "A licensed healthcare provider assisting with care.", zh_description: "协助医生护理患者的专业人员。" },
+                    { en: "Receptionist", zh: "挂号员 / 接待员", pinyin: "guà hào yuán / jiē dài yuán", en_description: "Staff managing check-in and patient info.", zh_description: "负责登记和接待的工作人员。" },
+                    // New terms from "Forms and Paperwork"
+                    { en: "Patient registration form", zh: "患者登记表", pinyin: "huàn zhě dēng jì biǎo", en_description: "A form for entering patient details.", zh_description: "填写患者基本信息的表格。" },
+                    { en: "Insurance card", zh: "医保卡", pinyin: "yī bǎo kǎ", en_description: "ID for using medical insurance.", zh_description: "医疗保险的凭证卡片。" },
+                    { en: "ID card", zh: "身份证", pinyin: "shēn fèn zhèng", en_description: "Official identification document.", zh_description: "身份确认用的合法证件。" }
+                ],
+                "诊断测试与程序 (Diagnostic Tests & Procedures)": {
+                    "常见检查 (Common Tests)": [
+                        { en: "Blood test", zh: "验血", pinyin: "yàn xuè", en_description: "Blood sample analysis for health indicators.", zh_description: "用血液检查健康状况。" },
+                        { en: "X-ray", zh: "X光检查", pinyin: "X guāng jiǎn chá", en_description: "Imaging using X-rays to view bones and chest.", zh_description: "用X射线拍摄骨骼、胸腔等结构。" },
+                        { en: "Ultrasound", zh: "超声波检查", pinyin: "chāo shēng bō jiǎn chá", en_description: "Uses sound waves to image internal organs.", zh_description: "用声波检查内部器官，如肝、心脏等。" },
+                        { en: "CT scan", zh: "CT扫描", pinyin: "CT sǎo miáo", en_description: "Cross-sectional imaging using X-rays.", zh_description: "利用X光进行体层断面扫描。" },
+                        { en: "MRI", zh: "磁共振成像", pinyin: "cí gòng zhèn chéng xiàng", en_description: "Uses magnets and radio waves for detailed images.", zh_description: "使用磁场和射频波形成精细图像。" },
+                        { en: "Mammogram", zh: "乳房X光检查", pinyin: "rǔ fáng X guāng jiǎn chá", en_description: "X-ray imaging of breast tissue to screen cancer.", zh_description: "对乳房组织进行X光检查以筛查癌症。" },
+                        { en: "Pap test", zh: "子宫颈抹片检查", pinyin: "zǐ gōng jǐng mò piàn jiǎn chá", en_description: "Cervical cell sampling to detect precancerous changes.", zh_description: "检查宫颈细胞变化以预防癌变。" },
+                        { en: "Pelvic examination", zh: "骨盆检查", pinyin: "gǔ pén jiǎn chá", en_description: "Physical exam of female reproductive organs.", zh_description: "检查女性盆腔器官状况的体格检查。" },
+                        { en: "Blood sugar test", zh: "血糖检查", pinyin: "xuè táng jiǎn chá", en_description: "Measures blood glucose levels.", zh_description: "测量血液中的葡萄糖水平。" },
+                        { en: "Lipid profile / Cholesterol test", zh: "血脂 / 胆固醇检查", pinyin: "xuè zhī jiǎn chá / dǎn gù chún jiǎn chá", en_description: "Measures blood fat levels like cholesterol.", zh_description: "检查血脂及胆固醇水平。" },
+                        { en: "Liver function test", zh: "肝功能检查", pinyin: "gān gōng néng jiǎn chá", en_description: "Tests liver enzymes to assess liver health.", zh_description: "检测肝酶以评估肝脏功能状态。" },
+                        { en: "Kidney function test", zh: "肾功能检查", pinyin: "shèn gōng néng jiǎn chá", en_description: "Measures kidney excretion and filtering ability.", zh_description: "检测肾脏排泄和过滤功能。" },
+                        { en: "Electrocardiogram (ECG)", zh: "心电图", pinyin: "xīn diàn tú", en_description: "Records the heart’s electrical activity.", zh_description: "记录心脏的电活动（心律、节律）。" },
+                        { en: "Hearing test", zh: "听力检查", pinyin: "tīng lì jiǎn chá", en_description: "Assesses how well one hears various tones.", zh_description: "测试不同频率声音的听力能力。" },
+                        { en: "Vision test", zh: "视力检查", pinyin: "shì lì jiǎn chá", en_description: "Measures visual acuity and clarity.", zh_description: "测量视力清晰度和准确度。" }
+                    ],
+                    ".": [
+                        { en: "Biopsy", zh: "活组织检查", pinyin: "huó zǔ zhī jiǎn chá", en_description: "Tissue sampling for microscopic examination.", zh_description: "提取组织样本进行显微镜下分析。" },
+                        { en: "Colonoscopy", zh: "结肠镜检查", pinyin: "jié cháng jìng jiǎn chá", en_description: "Visual inspection of large intestine via colonoscope.", zh_description: "用结肠镜检查大肠内壁状况。" },
+                        { en: "Bone scan", zh: "骨扫描", pinyin: "gǔ sǎo miáo", en_description: "Nuclear imaging to assess bone metabolism.", zh_description: "使用放射性示踪剂检查骨代谢和损伤。" },
+                        { en: "Bone marrow aspiration", zh: "骨髓穿刺", pinyin: "gǔ suǐ chuān cì", en_description: "Extraction of marrow for disease detection.", zh_description: "抽取骨髓样本以检测血液及血癌等疾病。" },
+                        { en: "Brain scan", zh: "脑部扫描", pinyin: "nǎo bù sǎo miáo", en_description: "Imaging the brain via CT or MRI.", zh_description: "使用CT或MRI扫描脑部结构。" },
+                        { en: "Cystoscopy", zh: "膀胱镜检查", pinyin: "páng guāng jìng jiǎn chá", en_description: "Visual inspection of the bladder using a cystoscope.", zh_description: "用膀胱镜检查膀胱内壁。" },
+                        { en: "Endoscopy", zh: "内窥镜检查", pinyin: "nèi kuī jìng jiǎn chá", en_description: "Viewing GI tract using flexible camera.", zh_description: "使用内窥镜检查胃、食道、肠道内部结构。", note: "亦称：内视镜检查 (nèi shì jìng jiǎn chá)" },
+                        { en: "Fecal Occult Blood Test (FOBT)", zh: "粪便潜血试验", pinyin: "fèn biàn qián xuè shì yàn", en_description: "Tests stool for hidden blood indicating GI bleeding.", zh_description: "检测粪便中隐血以发现肠道出血。" },
+                        { en: "Fine needle aspiration", zh: "细针抽吸术", pinyin: "xì zhēn chōu xī shù", en_description: "Uses a needle to sample fluid or cells from lumps.", zh_description: "用细针抽取肿块液体或细胞样本。" },
+                        { en: "Flow cytometry", zh: "流式细胞术", pinyin: "liú shì xì bāo shù", en_description: "Analyzes cell populations in blood or tissue.", zh_description: "分析血液或组织中细胞类型比例。" },
+                        { en: "Gallium scan", zh: "镓扫描", pinyin: "jiā sǎo miáo", en_description: "Nuclear scan to detect infection or tumors.", zh_description: "用镓-67扫描检测感染或肿瘤。" },
+                        { en: "Imaging studies", zh: "影像扫描检查", pinyin: "yǐng xiàng sǎo miáo jiǎn chá", en_description: "General term for MRI, CT, etc.", zh_description: "影像学检查的总称，如CT、MRI等。" },
+                        { en: "Intravenous pyelogram (IVP)", zh: "静脉泌尿造影", pinyin: "jīng mài pái liào tú xiàng", en_description: "X-ray imaging of urinary tract using contrast dye.", zh_description: "注入造影剂后X光显示泌尿系统结构。" },
+                        { en: "Laparoscopy", zh: "腹腔镜", pinyin: "fù qiāng jìng", en_description: "Minimally invasive visual inspection of abdomen.", zh_description: "用腹腔镜检查腹部器官（如胆囊、子宫等）。" },
+                        { en: "Laryngoscopy", zh: "喉镜检查", pinyin: "hóu jìng jiǎn chá", en_description: "Visual exploration of the voice box and throat.", zh_description: "用喉镜检查声带及咽喉结构。" },
+                        { en: "Lower GI series", zh: "下胃肠道摄影检查", pinyin: "xià wèi cháng dào shè yǐng jiǎn chá", en_description: "X-ray series of the lower digestive tract using barium.", zh_description: "吞钡后拍摄下消化道X光系列图像。" },
+                        { en: "Lymphangiogram", zh: "淋巴管造影", pinyin: "lín bā guǎn zào yǐng", en_description: "X-ray imaging of lymph vessels after contrast injection.", zh_description: "注入造影剂后拍摄淋巴管结构。" },
+                        { en: "Mediastinoscopy", zh: "纵膈腔内视镜检查", pinyin: "zòng gé qiāng nèi shì jìng jiǎn chá", en_description: "Endoscopic examination of the mediastinum.", zh_description: "用内镜检查纵隔腔内结构。" },
+                        { en: "Needle aspiration", zh: "针头抽吸（取样）", pinyin: "zhēn tóu chōu xī (qǔ yàng)", en_description: "Using a needle to sample fluid or cells from lumps.", zh_description: "用针头从组织中取样分析。" },
+                        { en: "Needle biopsy", zh: "刺采样活组织检查", pinyin: "cì cǎi yàng huó zǔ zhī jiǎn chá", en_description: "Larger needle used to collect tissue cores for study.", zh_description: "用粗针取组织块进行病理检查。" },
+                        { en: "Nasoscopy", zh: "鼻镜检查", pinyin: "bí jìng jiǎn chá", en_description: "Visual exam of nasal passages with a scope.", zh_description: "用鼻镜检查鼻腔内部结构。" },
+                        { en: "Nuclear medicine scan", zh: "核医学扫描", pinyin: "hé yī xué sǎo miáo", en_description: "Uses radioactive isotopes to visualize organ function.", zh_description: "用放射性示踪剂成像以评估器官功能。" },
+                        { en: "Positron emission tomography (PET scan)", zh: "阳电子断层扫描术", pinyin: "yáng diàn zǐ duàn céng sǎo miáo shù", en_description: "Functional imaging using radioactive glucose tracer.", zh_description: "用放射性葡萄糖扫描检测代谢活跃部位。" },
+                        { en: "Pulmonary Function Test (PFT)", zh: "肺功能检验", pinyin: "fèi gōng néng jiǎn yàn", en_description: "Measures lung breathing capacity and airflow.", zh_description: "测试肺活量和气道流量状况。" },
+                        { en: "Radionuclide bone scan", zh: "放射性骨扫描", pinyin: "fàng shè xìng gǔ sǎo miáo", en_description: "Specific nuclear bone scan for tumors or fractures.", zh_description: "用放射性示踪剂检测骨骼异常或病变。" },
+                        { en: "Sigmoidoscopy", zh: "乙状结肠镜检查", pinyin: "yǐ zhuàng jié cháng jìng jiǎn chá", en_description: "Visual exam of lower colon using a flexible scope.", zh_description: "用内镜检查乙状结肠（大肠下部）。" },
+                        { en: "Spinal tap", zh: "腰椎穿刺", pinyin: "yāo zhuī chuān cì", en_description: "Extraction of cerebrospinal fluid (CSF) for analysis.", zh_description: "抽取脑脊液检查感染或出血等情况。" },
+                        { en: "Sputum cytology", zh: "痰细胞学", pinyin: "tán xì bāo xué", en_description: "Microscopic exam of sputum cells for lung cancer/infection.", zh_description: "检查痰液中细胞以检测肺癌或感染。" },
+                        { en: "Stereotactic needle biopsy", zh: "三维定位针活检", pinyin: "sān wéi dìng wèi zhēn huó jiǎn", en_description: "Image-guided needle biopsy for precise sampling.", zh_description: "在影像引导下对病灶进行精准取样活检。" },
+                        { en: "Thoracentesis", zh: "胸腔穿刺术", pinyin: "xiōng qiāng chuān cì shù", en_description: "Needle drainage of fluid from the pleural cavity.", zh_description: "从胸膜腔抽出液体以诊断或缓解积液。" },
+                        { en: "Thoracoscopy", zh: "胸腔镜检查", pinyin: "xiōng qiāng jìng jiǎn chá", en_description: "Endoscopic inspection of the pleural cavity.", zh_description: "用胸腔镜检查胸膜腔内部。" },
+                        { en: "Transrectal Ultrasound (TRUS)", zh: "经直肠超声波检查（前列腺）", pinyin: "jīng zhí cháng chāo shēng bō jiǎn chá", en_description: "Ultrasound probe via rectum to image prostate.", zh_description: "通过直肠超声检查前列腺结构。" },
+                        { en: "Upper GI Series", zh: "上消化道摄影", pinyin: "shàng xiāo huà dào shè yǐng", en_description: "X-ray exam of esophagus, stomach, and small intestine.", zh_description: "吞钡后拍摄上消化道X光图像。" },
+                        { en: "Urine cytology", zh: "尿细胞学", pinyin: "niào xì bāo xué", en_description: "Examining urine cells for cancer or infection.", zh_description: "检查尿液中的细胞以发现癌症或感染迹象。" },
+                        { en: "Virtual colonoscopy", zh: "虚拟大肠镜", pinyin: "xū nǐ dà cháng jìng", en_description: "CT-based 3D imaging of the colon without scope insertion.", zh_description: "无需插镜即可CT生成大肠三维图像。" },
+                        { en: "Wire localization", zh: "针头引导定位", pinyin: "zhēn tóu yǐn dǎo dìng wèi", en_description: "Needle-guided mark for surgery on small lesions.", zh_description: "用针定位小病变以指导手术切除。" }
+                    ]
+                },
+                "治疗与疗法 (Treatments & Therapies)": [
+                    { en: "Joint replacement", zh: "关节置换", pinyin: "guān jié zhì huàn", en_description: "Surgical replacement of a damaged joint with a prosthesis.", zh_description: "通过手术将受损关节更换为人工关节。" },
+                    { en: "Chemotherapy", zh: "化疗", pinyin: "huà liáo", en_description: "Use of drugs to kill or stop the growth of cancer cells.", zh_description: "使用药物杀死或抑制癌细胞生长。" },
+                    { en: "Hormone therapy", zh: "荷尔蒙治疗", pinyin: "hé ěr méng zhì liáo", en_description: "Treatment using hormones to block or add to natural hormones.", zh_description: "通过添加或阻断体内荷尔蒙来治疗疾病。" },
+                    { en: "Immunotherapy", zh: "免疫疗法", pinyin: "miǎn yì liáo fǎ", en_description: "Boosting or modifying the immune system to fight disease.", zh_description: "调节或增强免疫系统以抵抗疾病。" },
+                    { en: "Radiation therapy", zh: "放射治疗", pinyin: "fàng shè zhì liáo", en_description: "Use of high-energy rays to kill cancer cells.", zh_description: "利用高能辐射杀死癌细胞。" },
+                    { en: "Surgery", zh: "手术", pinyin: "shǒu sù", en_description: "Physical operation to treat or remove diseased tissue.", zh_description: "通过切除、修复组织来治疗疾病。" },
+                    { en: "Targeted therapy", zh: "靶向治疗", pinyin: "bǎ xiàng zhì liáo", en_description: "Drugs that specifically attack cancer cells without harming normal cells.", zh_description: "精准攻击癌细胞而较少影响正常细胞的治疗。" },
+                    { en: "Ablative therapy", zh: "剥括疗法", pinyin: "bō kuò liáo fǎ", en_description: "Destroys tissue using heat, cold, or chemicals.", zh_description: "利用热、冷或化学物质破坏异常组织。" },
+                    { en: "Adjuvant therapy", zh: "辅助疗法", pinyin: "fǔ zhù liáo fǎ", en_description: "Additional treatment after primary therapy to prevent recurrence.", zh_description: "在主要治疗后使用的辅助治疗，预防复发。" },
+                    { en: "Alternative therapy", zh: "另类疗法", pinyin: "lìng lèi liáo fǎ", en_description: "Non-standard treatments outside mainstream medicine.", zh_description: "非主流医学采用的替代性治疗方法。" },
+                    { en: "Angioplasty", zh: "血管成形术", pinyin: "xuè guǎn chéng xíng shù", en_description: "Opens narrowed or blocked blood vessels using a balloon.", zh_description: "用球囊扩张狭窄或阻塞的血管。" },
+                    { en: "Biological therapy / Biotherapy", zh: "生物疗法 / 生物制剂疗法", pinyin: "shēng wù liáo fǎ / shēng wù zhì jì liáo fǎ", en_description: "Uses biological agents (e.g., proteins, cells) to treat disease.", zh_description: "利用生物制剂如蛋白质或细胞治疗疾病。" },
+                    { en: "Brachytherapy", zh: "组织间放射治疗", pinyin: "zǔ zhī jiān fàng shè zhì liáo", en_description: "Internal radiation placed close to or inside a tumor.", zh_description: "将放射源直接放入或靠近肿瘤部位。" },
+                    { en: "Chemoembolization", zh: "化学栓塞治疗", pinyin: "huà xué shuān sè zhì liáo", en_description: "Injects chemotherapy drugs directly into a tumor’s blood supply.", zh_description: "将化疗药物注入肿瘤供血血管中并阻断血流。" },
+                    { en: "Combined modality therapy", zh: "合并疗法", pinyin: "hé bìng liáo fǎ", en_description: "Uses more than one type of treatment (e.g., surgery + chemo).", zh_description: "联合多种治疗方式的综合疗法。" },
+                    { en: "Complementary therapy", zh: "辅助疗法", pinyin: "fǔ zhù liáo fǎ", en_description: "Supportive treatments used along with standard care.", zh_description: "配合传统治疗使用的支持性疗法。" },
+                    { en: "Cryoablation / Cryosurgery", zh: "冷冻剥脱术 / 冷冻切除法", pinyin: "lěng dòng bō tuō shù / lěng dòng qiē chú fǎ", en_description: "Freezes and destroys abnormal tissue.", zh_description: "利用极低温度冷冻并破坏异常组织。" },
+                    { en: "D&C (dilation and curettage)", zh: "扩张宫颈和刮宫术", pinyin: "kuò zhāng gōng jǐng hé guā gōng shù", en_description: "Surgical scraping of the uterine lining.", zh_description: "扩张子宫颈并刮除子宫内膜的手术。" },
+                    { en: "Endocrine therapy", zh: "内分泌治疗", pinyin: "nèi fēn mì zhì liáo", en_description: "Regulates hormones to treat conditions like cancer.", zh_description: "调节体内激素水平以治疗疾病。" },
+                    { en: "Gene therapy", zh: "基因治疗", pinyin: "jī yīn zhì liáo", en_description: "Introduces genetic material into cells to fight or prevent disease.", zh_description: "向细胞内导入基因以治疗或预防疾病。" },
+                    { en: "Hyperalimentation", zh: "高营养疗法", pinyin: "gāo yíng yǎng liáo fǎ", en_description: "Providing nutrients via IV for patients who cannot eat.", zh_description: "通过静脉输液提供营养的治疗方式。" },
+                    { en: "Hyperthermia therapy", zh: "发热疗法", pinyin: "fā rè liáo fǎ", en_description: "Heats body tissues to damage cancer cells.", zh_description: "利用高温破坏癌细胞。" },
+                    { en: "Interstitial radiation therapy", zh: "组织间质放射性治疗", pinyin: "zǔ zhī jiān zhì fàng shè xìng zhì liáo", en_description: "Places radioactive material directly into tissue.", zh_description: "将放射源植入病灶组织内部。" },
+                    { en: "Liver transplantation", zh: "肝脏移植手术", pinyin: "gān zàng yí zhí shǒu sù", en_description: "Surgical replacement of a diseased liver with a donor liver.", zh_description: "将病肝换为健康捐赠肝脏的手术。" },
+                    { en: "Lumpectomy", zh: "肿块切除术", pinyin: "zhǒng kuài qiē chú shù", en_description: "Surgical removal of a tumor without removing the whole organ.", zh_description: "切除肿块但保留器官的手术。" },
+                    { en: "Mastectomy (Total Mastectomy)", zh: "（完全）乳房切除术", pinyin: "wán quán rǔ fáng qiē chú shǒu sù", en_description: "Surgical removal of one or both breasts.", zh_description: "部分或完全切除乳房的手术。" },
+                    { en: "Photodynamic therapy (PDT)", zh: "光动力疗法", pinyin: "guāng dòng lì liáo fǎ", en_description: "Uses light-activated drugs to kill cancer cells.", zh_description: "利用光敏药物和特定光照杀死癌细胞。" },
+                    { en: "Pleurodesis", zh: "胸膜黏合术", pinyin: "xiōng mó nián hé shù", en_description: "Causes pleura to stick together to prevent fluid buildup.", zh_description: "粘合肺与胸膜，防止液体积聚。" },
+                    { en: "Prophylactic Cranial Irradiation (PCI)", zh: "预防式头部放射", pinyin: "yù fáng shì tóu bù fàng shè", en_description: "Radiation to the brain to prevent cancer spread.", zh_description: "对脑部进行预防性放疗以防癌扩散。" },
+                    { en: "Radiation dermatitis / pneumonitis", zh: "放射性皮炎 / 放射性肺炎", pinyin: "fàng shè xìng pí yán / fàng shè xìng fèi yán", en_description: "Skin or lung inflammation caused by radiation therapy.", zh_description: "放疗导致的皮肤或肺部炎症反应。" },
+                    { en: "Radiofrequency ablation (RFA)", zh: "射频烧灼术", pinyin: "shè pín shāo zhuó shù", en_description: "Uses heat from radio waves to destroy abnormal tissue.", zh_description: "利用射频波产生热量消融异常组织。" },
+                    { en: "Rehabilitation (Rehab)", zh: "复健", pinyin: "fù jiàn", en_description: "Therapy to recover physical or cognitive abilities.", zh_description: "恢复身体或认知功能的康复治疗。" },
+                    { en: "Rescue treatment", zh: "援救治疗", pinyin: "yuán jiù zhì liáo", en_description: "Emergency or last-resort intervention for severe illness.", zh_description: "对病情恶化或无效治疗后的紧急干预。" },
+                    { en: "Segmental resection / Wedge resection", zh: "肺小节 / 楔形切除手术", pinyin: "fèi xiǎo jié / xiē xíng qiē chú shǒu sù", en_description: "Removes a portion of lung tissue, often for cancer.", zh_description: "切除肺部小部分组织（楔形或分节）治疗肺病。" },
+                    { en: "Sequential treatment", zh: "分阶段治疗", pinyin: "fēn jiē duàn zhì liáo", en_description: "Different therapies given one after another.", zh_description: "将不同治疗按顺序分阶段进行。" },
+                    { en: "Stereotactic radiosurgery", zh: "三维定位放射治疗", pinyin: "sān wéi dìng wèi fàng shè zhì liáo", en_description: "Precisely delivers radiation to small areas (no incision).", zh_description: "精准对病灶进行无创放射治疗。" },
+                    { en: "Supportive care", zh: "支持治疗", pinyin: "zhī chí zhì liáo", en_description: "Relieves symptoms and improves comfort, not curative.", zh_description: "缓解症状，提高生活质量的非治愈性治疗。" },
+                    { en: "Therapeutic abortion", zh: "治疗性流产", pinyin: "zhì liáo xìng liú chǎn", en_description: "Medically induced abortion to protect maternal health.", zh_description: "为保护孕妇健康而进行的人工流产。" },
+                    { en: "To wean", zh: "断奶", pinyin: "duàn nǎi", en_description: "Gradually stop breastfeeding.", zh_description: "慢慢停止母乳喂养过程。" },
+                    { en: "Transurethral Resection of Prostate (TURP)", zh: "经尿道前列腺切除术", pinyin: "jīng niào dào qián liè xiàn qiē chú shù", en_description: "Removes part of the prostate through the urethra.", zh_description: "经尿道切除前列腺肥大部分组织。" }
+                ],
+                "药物 (Medications & Drugs)": [
+                    { en: "Antibiotics", zh: "抗生素", pinyin: "kàng shēng sù", en_description: "Drugs that kill or stop the growth of bacteria.", zh_description: "杀死或抑制细菌生长的药物。" },
+                    { en: "Antidepressants", zh: "抗抑郁药", pinyin: "kàng yì yù yào", en_description: "Medications used to treat depression and mood disorders.", zh_description: "用于治疗抑郁症和情绪障碍的药物。" },
+                    { en: "Painkillers / Analgesic", zh: "止痛药", pinyin: "zhǐ tòng yào", en_description: "Drugs that relieve pain.", zh_description: "缓解疼痛的药物。" },
+                    { en: "Steroids", zh: "类固醇", pinyin: "lèi gù chún", en_description: "Hormone-like drugs used to reduce inflammation or treat hormonal issues.", zh_description: "类似激素的药物，用于抗炎或调节激素。" },
+                    { en: "Antiandrogen", zh: "抗雄性荷尔蒙药物", pinyin: "kàng xióng xìng hé ěr méng yào wù", en_description: "Blocks male hormones to treat certain cancers or conditions.", zh_description: "抑制雄性激素的药物，常用于治疗癌症。" },
+                    { en: "Antiemetic", zh: "止吐药", pinyin: "zhǐ tù yào", en_description: "Prevents or reduces nausea and vomiting.", zh_description: "防止或减轻恶心呕吐的药物。" },
+                    { en: "Antiestrogen", zh: "抗雌激素", pinyin: "kàng cí jī sù", en_description: "Blocks estrogen to treat hormone-sensitive conditions.", zh_description: "抑制雌激素的药物，用于激素相关疾病。" },
+                    { en: "Antimetabolites", zh: "抗代谢产物", pinyin: "kàng dài xiè chǎn wù", en_description: "Cancer drugs that interfere with DNA production.", zh_description: "影响DNA合成的抗癌药。" },
+                    { en: "Antioxidants", zh: "抗氧化剂", pinyin: "kàng yǎng huà jì", en_description: "Prevent cell damage from free radicals.", zh_description: "防止自由基对细胞的伤害。" },
+                    { en: "Casodex", zh: "荷尔蒙药名，又称 Bicalutamide", pinyin: "hé ěr méng yào míng, yòu chēng Bicalutamide", en_description: "Antiandrogen used in prostate cancer treatment.", zh_description: "用于治疗前列腺癌的抗雄激素药。" },
+                    { en: "Corticosteroid", zh: "皮质类脂醇", pinyin: "pí zhì lèi zhī chún", en_description: "Steroid hormones used to suppress inflammation and immune response.", zh_description: "抗炎和免疫抑制作用的类固醇。" },
+                    { en: "Diethylstilbestrol (DES)", zh: "乙烯雌酚", pinyin: "yǐ xī cí fēn", en_description: "Synthetic estrogen, now rarely used due to side effects.", zh_description: "一种合成雌激素，因副作用已很少使用。" },
+                    { en: "Flutamide", zh: "荷尔蒙药名，又称 Eulexin", pinyin: "hé ěr méng yào míng, yòu chēng Eulexin", en_description: "Antiandrogen for prostate cancer.", zh_description: "抗雄激素药，用于前列腺癌治疗。" },
+                    { en: "Interferon", zh: "干扰素", pinyin: "gān rǎo sù", en_description: "Proteins that help the immune system fight viruses and cancer.", zh_description: "激活免疫系统对抗病毒或癌细胞的蛋白。" },
+                    { en: "Isotretinoin", zh: "维甲酸衍生物，第二代维他命 A 酸", pinyin: "wéi jiǎ suān yǎn shēng wù, dì èr dài wéi tā mìng A suān", en_description: "A vitamin A derivative used to treat severe acne.", zh_description: "第二代维他命A酸类，用于治疗严重痤疮。" },
+                    { en: "Lamivudine (Epivir)", zh: "口服药，抑制 B(乙)型肝炎病毒", pinyin: "kǒu fú yào, yì zhì B (yǐ) xíng gān yán bìng dú", en_description: "Antiviral drug used for hepatitis B treatment.", zh_description: "用于治疗乙型肝炎的抗病毒药。" },
+                    { en: "Lupron", zh: "荷尔蒙药名，又称 Leuprolide", pinyin: "hé ěr méng yào míng, yòu chēng Leuprolide", en_description: "Lowers hormone levels, used for cancer or endometriosis.", zh_description: "降低激素水平，用于癌症或子宫内膜异位症。" },
+                    { en: "Nonopioids", zh: "非鸦片类药剂", pinyin: "fēi yā piàn lèi yào jì", en_description: "Pain relievers that are not opioid-based.", zh_description: "非成瘾性止痛药。" },
+                    { en: "Opioids", zh: "鸦片类药剂", pinyin: "yā piàn lèi yào jì", en_description: "Strong painkillers that can be addictive.", zh_description: "强效止痛药，可能成瘾。" },
+                    { en: "Pain medication", zh: "止痛药物", pinyin: "zhǐ tòng yào wù", en_description: "General term for drugs that relieve pain.", zh_description: "泛指所有缓解疼痛的药物。" },
+                    { en: "Proscar", zh: "荷尔蒙药名，又称 Finasteride", pinyin: "hé ěr méng yào míng, yòu chēng Finasteride", en_description: "Treats enlarged prostate and hair loss by blocking DHT.", zh_description: "抑制DHT，用于治疗前列腺增生与脱发。" },
+                    { en: "Rebetron", zh: "治疗肝炎的口服药", pinyin: "zhì liáo gān yán de kǒu fú yào", en_description: "Combo drug for hepatitis C treatment.", zh_description: "治疗丙型肝炎的口服药组合。" },
+                    { en: "Ribavirin (Rebetol)", zh: "治疗肝炎的口服药，可与干扰素并用治疗 C(丙)型肝炎", pinyin: "zhì liáo gān yán de kǒu fú yào, kě yǔ gān rǎo sù bìng yòng zhì liáo C (bǐng) xíng gān yán", en_description: "Used with interferon to treat hepatitis C.", zh_description: "与干扰素联合治疗丙型肝炎的药物。" },
+                    { en: "Retinoids", zh: "维他命 A 类似物", pinyin: "wéi tā mìng A lèi sì wù", en_description: "Vitamin A derivatives used for skin disorders and acne.", zh_description: "维A类药物，用于治疗皮肤病和痤疮。" },
+                    { en: "Taxol", zh: "﹝抗癌药名﹞", pinyin: "kàng ái yào míng", en_description: "Chemotherapy drug for breast, ovarian, and lung cancer.", zh_description: "常用于乳腺癌、卵巢癌等的化疗药。" },
+                    { en: "Vinblastine", zh: "长春花碱，长春碱", pinyin: "cháng chūn huā jiǎn, cháng chūn jiǎn", en_description: "Plant-based chemo drug for Hodgkin's lymphoma and more.", zh_description: "长春花提取的抗癌药。" },
+                    { en: "Zoladex", zh: "荷尔蒙药名，又称 Goserelin", pinyin: "hé ěr méng yào míng, yòu chēng Goserelin", en_description: "Suppresses hormone production, used for cancer treatment.", zh_description: "抑制激素分泌，用于癌症治疗。" }
+                ]
+            }
+        };
+
+        // Set the current top-level category (only one now)
+        const mainCategoryKey = Object.keys(medicalData)[0];
+        const subCategories = Object.keys(medicalData[mainCategoryKey]);
+        let currentSubCategory = subCategories[0]; // Default to the first sub-category
+
+        const categoryNav = document.getElementById('category-nav');
+        const categoryTitle = document.getElementById('category-title');
+        const termList = document.getElementById('term-list');
+        const searchInput = document.getElementById('search-input');
+        const tooltip = document.getElementById('tooltip'); // Get tooltip element
+        const loadingSpinner = document.getElementById('loading-spinner'); // Get loading spinner element
+
+        let currentAudio = null; // To keep track of the currently playing audio
+        let tooltipHideTimeout; // To manage tooltip visibility on hover
+
+        // Function to convert base64 to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Function to convert PCM (Int16Array) to WAV Blob
+        function pcmToWav(pcm16, sampleRate) {
+            const numChannels = 1; // Mono audio
+            const bytesPerSample = 2; // 16-bit PCM
+
+            const dataLength = pcm16.length * bytesPerSample;
+            const buffer = new ArrayBuffer(44 + dataLength);
+            const view = new DataView(buffer);
+
+            // RIFF chunk descriptor
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataLength, true); // file size
+            writeString(view, 8, 'WAVE');
+
+            // FMT sub-chunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true); // sub-chunk size
+            view.setUint16(20, 1, true); // audio format (1 = PCM)
+            view.setUint16(22, numChannels, true); // number of channels
+            view.setUint32(24, sampleRate, true); // sample rate
+            view.setUint32(28, sampleRate * numChannels * bytesPerSample, true); // byte rate
+            view.setUint16(32, numChannels * bytesPerSample, true); // block align
+            view.setUint16(34, 16, true); // bits per sample
+
+            // Data sub-chunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataLength, true); // data size
+
+            // Write PCM data
+            for (let i = 0; i < pcm16.length; i++) {
+                view.setInt16(44 + i * bytesPerSample, pcm16[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // Function to play audio using TTS API
+        async function playAudio(text, language) {
+            if (!text) {
+                console.warn("No text provided for audio playback.");
+                return;
+            }
+
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                // Do NOT set currentAudio to null here, it will be reassigned shortly
+            }
+
+            loadingSpinner.style.display = 'block'; // Show spinner
+
+            let retries = 0;
+            const maxRetries = 3;
+            const baseDelay = 1000; // 1 second
+
+            while (retries < maxRetries) {
+                try {
+                    const payload = {
+                        contents: [{
+                            parts: [{ text: text }]
+                        }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: {
+                                    prebuiltVoiceConfig: { voiceName: language === 'zh-Hans' ? "Kore" : "Zephyr" } // Use Kore for Chinese, Zephyr for English
+                                }
+                            }
+                        },
+                        model: "gemini-2.5-flash-preview-tts"
+                    };
+
+                    const apiKey = ""; // Leave as-is, Canvas will provide it
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+
+                    if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
+                        // Extract sample rate from mimeType, e.g., "audio/L16;rate=16000"
+                        const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                        const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000; // Default to 16kHz
+
+                        const pcmData = base64ToArrayBuffer(audioData);
+                        const pcm16 = new Int16Array(pcmData);
+                        const wavBlob = pcmToWav(pcm16, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+
+                        const newAudio = new Audio(audioUrl);
+                        currentAudio = newAudio; // Assign the new audio to the global variable immediately
+                        
+                        currentAudio.play().catch(e => console.error("Audio playback error:", e));
+                        currentAudio.onended = () => {
+                            URL.revokeObjectURL(audioUrl); // Clean up the Blob URL
+                            if (currentAudio === newAudio) { // Only null if it's still the current audio
+                                currentAudio = null;
+                            }
+                        };
+                        loadingSpinner.style.display = 'none'; // Hide spinner on success
+                        return; // Exit loop on success
+                    } else {
+                        throw new Error("Invalid audio data received from TTS API.");
+                    }
+                } catch (error) {
+                    console.error(`Attempt ${retries + 1} failed:`, error);
+                    retries++;
+                    if (retries < maxRetries) {
+                        const delay = baseDelay * Math.pow(2, retries - 1); // Exponential backoff
+                        await new Promise(res => setTimeout(res, delay));
+                    } else {
+                        loadingSpinner.style.display = 'none'; // Hide spinner on final failure
+                        console.error("Failed to play audio after multiple retries.");
+                    }
+                }
+            }
+        }
+
+        // Function to get all terms from all categories for comprehensive searching
+        function getAllTerms() {
+            let allTerms = [];
+            const mainCategoryContent = medicalData[mainCategoryKey]; // Get the content of the main category
+
+            for (const subCategoryKey in mainCategoryContent) {
+                const subCategoryContent = mainCategoryContent[subCategoryKey];
+
+                if (Array.isArray(subCategoryContent)) {
+                    // Direct array of terms under a sub-category
+                    subCategoryContent.forEach(term => {
+                        allTerms.push({ ...term, subCategory: subCategoryKey });
+                    });
+                } else if (typeof subCategoryContent === 'object' && subCategoryContent !== null) {
+                    // Nested object with further sub-categories (e.g., Diagnostic Tests & Procedures)
+                    for (const nestedSubCategoryKey in subCategoryContent) {
+                        const nestedSubCategoryTermsArray = subCategoryContent[nestedSubCategoryKey];
+                        if (Array.isArray(nestedSubCategoryTermsArray)) {
+                            nestedSubCategoryTermsArray.forEach(term => {
+                                allTerms.push({ ...term, subCategory: `${subCategoryKey} - ${nestedSubCategoryKey}` }); // Combine for search display
+                            });
+                        }
+                    }
+                }
+            }
+            // Remove duplicates based on English term if they exist across categories
+            const seen = new Set();
+            return allTerms.filter(term => {
+                const duplicate = seen.has(term.en);
+                seen.add(term.en);
+                return !duplicate;
+            });
+        }
+
+        function renderNav() {
+            categoryNav.innerHTML = '';
+            const mainCategoryContent = medicalData[mainCategoryKey];
+
+            for (const subCategory of subCategories) {
+                const button = document.createElement('button');
+                // Display the full sub-category name including English
+                button.textContent = subCategory; 
+                button.className = `nav-button px-4 py-2 text-sm sm:text-base font-medium rounded-lg border border-slate-300 ${subCategory === currentSubCategory ? 'active' : 'bg-white text-slate-700'}`;
+                button.onclick = () => {
+                    currentSubCategory = subCategory;
+                    searchInput.value = ''; // Clear search input when changing sub-category
+                    renderNav(); // Re-render nav to update active state
+                    renderTerms(); // Render terms for the selected sub-category
+                };
+                categoryNav.appendChild(button);
+            }
+        }
+
+        function renderTerms(filter = '') {
+            termList.innerHTML = ''; // Clear existing list
+            const lowerCaseFilter = filter.toLowerCase().trim(); // Trim whitespace from filter
+
+            let termsToDisplay = [];
+
+            if (lowerCaseFilter) { // If there's a filter, perform search across all terms
+                categoryTitle.textContent = `搜索 "${filter}" 的结果 (Search Results for "${filter}")`;
+                const allAvailableTerms = getAllTerms(); // Get all terms
+                
+                termsToDisplay = allAvailableTerms.filter(term =>
+                    (term.en && term.en.toLowerCase().includes(lowerCaseFilter)) ||
+                    (term.zh && term.zh.includes(filter.trim())) || 
+                    (term.pinyin && term.pinyin.toLowerCase().includes(lowerCaseFilter)) ||
+                    (term.note && term.note.includes(filter.trim())) ||
+                    (term.en_description && term.en_description.toLowerCase().includes(lowerCaseFilter)) || // Added description search
+                    (term.zh_description && term.zh_description.includes(filter.trim())) // Added description search
+                );
+
+                if (termsToDisplay.length === 0) {
+                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-slate-500">找不到相符的词汇。(No matching terms found.)</td></tr>';
+                }
+            } else { // No filter, render selected sub-category
+                categoryTitle.textContent = currentSubCategory;
+                const mainCategoryContent = medicalData[mainCategoryKey];
+                const subCategoryContent = mainCategoryContent[currentSubCategory];
+
+                if (Array.isArray(subCategoryContent)) {
+                    // Direct array of terms under the selected sub-category
+                    termsToDisplay = subCategoryContent;
+                } else if (typeof subCategoryContent === 'object' && subCategoryContent !== null) {
+                    // Nested object with further sub-categories (e.g., Diagnostic Tests & Procedures)
+                    // In this case, we want to display all terms from its nested categories
+                    for (const nestedSubCategoryKey in subCategoryContent) {
+                        const nestedSubCategoryTerms = subCategoryContent[nestedSubCategoryKey];
+                        if (Array.isArray(nestedSubCategoryTerms)) {
+                            // Add a header for the nested sub-category if not searching
+                            const nestedSubCategoryHeader = document.createElement('tr');
+                            nestedSubCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-base font-medium text-slate-700 bg-slate-50/50 border-b border-slate-100 pl-6">${nestedSubCategoryKey}</td>`;
+                            termList.appendChild(nestedSubCategoryHeader);
+                            termsToDisplay.push(...nestedSubCategoryTerms);
+                        }
+                    }
+                }
+                if (termsToDisplay.length === 0 && !filter) {
+                     termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-slate-500">此类别中没有词汇。(No terms in this category.)</td></tr>';
+                }
+            }
+
+            // Render the filtered or selected terms
+            termsToDisplay.forEach(term => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                // Store the term data directly on the row for easy access during hover
+                row.dataset.term = JSON.stringify(term); 
+                row.innerHTML = `
+                    <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
+                    <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                        <span class="chinese-text">${term.zh || ''}</span>
+                        <span class="pinyin-text">${term.pinyin || ''}</span>
+                        ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                        ${filter && term.subCategory ? `<span class="text-xs text-sky-700 bg-sky-100 px-2 py-1 rounded-full mt-1 inline-block">${term.subCategory}</span>` : ''}
+                    </td>
+                `;
+                termList.appendChild(row);
+            });
+        }
+        
+        // Event listener for mouseover on the entire table body (event delegation)
+        termList.addEventListener('mouseover', (e) => {
+            const targetRow = e.target.closest('tr');
+            if (!targetRow || !targetRow.dataset.term) {
+                clearTimeout(tooltipHideTimeout);
+                tooltip.style.opacity = '0';
+                return;
+            }
+
+            const termData = JSON.parse(targetRow.dataset.term);
+            let tooltipContent = '';
+
+            // Check if hovering over the English column (first td with class 'english-term')
+            if (e.target.classList.contains('english-term')) {
+                if (termData.en_description) {
+                    tooltipContent = termData.en_description;
+                } else {
+                    tooltipContent = termData.zh || ''; // Fallback to Chinese translation
+                }
+            } 
+            // Check if hovering over the Chinese/Pinyin column (second td with class 'chinese-pinyin-term' or its children spans)
+            else if (e.target.classList.contains('chinese-pinyin-term') || e.target.closest('.chinese-text') || e.target.closest('.pinyin-text')) {
+                if (termData.zh_description) {
+                    tooltipContent = termData.zh_description;
+                } else {
+                    tooltipContent = termData.en || ''; // Fallback to English translation
+                }
+            } else {
+                clearTimeout(tooltipHideTimeout);
+                tooltip.style.opacity = '0';
+                return;
+            }
+
+            clearTimeout(tooltipHideTimeout); // Clear any pending hide
+            tooltip.innerHTML = tooltipContent;
+            tooltip.style.left = `${e.clientX + 15}px`; // Offset from cursor
+            tooltip.style.top = `${e.clientY + 15}px`;
+            tooltip.style.opacity = '1';
+        });
+
+        // Event listener for mouseout on the entire table body
+        termList.addEventListener('mouseout', (e) => {
+            // If the mouse is moving to the tooltip itself, don't hide yet
+            if (e.relatedTarget === tooltip || tooltip.contains(e.relatedTarget)) {
+                return;
+            }
+            // Set a timeout to hide the tooltip, allowing mouse to move to tooltip
+            tooltipHideTimeout = setTimeout(() => {
+                tooltip.style.opacity = '0';
+            }, 200); // 200ms delay
+        });
+
+        // Event listener for mouseover on the tooltip itself to keep it visible
+        tooltip.addEventListener('mouseover', () => {
+            clearTimeout(tooltipHideTimeout); // Clear any pending hide
+            tooltip.style.opacity = '1'; // Ensure it stays visible
+        });
+
+        // Event listener for mouseout on the tooltip itself to hide it
+        tooltip.addEventListener('mouseout', () => {
+            tooltip.style.opacity = '0';
+        });
+
+        // Event listener for mousemove to update tooltip position
+        termList.addEventListener('mousemove', (e) => {
+            // Update position only if tooltip is visible
+            if (tooltip.style.opacity === '1') {
+                tooltip.style.left = `${e.clientX + 15}px`;
+                tooltip.style.top = `${e.clientY + 15}px`;
+            }
+        });
+
+        // Click event listener for the entire table body (event delegation for audio playback)
+        termList.addEventListener('click', (e) => {
+            const targetRow = e.target.closest('tr');
+            if (!targetRow || !targetRow.dataset.term) {
+                return;
+            }
+
+            const termData = JSON.parse(targetRow.dataset.term);
+            let textToSpeak = '';
+            let languageToSpeak = '';
+
+            if (e.target.classList.contains('english-term')) {
+                textToSpeak = `${termData.en || ''}. ${termData.en_description || ''}`;
+                languageToSpeak = 'en-US';
+            } else if (e.target.classList.contains('chinese-pinyin-term') || e.target.closest('.chinese-text') || e.target.closest('.pinyin-text')) {
+                textToSpeak = `${termData.zh || ''}. ${termData.zh_description || ''}`;
+                languageToSpeak = 'zh-Hans';
+            }
+
+            if (textToSpeak) {
+                playAudio(textToSpeak, languageToSpeak);
+            }
+        });
+
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value;
+            if (searchTerm.trim()) { // Only deactivate buttons if there's actual search text
+                 document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+            } else {
+                renderNav(); // Re-render nav to reactivate the current category button if search is cleared
+            }
+            renderTerms(searchTerm);
+        });
+
+        window.onload = () => {
+            renderNav();
+            renderTerms();
+        };
+    </script>
+</body>
+</html>
