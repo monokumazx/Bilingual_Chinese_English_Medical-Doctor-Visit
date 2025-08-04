@@ -6,33 +6,35 @@
     <title>常见疾病与状况词汇 | Common Diseases & Conditions Vocabulary</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Orange -->
     <style>
         body {
             font-family: 'Noto Sans SC', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
+            background-color: #fff7ed; /* Orange 50 - A very light, warm orange background */
             cursor: default; /* Ensure default cursor */
         }
         .nav-button {
             transition: all 0.3s ease;
         }
         .nav-button.active {
-            background-color: #0ea5e9; /* sky-500 */
+            background-color: #ea580c; /* Orange 600 - Deeper orange for active state */
             color: white;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
         .nav-button:not(.active):hover {
-            background-color: #f0f9ff; /* sky-50 */
+            background-color: #ffedd5; /* Orange 100 - Lighter orange on hover for inactive buttons */
+            color: #c2410c; /* Orange 800 - Darker text on hover */
         }
         #term-list-container::-webkit-scrollbar {
             width: 8px;
         }
         #term-list-container::-webkit-scrollbar-track {
-            background: #f1f5f9; /* slate-100 */
+            background: #fff7ed; /* Orange 50 */
         }
         #term-list-container::-webkit-scrollbar-thumb {
-            background-color: #94a3b8; /* slate-400 */
+            background-color: #fb923c; /* Orange 400 */
             border-radius: 10px;
-            border: 2px solid #f1f5f9; /* slate-100 */
+            border: 2px solid #fff7ed; /* Orange 50 */
         }
         .chinese-text {
             display: block;
@@ -42,12 +44,12 @@
         .pinyin-text {
             display: block;
             font-size: 0.8rem;
-            color: #64748b; /* slate-500 */
+            color: #4b5563; /* Gray 600 */
         }
         /* Tooltip styles */
         #tooltip {
             position: fixed; /* Use fixed to stay relative to viewport */
-            background-color: #0ea5e9; /* sky-500 */
+            background-color: #c2410c; /* Orange 800 - Consistent with active button */
             color: white;
             padding: 8px 12px;
             border-radius: 8px;
@@ -68,7 +70,7 @@
             transform: translate(-50%, -50%);
             z-index: 1001; /* Above tooltip */
             border: 4px solid #f3f3f3; /* Light grey */
-            border-top: 4px solid #0ea5e9; /* Blue */
+            border-top: 4px solid #ea580c; /* Orange 600 */
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -81,21 +83,20 @@
         }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="text-gray-800">
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <header class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-sky-700">常见疾病与状况词汇 | Common Diseases & Conditions Vocabulary
-</h1>
-            <p class="mt-2 text-lg text-slate-600">涵盖日常就诊中最常出现的疾病与健康状况术语，帮助您更清晰地理解病情、与医生沟通更顺畅。
+            <h1 class="text-3xl sm:text-4xl font-bold text-orange-800">常见疾病与状况词汇 | Common Diseases & Conditions Vocabulary</h1>
+            <p class="mt-2 text-lg text-gray-600">涵盖日常就诊中最常出现的疾病与健康状况术语，帮助您更清晰地理解病情、与医生沟通更顺畅。
 Essential Chinese-English terms for commonly encountered illnesses and medical conditions, designed to help patients and caregivers understand diagnoses and communicate effectively with healthcare providers.</p>
         </header>
 
         <main>
             <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
                 <div class="mb-6">
-                    <label for="search-input" class="block text-lg font-medium text-slate-700 mb-2">搜索词汇 (Search Terms):</label>
-                    <input type="text" id="search-input" placeholder="例如：Biopsy 或 活组织检查 (e.g., Biopsy or 活组织检查)" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-shadow">
+                    <label for="search-input" class="block text-lg font-medium text-gray-700 mb-2">搜索词汇 (Search Terms):</label>
+                    <input type="text" id="search-input" placeholder="例如：Biopsy 或 活组织检查 (e.g., Biopsy or 活组织检查)" class="w-full px-4 py-3 border border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-shadow">
                 </div>
 
                 <nav id="category-nav" class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
@@ -103,13 +104,13 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
             </div>
             
             <div id="content-display" class="bg-white p-6 rounded-2xl shadow-lg min-h-[400px]">
-                <h2 id="category-title" class="text-2xl font-bold text-sky-600 mb-4"></h2>
+                <h2 id="category-title" class="text-2xl font-bold text-orange-700 mb-4"></h2>
                 <div id="term-list-container" class="overflow-y-auto max-h-[50vh]" style="min-height: 300px;">
                     <table class="w-full border-collapse">
                         <thead>
                             <tr>
-                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tl-lg">英文 (English)</th>
-                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tr-lg">中文 (Chinese)</th>
+                                <th class="p-3 text-left text-sm font-semibold text-gray-600 bg-orange-50 border-b-2 border-orange-200 rounded-tl-lg">英文 (English)</th>
+                                <th class="p-3 text-left text-sm font-semibold text-gray-600 bg-orange-50 border-b-2 border-orange-200 rounded-tr-lg">中文 (Chinese)</th>
                             </tr>
                         </thead>
                         <tbody id="term-list">
@@ -119,23 +120,24 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
             </div>
         </main>
 
-        <footer class="text-center mt-12 py-6 border-t border-slate-200">
-            <p class="text-slate-500 text-sm font-bold">⚠️ 免责声明 / Disclaimer</p>
-            <p class="text-slate-500 text-sm mt-1">本页面内容由AI辅助排版，由本人（非医疗专业人员，仅为语言爱好者）整理自公开来源，仅供语言学习和参考使用，不构成任何医疗建议或诊断。请勿将此信息用于医疗决策。如需医疗帮助，请咨询专业医生。本人对内容的准确性不作保证，不承担因使用该信息所产生的任何责任。</p>
-            <p class="text-slate-500 text-sm mt-1">This page is AI-assisted in layout and compiled by me, a language enthusiast (not a medical professional), based on publicly available sources. It is intended for language learning and reference purposes only and does not constitute medical advice or diagnosis. I make no guarantees about its accuracy and accept no liability for any consequences resulting from its use. Please consult a licensed healthcare professional for medical concerns.</p>
-            <div class="mt-4 text-sm text-slate-500">
+        <footer class="text-center mt-12 py-6 border-t border-orange-200">
+            <p class="text-gray-600 text-sm font-bold">⚠️ 免责声明 / Disclaimer</p>
+            <p class="text-gray-600 text-sm mt-1">本页面内容由AI辅助排版，由本人（非医疗专业人员，仅为语言爱好者）整理自公开来源，仅供语言学习和参考使用，不构成任何医疗建议或诊断。请勿将此信息用于医疗决策。如需医疗帮助，请咨询专业医生。本人对内容的准确性不作保证，不承担因使用该信息所产生的任何责任。</p>
+            <p class="text-gray-600 text-sm mt-1">This page is AI-assisted in layout and compiled by me, a language enthusiast (not a medical professional), based on publicly available sources. It is intended for language learning and reference purposes only and does not constitute medical advice or diagnosis. I make no guarantees about its accuracy and accept no liability for any consequences resulting from its use. Please consult a licensed healthcare professional for medical concerns.</p>
+            <div class="mt-4 text-sm text-gray-600">
                 <h3 class="font-semibold mb-2">参考来源 (Sources):</h3>
                 <ul class="list-none p-0 m-0">
-                    <li><a href="https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf" target="_blank" class="text-sky-600 hover:underline">1) https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf</a></li>
-                    <li><a href="https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf" target="_blank" class="text-sky-600 hover:underline">2) https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf</a></li>
-                    <li><a href="https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list" target="_blank" class="text-sky-600 hover:underline">3) https://www.parkwayeast.com.sg/zh/wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8" target="_blank" class="text-sky-600 hover:underline">4) https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8</a></li>
+                    <li><a href="https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf" target="_blank" class="text-orange-600 hover:underline">1) https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf</a></li>
+                    <li><a href="https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf" target="_blank" class="text-orange-600 hover:underline">2) https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf</a></li>
+                    <li><a href="https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list" target="_blank" class="text-orange-600 hover:underline">3) https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list</a></li>
+                    <li><a href="https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8" target="_blank" class="text-orange-600 hover:underline">4) https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8</a></li>
                 </ul>
             </div>
         </footer>
     </div>
 
     <!-- Tooltip element -->
-    <div id="tooltip" class="absolute bg-sky-700 text-white p-2 rounded-lg shadow-xl text-sm z-50 opacity-0 transition-opacity 0.2s ease-in-out;"></div>
+    <div id="tooltip" class="absolute bg-orange-700 text-white p-2 rounded-lg shadow-xl text-sm z-50 opacity-0 transition-opacity 0.2s ease-in-out;"></div>
 
     <!-- Loading Spinner -->
     <div id="loading-spinner"></div>
@@ -150,7 +152,7 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
                     { en: "Asthma", zh: "哮喘", pinyin: "xiào chuǎn", en_description: "Chronic condition causing airway inflammation and breathing difficulty.", zh_description: "慢性疾病，气道发炎，导致呼吸困难。" },
                     { en: "Pneumonia", zh: "肺炎", pinyin: "fèi yán", en_description: "Infection causing inflammation in the lungs.", zh_description: "肺部感染引起炎症。" },
                     { en: "Pulmonary tuberculosis", zh: "肺结核", pinyin: "fèi jié hé", en_description: "Bacterial infection affecting the lungs.", zh_description: "细菌感染肺部的疾病。" },
-                    { en: "Chronic bronchitis (Lung infection)", zh: "慢性支气管炎（肺部感染）", pinyin: "màn xìng zhī qì guǎn yán (fèi bù gǎn rǎn)", en_description: "Long-term inflammation of the bronchial tubes.", zh_description: "支气管长期发炎，导致肺部感染。" },
+                    { en: "Chronic bronchitis (Lung infection)", zh: "慢性支气管炎（肺部感染）", pinyin: "màn xìng zhī qì guǎn yán (fèi bù gǎn rǎn)", en_description: "Long-term inflammation of the bronchial tubes.", zh_description: "支气管长期发炎，导致呼吸困难。" },
                     { en: "Emphysema", zh: "肺气肿", pinyin: "fèi qì zhǒng", en_description: "Lung damage causing shortness of breath.", zh_description: "肺组织损伤，导致呼吸困难。" },
                     { en: "Lung cancer", zh: "肺癌", pinyin: "fèi ái", en_description: "Malignant tumor in lung tissue.", zh_description: "肺部恶性肿瘤。" },
                     { en: "Lower respiratory tract infection", zh: "下呼吸道感染", pinyin: "xià hū xī dào gǎn rǎn", en_description: "Infection affecting the lower parts of the respiratory tract.", zh_description: "感染影响呼吸道下部。" },
@@ -948,7 +950,7 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
             Object.keys(medicalData).forEach(category => {
                 const button = document.createElement('button');
                 button.textContent = category;
-                button.className = `nav-button px-4 py-2 text-sm sm:text-base font-medium rounded-lg border border-slate-300 ${category === currentCategory ? 'active' : 'bg-white text-slate-700'}`;
+                button.className = `nav-button px-4 py-2 text-sm sm:text-base font-medium rounded-lg border border-orange-300 ${category === currentCategory ? 'active' : 'bg-white text-gray-700'}`;
                 button.onclick = () => {
                     currentCategory = category;
                     searchInput.value = '';
@@ -979,19 +981,19 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
                 );
 
                 if (termsToDisplay.length === 0) {
-                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-slate-500">找不到相符的词汇。(No matching terms found.)</td></tr>';
+                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-gray-500">找不到相符的词汇。(No matching terms found.)</td></tr>';
                 } else {
                     termsToDisplay.forEach(term => {
                         const row = document.createElement('tr');
-                        row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                        row.className = 'border-b border-orange-100 hover:bg-orange-50/50';
                         row.dataset.term = JSON.stringify(term); 
                         row.innerHTML = `
-                            <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                            <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                 <span class="chinese-text">${term.zh || ''}</span>
                                 <span class="pinyin-text">${term.pinyin || ''}</span>
-                                ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
-                                ${term.category ? `<span class="text-xs text-sky-700 bg-sky-100 px-2 py-1 rounded-full mt-1 inline-block">${term.category}${term.subCategory ? ` - ${term.subCategory}` : ''}</span>` : ''}
+                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                ${term.category ? `<span class="text-xs text-orange-700 bg-orange-100 px-2 py-1 rounded-full mt-1 inline-block">${term.category}${term.subCategory ? ` - ${term.subCategory}` : ''}</span>` : ''}
                             </td>
                         `;
                         termList.appendChild(row);
@@ -1004,20 +1006,20 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
 
                 if (currentCategoryObj.description && currentCategoryObj.terms) {
                     const descriptionRow = document.createElement('tr');
-                    descriptionRow.innerHTML = `<td colspan="2" class="p-3 text-left text-base text-slate-600 italic border-b border-slate-200">${currentCategoryObj.description}</td>`;
+                    descriptionRow.innerHTML = `<td colspan="2" class="p-3 text-left text-base text-gray-600 italic border-b border-orange-200">${currentCategoryObj.description}</td>`;
                     termList.appendChild(descriptionRow);
                     termsToDisplay = currentCategoryObj.terms;
 
                     termsToDisplay.forEach(term => {
                         const row = document.createElement('tr');
-                        row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                        row.className = 'border-b border-orange-100 hover:bg-orange-50/50';
                         row.dataset.term = JSON.stringify(term);
                         row.innerHTML = `
-                            <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                            <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                 <span class="chinese-text">${term.zh || ''}</span>
                                 <span class="pinyin-text">${term.pinyin || ''}</span>
-                                ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
                             </td>
                         `;
                         termList.appendChild(row);
@@ -1027,14 +1029,14 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
                     termsToDisplay = currentCategoryObj;
                     termsToDisplay.forEach(term => {
                         const row = document.createElement('tr');
-                        row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                        row.className = 'border-b border-orange-100 hover:bg-orange-50/50';
                         row.dataset.term = JSON.stringify(term);
                         row.innerHTML = `
-                            <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                            <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                 <span class="chinese-text">${term.zh || ''}</span>
                                 <span class="pinyin-text">${term.pinyin || ''}</span>
-                                ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
                             </td>
                         `;
                         termList.appendChild(row);
@@ -1044,20 +1046,20 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
                         const subCategoryContent = currentCategoryObj[subCategoryKey];
 
                         const subCategoryHeader = document.createElement('tr');
-                        subCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-lg font-semibold text-sky-700 bg-sky-50/50 border-b border-slate-200 rounded-lg mt-4">${subCategoryKey}</td>`;
+                        subCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-lg font-semibold text-orange-700 bg-orange-100/50 border-b border-orange-200 rounded-lg mt-4">${subCategoryKey}</td>`;
                         termList.appendChild(subCategoryHeader);
 
                         if (Array.isArray(subCategoryContent)) {
                             subCategoryContent.forEach(term => {
                                 const row = document.createElement('tr');
-                                row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                                row.className = 'border-b border-orange-100 hover:bg-orange-50/50';
                                 row.dataset.term = JSON.stringify(term);
                                 row.innerHTML = `
-                                    <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                                    <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                                    <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                                    <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                         <span class="chinese-text">${term.zh || ''}</span>
                                         <span class="pinyin-text">${term.pinyin || ''}</span>
-                                        ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                        ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
                                     </td>
                                 `;
                                 termList.appendChild(row);
@@ -1067,20 +1069,20 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
                                 const nestedSubCategoryTerms = subCategoryContent[nestedSubCategoryKey];
                                 
                                 const nestedSubCategoryHeader = document.createElement('tr');
-                                nestedSubCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-base font-medium text-slate-700 bg-slate-50/50 border-b border-slate-100 pl-6">${nestedSubCategoryKey}</td>`;
+                                nestedSubCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-base font-medium text-gray-700 bg-orange-50/50 border-b border-orange-100 pl-6">${nestedSubCategoryKey}</td>`;
                                 termList.appendChild(nestedSubCategoryHeader);
 
                                 if (Array.isArray(nestedSubCategoryTerms)) {
                                     nestedSubCategoryTerms.forEach(term => {
                                         const row = document.createElement('tr');
-                                        row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                                        row.className = 'border-b border-orange-100 hover:bg-orange-50/50';
                                         row.dataset.term = JSON.stringify(term);
                                         row.innerHTML = `
-                                            <td class="p-3 text-slate-800 english-term cursor-pointer">${term.en || ''}</td>
-                                            <td class="p-3 text-slate-800 chinese-pinyin-term cursor-pointer">
+                                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
+                                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
                                                 <span class="chinese-text">${term.zh || ''}</span>
                                                 <span class="pinyin-text">${term.pinyin || ''}</span>
-                                                ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
+                                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
                                             </td>
                                         `;
                                         termList.appendChild(row);
@@ -1091,7 +1093,7 @@ Essential Chinese-English terms for commonly encountered illnesses and medical c
                     }
                 }
                 if (termList.children.length === 0) {
-                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-slate-500">此类别中没有词汇。(No terms in this category.)</td></tr>';
+                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-gray-500">此类别中没有词汇。(No terms in this category.)</td></tr>';
                 }
             }
         }
