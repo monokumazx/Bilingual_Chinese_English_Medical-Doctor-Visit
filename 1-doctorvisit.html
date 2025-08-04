@@ -9,30 +9,46 @@
     <style>
         body {
             font-family: 'Noto Sans SC', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
+            background-color: #f0fdfa; /* teal-50 - very light green/teal */
             cursor: default; /* Ensure default cursor */
+            color: #115e59; /* teal-800 for general text */
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .header-section {
+            background: linear-gradient(to right, #0d9488, #14b8a6); /* Teal gradient */
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 1.5rem; /* Rounded corners for header */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            animation: fadeInScale 0.8s ease-out;
         }
         .nav-button {
             transition: all 0.3s ease;
+            border-radius: 0.75rem; /* More rounded buttons */
+            font-weight: 500;
         }
         .nav-button.active {
-            background-color: #0ea5e9; /* sky-500 */
+            background-color: #0d9488; /* teal-600 */
             color: white;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
         .nav-button:not(.active):hover {
-            background-color: #f0f9ff; /* sky-50 */
+            background-color: #ccfbf1; /* teal-100 */
+            color: #0f766e; /* teal-700 */
         }
         #term-list-container::-webkit-scrollbar {
             width: 8px;
         }
         #term-list-container::-webkit-scrollbar-track {
-            background: #f1f5f9; /* slate-100 */
+            background: #e0f2f7; /* light blue-grey */
+            border-radius: 10px;
         }
         #term-list-container::-webkit-scrollbar-thumb {
-            background-color: #94a3b8; /* slate-400 */
+            background-color: #475569; /* slate-600 */
             border-radius: 10px;
-            border: 2px solid #f1f5f9; /* slate-100 */
+            border: 2px solid #e0f2f7; /* light blue-grey */
         }
         .chinese-text {
             display: block;
@@ -47,17 +63,16 @@
         /* Tooltip styles */
         #tooltip {
             position: fixed; /* Use fixed to stay relative to viewport */
-            background-color: #0ea5e9; /* sky-500 */
+            background-color: #0d9488; /* teal-600 */
             color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            font-size: 0.9rem;
+            padding: 10px 14px; /* Slightly larger padding */
+            border-radius: 10px; /* More rounded */
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25); /* Stronger shadow */
+            font-size: 0.95rem; /* Slightly larger font */
             z-index: 1000; /* Ensure it's on top */
             opacity: 0;
             transition: opacity 0.2s ease-in-out;
-            /* pointer-events: none; This was removed to allow mouseover/mouseout on tooltip itself */
-            max-width: 250px; /* Limit tooltip width */
+            max-width: 280px; /* Limit tooltip width */
             word-wrap: break-word; /* Break long words */
         }
         /* Loading spinner styles */
@@ -68,8 +83,8 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1001; /* Above tooltip */
-            border: 4px solid #f3f3f3; /* Light grey */
-            border-top: 4px solid #0ea5e9; /* Blue */
+            border: 4px solid #e2e8f0; /* slate-200 */
+            border-top: 4px solid #0d9488; /* teal-600 */
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -80,36 +95,84 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* New Animations */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-card {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* Consistent rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.8s ease-out forwards;
+            opacity: 0; /* Start hidden for animation */
+        }
+
+        .table-header-bg {
+            background-color: #ecfdf5; /* teal-50 */
+            color: #0f766e; /* teal-700 */
+        }
+        .table-row-hover:hover {
+            background-color: #f0fdfa; /* teal-50 */
+        }
+        .footer-disclaimer {
+            color: #475569; /* slate-600 */
+        }
+        .footer-link {
+            color: #0d9488; /* teal-600 */
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body class="text-slate-800">
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-sky-700">医疗与就诊词汇 | Medical & Doctor Visit Vocabulary</h1>
-            <p class="mt-2 text-lg text-slate-600">收录在医院或诊所就诊时常用的表达，包括挂号、问诊、体征描述等实用中英文术语。
+        <header class="text-center mb-12 header-section">
+            <h1 class="text-3xl sm:text-4xl font-bold">医疗与就诊词汇 | Medical & Doctor Visit Vocabulary</h1>
+            <p class="mt-2 text-lg opacity-90">收录在医院或诊所就诊时常用的表达，包括挂号、问诊、体征描述等实用中英文术语。
 Common Chinese-English phrases used during medical visits, including registration, consultations, symptom descriptions, and more.</p>
         </header>
 
         <main>
-            <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
+            <div class="content-card p-6 mb-8">
                 <div class="mb-6">
                     <label for="search-input" class="block text-lg font-medium text-slate-700 mb-2">搜索词汇 (Search Terms):</label>
-                    <input type="text" id="search-input" placeholder="例如：Biopsy 或 活组织检查 (e.g., Biopsy or 活组织检查)" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-shadow">
+                    <input type="text" id="search-input" placeholder="例如：Biopsy 或 活组织检查 (e.g., Biopsy or 活组织检查)" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-shadow">
                 </div>
 
                 <nav id="category-nav" class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
                 </nav>
             </div>
             
-            <div id="content-display" class="bg-white p-6 rounded-2xl shadow-lg min-h-[400px]">
-                <h2 id="category-title" class="text-2xl font-bold text-sky-600 mb-4"></h2>
+            <div id="content-display" class="content-card p-6 min-h-[400px]">
+                <h2 id="category-title" class="text-2xl font-bold text-teal-700 mb-4"></h2>
                 <div id="term-list-container" class="overflow-y-auto max-h-[50vh]" style="min-height: 300px;">
                     <table class="w-full border-collapse">
                         <thead>
                             <tr>
-                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tl-lg">英文 (English)</th>
-                                <th class="p-3 text-left text-sm font-semibold text-slate-500 bg-slate-50 border-b-2 border-slate-200 rounded-tr-lg">中文 (Chinese)</th>
+                                <th class="p-3 text-left text-sm font-semibold table-header-bg border-b-2 border-slate-200 rounded-tl-lg">英文 (English)</th>
+                                <th class="p-3 text-left text-sm font-semibold table-header-bg border-b-2 border-slate-200 rounded-tr-lg">中文 (Chinese)</th>
                             </tr>
                         </thead>
                         <tbody id="term-list">
@@ -120,16 +183,16 @@ Common Chinese-English phrases used during medical visits, including registratio
         </main>
 
         <footer class="text-center mt-12 py-6 border-t border-slate-200">
-            <p class="text-slate-500 text-sm font-bold">⚠️ 免责声明 / Disclaimer</p>
-            <p class="text-slate-500 text-sm mt-1">本页面内容由AI辅助排版，由本人（非医疗专业人员，仅为语言爱好者）整理自公开来源，仅供语言学习和参考使用，不构成任何医疗建议或诊断。请勿将此信息用于医疗决策。如需医疗帮助，请咨询专业医生。本人对内容的准确性不作保证，不承担因使用该信息所产生的任何责任。</p>
-            <p class="text-slate-500 text-sm mt-1">This page is AI-assisted in layout and compiled by me, a language enthusiast (not a medical professional), based on publicly available sources. It is intended for language learning and reference purposes only and does not constitute medical advice or diagnosis. Please do not use this information for any medical decision-making. I make no guarantees about its accuracy and accept no liability for any consequences resulting from its use. Please consult a licensed healthcare professional for medical concerns.</p>
-            <div class="mt-4 text-sm text-slate-500">
+            <p class="footer-disclaimer text-sm font-bold">⚠️ 免责声明 / Disclaimer</p>
+            <p class="footer-disclaimer text-sm mt-1">本页面内容由AI辅助排版，由本人（非医疗专业人员，仅为语言爱好者）整理自公开来源，仅供语言学习和参考使用，不构成任何医疗建议或诊断。请勿将此信息用于医疗决策。如需医疗帮助，请咨询专业医生。本人对内容的准确性不作保证，不承担因使用该信息所产生的任何责任。</p>
+            <p class="footer-disclaimer text-sm mt-1">This page is AI-assisted in layout and compiled by me, a language enthusiast (not a medical professional), based on publicly available sources. It is intended for language learning and reference purposes only and does not constitute medical advice or diagnosis. Please do not use this information for any medical decision-making. I make no guarantees about its accuracy and accept no liability for any consequences resulting from its use. Please consult a licensed healthcare professional for medical concerns.</p>
+            <div class="mt-4 text-sm footer-disclaimer">
                 <h3 class="font-semibold mb-2">参考来源 (Sources):</h3>
                 <ul class="list-none p-0 m-0">
-                    <li><a href="https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf" target="_blank" class="text-sky-600 hover:underline">1) https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf</a></li>
-                    <li><a href="https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf" target="_blank" class="text-sky-600 hover:underline">2) https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf</a></li>
-                    <li><a href="https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list" target="_blank" class="text-sky-600 hover:underline">3) https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list</a></li>
-                    <li><a href="https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8" target="_blank" class="text-sky-600 hover:underline">4) https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8</a></li>
+                    <li><a href="https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf" target="_blank" class="footer-link hover:underline">1) https://www.cdctj.com.cn/att_default/0/11/16/44/11164461_561528.pdf</a></li>
+                    <li><a href="https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf" target="_blank" class="footer-link hover:underline">2) https://cancerglobal.cchc.org/images/publish/Bilingual_Medical_and_Cancer_Vocabulary.pdf</a></li>
+                    <li><a href="https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list" target="_blank" class="footer-link hover:underline">3) https://www.parkwayeast.com.sg/zh/health-plus/article/medical-conditions-list</a></li>
+                    <li><a href="https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8" target="_blank" class="footer-link hover:underline">4) https://zh.wikipedia.org/wiki/%E7%96%BE%E7%97%85%E5%88%97%E8%A1%A8</a></li>
                 </ul>
             </div>
         </footer>
@@ -536,7 +599,7 @@ Common Chinese-English phrases used during medical visits, including registratio
                 const button = document.createElement('button');
                 // Display the full sub-category name including English
                 button.textContent = subCategory; 
-                button.className = `nav-button px-4 py-2 text-sm sm:text-base font-medium rounded-lg border border-slate-300 ${subCategory === currentSubCategory ? 'active' : 'bg-white text-slate-700'}`;
+                button.className = `nav-button px-4 py-2 text-sm sm:text-base font-medium border border-slate-300 ${subCategory === currentSubCategory ? 'active' : 'bg-white text-slate-700'}`;
                 button.onclick = () => {
                     currentSubCategory = subCategory;
                     searchInput.value = ''; // Clear search input when changing sub-category
@@ -599,7 +662,7 @@ Common Chinese-English phrases used during medical visits, including registratio
             // Render the filtered or selected terms
             termsToDisplay.forEach(term => {
                 const row = document.createElement('tr');
-                row.className = 'border-b border-slate-100 hover:bg-sky-50/50';
+                row.className = 'border-b border-slate-100 table-row-hover';
                 // Store the term data directly on the row for easy access during hover
                 row.dataset.term = JSON.stringify(term); 
                 row.innerHTML = `
@@ -608,7 +671,7 @@ Common Chinese-English phrases used during medical visits, including registratio
                         <span class="chinese-text">${term.zh || ''}</span>
                         <span class="pinyin-text">${term.pinyin || ''}</span>
                         ${term.note ? `<span class="pinyin-text text-slate-600 italic mt-1">备注: ${term.note}</span>` : ''}
-                        ${filter && term.subCategory ? `<span class="text-xs text-sky-700 bg-sky-100 px-2 py-1 rounded-full mt-1 inline-block">${term.subCategory}</span>` : ''}
+                        ${filter && term.subCategory ? `<span class="text-xs text-teal-700 bg-teal-100 px-2 py-1 rounded-full mt-1 inline-block">${term.subCategory}</span>` : ''}
                     </td>
                 `;
                 termList.appendChild(row);
