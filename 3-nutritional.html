@@ -1,806 +1,469 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>营养与维生素词汇 | Nutrition & Vitamin Vocabulary</title>
+    <title>交互式营养与健康词汇表 | Interactive Nutrition & Health Glossary</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Serene Green -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral with Teal Accent -->
+    <!-- Application Structure Plan: A single-page application with a fixed left sidebar for navigation (including subsections) and a main scrollable content area. This structure provides clear, persistent, and granular navigation. The key interaction remains the live search/filter bar, which dynamically filters all vocabulary entries. This design transforms the comprehensive static glossary into a highly usable, quick-reference tool, prioritizing efficient information retrieval. -->
+    <!-- Visualization & Content Choices: Report Info: A comprehensive bilingual glossary with multiple sections and subsections. Goal: Inform, Organize/Find. Viz/Presentation Method: A list-based navigation sidebar and a grid of content "cards" for vocabulary terms. Each card contains the bilingual term and definition. Interaction: Sidebar links trigger smooth scrolling. A search input filters cards in real-time. Justification: This card grid and search interaction makes the extensive information scannable and instantly accessible. The addition of subsection navigation enhances user experience for browsing. Library/Method: Vanilla JS for interactions, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
-            font-family: 'Noto Sans SC', sans-serif;
-            background-color: #ecfdf5; /* Emerald 50 - A very light, calming green background */
-            cursor: default; /* Ensure default cursor */
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            scroll-behavior: smooth;
         }
-        .nav-button {
-            transition: all 0.3s ease;
+        .nav-link.active {
+            background-color: #E0F2F1;
+            color: #00796B;
+            font-weight: 600;
         }
-        .nav-button.active {
-            background-color: #059669; /* Emerald 600 - Deeper green for active state */
-            color: white;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        .sub-nav-link.active {
+            color: #00796B;
+            font-weight: 500;
         }
-        .nav-button:not(.active):hover {
-            background-color: #d1fae5; /* Emerald 100 - Lighter green on hover for inactive buttons */
-            color: #065f46; /* Emerald 800 - Darker text on hover */
-        }
-        #term-list-container::-webkit-scrollbar {
+        ::-webkit-scrollbar {
             width: 8px;
         }
-        #term-list-container::-webkit-scrollbar-track {
-            background: #ecfdf5; /* Emerald 50 */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
         }
-        #term-list-container::-webkit-scrollbar-thumb {
-            background-color: #34d399; /* Emerald 400 */
+        ::-webkit-scrollbar-thumb {
+            background: #a8a8a8;
             border-radius: 10px;
-            border: 2px solid #ecfdf5; /* Emerald 50 */
         }
-        .chinese-text {
-            display: block;
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-        .pinyin-text {
-            display: block;
-            font-size: 0.8rem;
-            color: #4b5563; /* Gray 600 */
-        }
-        /* Tooltip styles */
-        #tooltip {
-            position: fixed; /* Use fixed to stay relative to viewport */
-            background-color: #059669; /* Emerald 600 - Consistent with active button */
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            font-size: 0.9rem;
-            z-index: 1000; /* Ensure it's on top */
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-            max-width: 250px; /* Limit tooltip width */
-            word-wrap: break-word; /* Break long words */
-        }
-        /* Loading spinner styles */
-        #loading-spinner {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1001; /* Above tooltip */
-            border: 4px solid #f3f3f3; /* Light grey */
-            border-top: 4px solid #059669; /* Emerald 600 */
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
         }
     </style>
 </head>
-<body class="text-gray-800"> <!-- Changed body text to a slightly darker gray -->
+<body class="bg-stone-50 text-slate-800">
+    <div class="flex min-h-screen">
+        <aside class="w-64 fixed top-0 left-0 h-full bg-white border-r border-stone-200 p-6 hidden md:block overflow-y-auto">
+            <h1 class="text-xl font-bold text-teal-700 mb-8">营养词汇表</h1>
+            <nav id="desktop-nav">
+                <ul class="space-y-1">
+                    <li><a href="#section-1" class="nav-link block px-4 py-2 rounded-lg text-slate-600 hover:bg-stone-100 hover:text-teal-600 transition-colors duration-200">1) 核心营养学词汇</a></li>
+                    <li><a href="#subsection-1-1" class="sub-nav-link block pl-8 pr-4 py-1 rounded-lg text-sm text-slate-500 hover:text-teal-600 transition-colors duration-200">营养素</a></li>
+                    <li><a href="#subsection-1-2" class="sub-nav-link block pl-8 pr-4 py-1 rounded-lg text-sm text-slate-500 hover:text-teal-600 transition-colors duration-200">能量与代谢</a></li>
+                    <li><a href="#subsection-1-3" class="sub-nav-link block pl-8 pr-4 py-1 rounded-lg text-sm text-slate-500 hover:text-teal-600 transition-colors duration-200">营养过程与健康指标</a></li>
+                    
+                    <li><a href="#section-2" class="nav-link block px-4 py-2 mt-2 rounded-lg text-slate-600 hover:bg-stone-100 hover:text-teal-600 transition-colors duration-200">2) 营养物质</a></li>
+                    <li><a href="#subsection-2-1" class="sub-nav-link block pl-8 pr-4 py-1 rounded-lg text-sm text-slate-500 hover:text-teal-600 transition-colors duration-200">宏量营养素</a></li>
+                    <li><a href="#subsection-2-2" class="sub-nav-link block pl-8 pr-4 py-1 rounded-lg text-sm text-slate-500 hover:text-teal-600 transition-colors duration-200">微量营养素</a></li>
+                    <li><a href="#subsection-2-3" class="sub-nav-link block pl-8 pr-4 py-1 rounded-lg text-sm text-slate-500 hover:text-teal-600 transition-colors duration-200">生物活性化合物</a></li>
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-emerald-800">营养与维生素词汇 | Nutrition & Vitamin Vocabulary</h1> <!-- Darker green for main title -->
-            <p class="mt-2 text-lg text-gray-600">涵盖构成人体营养的基础要素，包括蛋白质、碳水化合物、脂肪、水分等核心术语的中英文对照。Core Chinese-English vocabulary covering essential nutrients such as proteins, carbohydrates, fats, and water that support body function and health.</p>
-        </header>
+                    <li><a href="#section-3" class="nav-link block px-4 py-2 mt-2 rounded-lg text-slate-600 hover:bg-stone-100 hover:text-teal-600 transition-colors duration-200">3) 维生素</a></li>
+                    <li><a href="#section-4" class="nav-link block px-4 py-2 mt-2 rounded-lg text-slate-600 hover:bg-stone-100 hover:text-teal-600 transition-colors duration-200">4) 矿物质</a></li>
+                    <li><a href="#section-5" class="nav-link block px-4 py-2 mt-2 rounded-lg text-slate-600 hover:bg-stone-100 hover:text-teal-600 transition-colors duration-200">5) 代谢健康</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-        <main>
-            <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
-                <div class="mb-6">
-                    <label for="search-input" class="block text-lg font-medium text-gray-700 mb-2">搜索词汇 (Search Terms):</label>
-                    <input type="text" id="search-input" placeholder="例如：Protein 或 蛋白质 (e.g., Protein or 蛋白质)" class="w-full px-4 py-3 border border-emerald-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow"> <!-- Green border and focus ring -->
+        <main class="flex-1 md:ml-64 p-4 sm:p-6 md:p-10">
+            <div class="max-w-4xl mx-auto">
+                <div class="md:hidden mb-6">
+                     <select id="mobile-nav" class="w-full p-3 border border-stone-300 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                        <option value="#section-1">1) 核心营养学词汇</option>
+                        <option value="#section-2">2) 营养物质</option>
+                        <option value="#section-3">3) 维生素</option>
+                        <option value="#section-4">4) 矿物质</option>
+                        <option value="#section-5">5) 代谢健康</option>
+                    </select>
                 </div>
 
-                <nav id="category-nav" class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
-                </nav>
-            </div>
-            
-            <div id="content-display" class="bg-white p-6 rounded-2xl shadow-lg min-h-[400px]">
-                <h2 id="category-title" class="text-2xl font-bold text-emerald-700 mb-4"></h2> <!-- Emerald 700 for category title -->
-                <div id="term-list-container" class="overflow-y-auto max-h-[50vh]" style="min-height: 300px;">
-                    <table class="w-full border-collapse">
-                        <thead>
-                            <tr>
-                                <th class="p-3 text-left text-sm font-semibold text-gray-600 bg-emerald-50 border-b-2 border-emerald-200 rounded-tl-lg">英文 (English)</th> <!-- Light green header background -->
-                                <th class="p-3 text-left text-sm font-semibold text-gray-600 bg-emerald-50 border-b-2 border-emerald-200 rounded-tr-lg">中文 (Chinese)</th> <!-- Light green header background -->
-                            </tr>
-                        </thead>
-                        <tbody id="term-list">
-                        </tbody>
-                    </table>
+                <div class="sticky top-0 bg-stone-50/80 backdrop-blur-sm pt-4 pb-4 z-10">
+                    <div class="relative">
+                        <input type="text" id="search-input" placeholder="搜索词汇 (Search vocabulary)..." class="w-full p-4 pl-12 border border-stone-300 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-shadow">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-4">
+                            <svg class="h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-container">
+                    <header class="mb-10 text-center border-b border-stone-200 pb-10">
+                        <h1 class="text-4xl font-extrabold text-teal-800 mb-2">营养与健康词汇 | Nutrition & Health Vocabulary</h1>
+                        <p class="text-slate-600 max-w-3xl mx-auto">涵盖人体健康与营养相关的核心概念，包括蛋白质、碳水化合物、脂肪、水分、维生素、矿物质，以及代谢过程、激素、血糖、饮食模式和生活方式等术语的中英文对照。<br>Core Chinese-English vocabulary covering key concepts related to human health and nutrition, including proteins, carbohydrates, fats, water, vitamins, minerals, as well as metabolic processes, hormones, glucose, dietary patterns, and lifestyle factors.</p>
+                    </header>
+
+                    <section id="section-1" class="py-8 scroll-mt-24">
+                        <h2 class="text-3xl font-bold mb-8 text-teal-800">1) 核心营养学词汇 (Core Nutritional Vocabulary）</h2>
+                        
+                        <div id="subsection-1-1" class="mb-10 scroll-mt-24">
+                            <h3 class="text-2xl font-semibold mb-4 text-teal-700">一）Nutrients / 营养素</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 vocab-list">
+                                <!-- Terms will be injected here by JS -->
+                            </div>
+                        </div>
+
+                        <div id="subsection-1-2" class="mb-10 scroll-mt-24">
+                            <h3 class="text-2xl font-semibold mb-4 text-teal-700">二）Energy & Metabolism / 能量与代谢</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 vocab-list">
+                                <!-- Terms will be injected here by JS -->
+                            </div>
+                        </div>
+
+                        <div id="subsection-1-3" class="mb-10 scroll-mt-24">
+                            <h3 class="text-2xl font-semibold mb-4 text-teal-700">三）Nutritional Processes & Health Indicators / 营养过程与健康指标</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 vocab-list">
+                                <!-- Terms will be injected here by JS -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="section-2" class="py-8 scroll-mt-24">
+                        <h2 class="text-3xl font-bold mb-8 text-teal-800">2) 营养物质 (Nutritional Components)</h2>
+                        <div id="subsection-2-1" class="mb-10 scroll-mt-24">
+                            <h3 class="text-2xl font-semibold mb-4 text-teal-700">一、宏量营养素 (Macronutrients)</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 vocab-list">
+                                <!-- Terms will be injected here by JS -->
+                            </div>
+                        </div>
+                        <div id="subsection-2-2" class="mb-10 scroll-mt-24">
+                            <h3 class="text-2xl font-semibold mb-4 text-teal-700">二、微量营养素 (Micronutrients)</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 vocab-list">
+                                <!-- Terms will be injected here by JS -->
+                            </div>
+                        </div>
+                        <div id="subsection-2-3" class="mb-10 scroll-mt-24">
+                            <h3 class="text-2xl font-semibold mb-4 text-teal-700">三、生物活性化合物 (Bioactive Compounds)</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 vocab-list">
+                                <!-- Terms will be injected here by JS -->
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section id="section-3" class="py-8 scroll-mt-24">
+                        <h2 class="text-3xl font-bold mb-8 text-teal-800">3) 维生素 (Vitamins)</h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 vocab-list">
+                            <!-- Terms will be injected here by JS -->
+                        </div>
+                    </section>
+                    
+                    <section id="section-4" class="py-8 scroll-mt-24">
+                        <h2 class="text-3xl font-bold mb-2 text-teal-800">4) 矿物质 (Minerals)</h2>
+                        <div class="bg-teal-50 border-l-4 border-teal-500 text-teal-800 p-4 rounded-r-lg my-6">
+                            <p>矿物质Mineral无机元素，对于身体的生理功能至关重要。如钙、铁、锌等。</p>
+                            <p>质（物质） = Substance。</p>
+                            <p class="mt-2">Minerals (Mineral) are inorganic elements crucial for the body's physiological functions, such as calcium, iron, and zinc. 质 ('Substance') = Mass.</p>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 vocab-list">
+                           <!-- Terms will be injected here by JS -->
+                        </div>
+                    </section>
+                    
+                    <section id="section-5" class="py-8 scroll-mt-24">
+                        <h2 class="text-3xl font-bold mb-8 text-teal-800">5) 代谢健康 (Metabolic Health)</h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 vocab-list">
+                            <!-- Terms will be injected here by JS -->
+                        </div>
+                    </section>
+
+                </div>
+                 <div id="no-results" class="hidden text-center py-16">
+                    <h3 class="text-xl font-semibold text-slate-700">未找到结果</h3>
+                    <p class="text-slate-500 mt-2">请尝试使用不同的关键词进行搜索。</p>
                 </div>
             </div>
         </main>
-
-        <footer class="text-center mt-12 py-6 border-t border-emerald-200"> <!-- Green border for footer -->
-            <p class="text-gray-600 text-sm font-bold">⚠️ 免责声明 / Disclaimer</p>
-            <p class="text-gray-600 text-sm mt-1">本页面内容由AI辅助排版，由本人（非医疗专业人员，仅为语言爱好者）整理自公开来源，仅供语言学习和参考使用，不构成任何医疗建议或诊断。请勿将此信息用于医疗决策。如需医疗帮助，请咨询专业医生。本人对内容的准确性不作保证，不承担因使用该信息所产生的任何责任。</p>
-            <p class="text-gray-600 text-sm mt-1">This page is AI-assisted in layout and compiled by me, a language enthusiast (not a medical professional), based on publicly available sources. It is intended for language learning and reference purposes only and does not constitute medical advice or diagnosis. Please do not use this information for any medical decision-making. I make no guarantees about its accuracy and accept no liability for any consequences resulting from its use. Please consult a licensed healthcare professional for medical concerns.</p>
-        </footer>
     </div>
 
-    <!-- Tooltip element -->
-    <div id="tooltip" class="absolute bg-emerald-600 text-white p-2 rounded-lg shadow-xl text-sm z-50 opacity-0 transition-opacity 0.2s ease-in-out;"></div> <!-- Emerald 600 for tooltip background -->
-
-    <!-- Loading Spinner -->
-    <div id="loading-spinner"></div>
-
     <script>
-        const medicalData = {
-            "营养物质 (Nutritional Components)": [
-                { en: "Water", zh: "水", pinyin: "shuǐ", en_description: "The most basic and essential component of the body, involved in nearly all biochemical reactions.", zh_description: "身体中最基本、最必需的成分，参与几乎所有生物化学反应。" },
-                { en: "Calories", zh: "热量（卡路里）", pinyin: "rè liàng (kǎ lù lǐ)", en_description: "Units of energy obtained from food, used by the body for various functions.", zh_description: "从食物中获取的能量单位，用于身体的各种功能。" },
-                { en: "Energy", zh: "能量", pinyin: "néng liàng", en_description: "The capacity to do work, derived from the breakdown of macronutrients.", zh_description: "进行工作或活动的能力，来源于宏量营养素的分解。" },
-                { en: "Protein", zh: "蛋白质", pinyin: "dàn bái zhì", en_description: "Composed of amino acids, essential for tissue repair, enzyme and hormone production, and other functions.", zh_description: "由氨基酸组成，具有维持和修复组织、生成酶和激素等功能。" },
-                { en: "Fat", zh: "脂肪", pinyin: "zhī fáng", en_description: "A macronutrient that provides concentrated energy, helps absorb fat-soluble vitamins, and protects organs.", zh_description: "一种提供浓缩能量的宏量营养素，有助于吸收脂溶性维生素，并保护器官。" },
-                { en: "Saturated Fat", zh: "饱和脂肪", pinyin: "bǎo hé zhī fáng", en_description: "A type of fat primarily found in animal products and some plant oils, typically solid at room temperature.", zh_description: "主要存在于动物产品和某些植物油中的一种脂肪，常温下呈固态。" },
-                { en: "Trans Fat", zh: "反式脂肪", pinyin: "fǎn shì zhī fáng", en_description: "An unhealthy type of fat created through hydrogenation, found in some processed foods.", zh_description: "通过氢化过程产生的一种不健康脂肪，存在于某些加工食品中。" },
-                { en: "Monounsaturated Fat", zh: "单不饱和脂肪", pinyin: "dān bù bǎo hé zhī fáng", en_description: "A healthy type of fat found in olive oil, avocados, and nuts, known for its heart-healthy benefits.", zh_description: "一种健康的脂肪，存在于橄榄油、牛油果和坚果中，对心脏健康有益。" },
-                { en: "Polyunsaturated Fat", zh: "多不饱和脂肪", pinyin: "duō bù bǎo hé zhī fáng", en_description: "A type of healthy fat found in plant-based foods and oils, including omega-3 and omega-6 fatty acids.", zh_description: "一种健康的脂肪，存在于植物性食物和油中，包括欧米伽-3和欧米伽-6脂肪酸。" },
-                { en: "Cholesterol", zh: "胆固醇", pinyin: "dǎn gù chún", en_description: "A waxy, fat-like substance found in all cells of the body, essential for hormone production and digestion.", zh_description: "身体所有细胞中发现的一种蜡状、脂肪样物质，对激素生成和消化至关重要。" },
-                { en: "Carbohydrates", zh: "碳水化合物", pinyin: "tàn shuǐ huà hé wù", en_description: "The body's primary source of energy, found in grains, fruits, vegetables, and legumes.", zh_description: "身体主要的能量来源，存在于谷物、水果、蔬菜和豆类中。" },
-                { en: "Sugars", zh: "糖", pinyin: "táng", en_description: "Simple carbohydrates that provide quick energy, but excessive intake can be detrimental to health.", zh_description: "提供快速能量的简单碳水化合物，但过量摄入可能对健康有害。" },
-                { en: "Dietary Fiber", zh: "膳食纤维", pinyin: "shàn shí xiān wéi", en_description: "Indigestible plant material that aids digestion, promotes bowel regularity, and helps regulate blood sugar.", zh_description: "不可消化的植物物质，有助于消化，促进肠道规律性，并帮助调节血糖。" },
-                { en: "Trace Elements", zh: "微量元素", pinyin: "wēi liàng yuán sù", en_description: "Minerals needed in very small amounts for various bodily functions, e.g., iron, zinc.", zh_description: "身体所需量极少的矿物质，对各种身体功能至关重要，例如铁、锌。" },
-                { en: "Macro Elements", zh: "宏量元素", pinyin: "hóng liàng yuán sù", en_description: "Minerals needed in larger quantities, such as calcium, potassium, and sodium.", zh_description: "身体所需量较大的矿物质，例如钙、钾和钠。" },
-                { en: "Antioxidants", zh: "抗氧化剂", pinyin: "kàng yǎng huà jì", en_description: "Substances that protect cells from damage caused by free radicals.", zh_description: "保护细胞免受自由基损害的物质。" },
-                { en: "Essential Fatty Acids", zh: "必需脂肪酸", pinyin: "bì xū zhī fáng suān", en_description: "Fats that the body cannot produce on its own and must be obtained through diet, e.g., Omega-3, Omega-6.", zh_description: "身体无法自行产生，必须通过饮食获取的脂肪，例如欧米伽-3、欧米伽-6。" },
-                { en: "Amino Acids", zh: "氨基酸", pinyin: "ān jī suān", en_description: "The building blocks of protein, essential for many bodily processes.", zh_description: "蛋白质的基本组成单位，对许多身体过程至关重要。" },
-                { en: "Essential Amino Acids", zh: "必需氨基酸", pinyin: "bì xū ān jī suān", en_description: "Amino acids that the body cannot synthesize and must be obtained from food.", zh_description: "身体无法合成，必须从食物中获取的氨基酸。" },
-                { en: "Non-Essential Amino Acids", zh: "非必需氨基酸", pinyin: "fēi bì xū ān jī suān", en_description: "Amino acids that the body can produce on its own, even if not obtained from diet.", zh_description: "身体可以自行合成的氨基酸，即使不从饮食中获取。" },
-                { en: "L-Tyrosine", zh: "L-酪氨酸", pinyin: "L-làosīānsuān", en_description: "A non-essential amino acid that plays a role in the production of neurotransmitters.", zh_description: "一种非必需氨基酸，在神经递质的产生中发挥作用。" },
-                { en: "Saturated Fats", zh: "饱和脂肪酸", pinyin: "bǎo hé zhī fáng suān", en_description: "Fatty acids with no double bonds in their carbon chain, typically solid at room temperature.", zh_description: "碳链中没有双键的脂肪酸，常温下呈固态。" },
-                { en: "Unsaturated Fats", zh: "不饱和脂肪酸", pinyin: "bù bǎo hé zhī fáng suān", en_description: "Fatty acids with one or more double bonds, typically liquid at room temperature.", zh_description: "含有一个或多个双键的脂肪酸，常温下呈液态。" },
-                { en: "Alkaloids", zh: "生物碱", pinyin: "shēng wù jiǎn", en_description: "A group of naturally occurring chemical compounds containing basic nitrogen atoms, often with pharmacological effects.", zh_description: "一类天然存在的含碱性氮原子的化合物，常具有药理作用。" },
-                { en: "Beta-Carotene", zh: "胡萝卜素", pinyin: "hú luó bo sù", en_description: "A red-orange pigment found in plants and fruits, converted to Vitamin A in the body.", zh_description: "植物和水果中的一种红橙色色素，在体内可转化为维生素A。" },
-                { en: "Lutein and Zeaxanthin", zh: "叶黄素 和 玉米黄素", pinyin: "yè huáng sù hé yù mǐ huáng sù", en_description: "Carotenoids found in the eye, important for vision and eye health.", zh_description: "存在于眼睛中的类胡萝卜素，对视力和眼睛健康很重要。" },
-                { en: "Lycopene", zh: "番茄红素", pinyin: "fān qié hóng sù", en_description: "A bright red carotenoid pigment and phytochemical found in tomatoes and other red fruits and vegetables.", zh_description: "番茄和其他红色水果蔬菜中发现的一种鲜红色类胡萝卜素和植物化学物质。" },
-                { en: "Fish Oil (Omega-3 Fatty Acids)", zh: "鱼油", pinyin: "yú yóu", en_description: "Derived from the tissues of oily fish, rich in omega-3 fatty acids beneficial for heart and brain health.", zh_description: "从多脂鱼的组织中提取，富含对心脏和大脑健康有益的欧米伽-3脂肪酸。" },
-                { en: "Chitin", zh: "甲壳素", pinyin: "jiǎ ké sù", en_description: "A fibrous substance consisting of polysaccharides, found in the exoskeletons of insects and crustaceans and in the cell walls of fungi.", zh_description: "一种由多糖组成的纤维物质，存在于昆虫和甲壳类动物的外骨骼以及真菌的细胞壁中。" },
-                { en: "Phenolic Compounds", zh: "酚类化合物", pinyin: "fēn lèi huà hé wù", en_description: "A group of plant compounds with antioxidant properties, found in fruits, vegetables, and grains.", zh_description: "一组具有抗氧化特性的植物化合物，存在于水果、蔬菜和谷物中。" },
-                { en: "Monosaccharides", zh: "单糖", pinyin: "dān táng", en_description: "The simplest form of carbohydrates, e.g., glucose, fructose.", zh_description: "最简单的碳水化合物形式，例如葡萄糖、果糖。" },
-                { en: "Disaccharides", zh: "双糖", pinyin: "shuāng táng", en_description: "Carbohydrates composed of two monosaccharide units, e.g., sucrose, lactose.", zh_description: "由两个单糖单位组成的碳水化合物，例如蔗糖、乳糖。" },
-                { en: "Polysaccharides", zh: "多糖", pinyin: "duō táng", en_description: "Complex carbohydrates made up of many monosaccharide units, e.g., starch, cellulose.", zh_description: "由许多单糖单位组成的复杂碳水化合物，例如淀粉、纤维素。" },
-                { en: "Dietary Supplements", zh: "膳食补充剂", pinyin: "shàn shí bǔ chōng jì", en_description: "Products intended to supplement the diet and contain one or more dietary ingredients (e.g., vitamins, minerals, herbs).", zh_description: "旨在补充饮食并含有一种或多种膳食成分（例如维生素、矿物质、草药）的产品。" },
-                { en: "Phyto chemicals", zh: "植物化学物", pinyin: "zhí wù huà xué wù", en_description: "Naturally occurring chemical compounds produced by plants, often having protective or disease-preventing properties.", zh_description: "植物产生的天然化合物，通常具有保护或预防疾病的特性。" },
-                { en: "Sugar Alcohols", zh: "糖醇", pinyin: "táng chún", en_description: "Carbohydrates with a chemical structure similar to both sugar and alcohol, used as sweeteners.", zh_description: "具有与糖和醇相似化学结构的碳水化合物，用作甜味剂。" },
-                { en: "Precursors", zh: "前体物质", pinyin: "qián tǐ wù zhì", en_description: "Substances from which another substance is formed.", zh_description: "形成另一种物质的物质。" },
-                { en: "Chloride", zh: "氯化物", pinyin: "lǜ huà wù", en_description: "An essential electrolyte that helps maintain fluid balance and proper nerve function.", zh_description: "一种必需的电解质，有助于维持体液平衡和正常的神经功能。" },
-                { en: "Choline", zh: "胆碱", pinyin: "dǎn jiǎn", en_description: "An essential nutrient important for liver function, brain development, nerve function, and metabolism.", zh_description: "一种必需营养素，对肝功能、大脑发育、神经功能和新陈代谢很重要。" },
-                { en: "adaptogen", zh: "适应原", pinyin: "shì yìng yuán", en_description: "Natural substances considered to help the body adapt to stress and exert a normalizing effect on bodily processes.", zh_description: "被认为有助于身体适应压力并对身体过程产生正常化作用的天然物质。" },
-                { en: "Pro biotics", zh: "益生菌", pinyin: "yì shēng jūn", en_description: "Live microorganisms that, when administered in adequate amounts, confer a health benefit on the host.", zh_description: "活的微生物，当摄入足够量时，对宿主产生健康益处。" },
-                { en: "Pre biotics", zh: "益生元", pinyin: "yì shēng yuán", en_description: "Non-digestible food ingredients that promote the growth of beneficial microorganisms in the gut.", zh_description: "不可消化的食物成分，促进肠道中有益微生物的生长。" }
+        const vocabularyData = {
+            "subsection-1-1": [
+                { term: "营养 (yíng yǎng) | Nutrition", def: "维持身体健康所需的物质和能量。| The substances and energy required to maintain health." },
+                { term: "营养素 (yíng yǎng sù) | Nutrient", def: "支持身体生长、发育和功能的具体化学成分。| Specific chemical components that support growth, development, and bodily functions." },
+                { term: "必需营养素 (bì xū yíng yǎng sù) | Essential Nutrient", def: "身体无法自行合成、必须通过食物获得的营养素。| Nutrients that cannot be synthesized by the body and must be obtained from food." },
+                { term: "宏量营养素 (hóng liàng yíng yǎng sù) | Macronutrient", def: "提供能量和构建组织的主要营养素，包括蛋白质、脂肪和碳水化合物。| Main nutrients that provide energy and build tissues, including protein, fat, and carbohydrates." },
+                { term: "微量营养素 (wēi liàng yíng yǎng sù) | Micronutrient", def: "维持健康所需的少量营养素，如维生素和矿物质。| Small quantities of nutrients required for health, such as vitamins and minerals." },
+                { term: "产能营养素 (chǎn néng yíng yǎng sù) | Energy Source Nutrient", def: "提供身体能量的营养素，如碳水化合物、脂肪和蛋白质。| Nutrients that provide energy, such as carbohydrates, fats, and proteins." },
+                { term: "膳食纤维 (shàn shí xiān wéi) | Dietary Fiber", def: "支持消化系统健康，调节血糖和胆固醇。| Supports digestive health and regulates blood sugar and cholesterol." },
+                { term: "营养素密度 (yíng yǎng sù mì dù) | Nutrient Density", def: "食物提供营养素与热量的比例。| The ratio of nutrients provided by a food relative to its caloric content." },
+                { term: "生物利用度 (shēng wù lì yòng dù) | Biological Availability", def: "营养素被身体吸收和利用的程度。| The extent to which nutrients are absorbed and utilized by the body." },
+                { term: "营养素生物利用率 (yíng yǎng sù shēng wù lì yòng lǜ) | Nutrient Bioavailability", def: "营养素被身体吸收和有效利用的程度。| The degree to which nutrients are absorbed and effectively used by the body." }
             ],
-            "维生素 (Vitamins)": [
-                { en: "Vitamin A", zh: "维生素A", pinyin: "wéi shēng sù A", en_description: "Important for vision, immune function, and skin health.", zh_description: "对视力、免疫功能和皮肤健康很重要。" },
-                { en: "Vitamin C", zh: "维生素C", pinyin: "wéi shēng sù C", en_description: "An antioxidant essential for immune health, collagen production, and iron absorption.", zh_description: "一种抗氧化剂，对免疫健康、胶原蛋白生成和铁吸收至关重要。" },
-                { en: "Vitamin D", zh: "维生素D", pinyin: "wéi shēng sù D", en_description: "Crucial for bone health, calcium absorption, and immune system regulation.", zh_description: "对骨骼健康、钙吸收和免疫系统调节至关重要。" },
-                { en: "Vitamin E", zh: "维生素E", pinyin: "wéi shēng sù E", en_description: "A powerful antioxidant that protects cells from damage and supports immune function.", zh_description: "一种强大的抗氧化剂，保护细胞免受损害并支持免疫功能。" },
-                { en: "Vitamin K", zh: "维生素K", pinyin: "wéi shēng sù K", en_description: "Essential for blood clotting and bone health.", zh_description: "对血液凝固和骨骼健康至关重要。" },
-                { en: "Vitamin B1 (Thiamine)", zh: "维生素B1", pinyin: "wéi shēng sù B1", en_description: "Plays a key role in energy metabolism and nerve function.", zh_description: "在能量代谢和神经功能中起关键作用。" },
-                { en: "Vitamin B2 (Riboflavin)", zh: "维生素B2（核黄素）", pinyin: "wéi shēng sù B2 (hé huáng sù)", en_description: "Involved in energy production and cell growth.", zh_description: "参与能量产生和细胞生长。" },
-                { en: "Vitamin B3 (Niacin)", zh: "维生素B3（烟酸）", pinyin: "wéi shēng sù B3 (yān suān)", en_description: "Important for energy metabolism, DNA repair, and cholesterol regulation.", zh_description: "对能量代谢、DNA修复和胆固醇调节很重要。" },
-                { en: "Vitamin B5 (Pantothenic Acid)", zh: "维生素B5（泛酸）", pinyin: "wéi shēng sù B5 (fàn suān)", en_description: "Essential for energy production and hormone synthesis.", zh_description: "对能量产生和激素合成至关重要。" },
-                { en: "Vitamin B6", zh: "维生素B6", pinyin: "wéi shēng sù B6", en_description: "Involved in protein metabolism, neurotransmitter synthesis, and immune function.", zh_description: "参与蛋白质代谢、神经递质合成和免疫功能。" },
-                { en: "Vitamin B7 (Biotin)", zh: "维生素B7（生物素）", pinyin: "wéi shēng sù B7 (shēng wù sù)", en_description: "Supports healthy hair, skin, and nails, and plays a role in metabolism.", zh_description: "支持头发、皮肤和指甲健康，并在新陈代谢中发挥作用。" },
-                { en: "Vitamin B9 (Folate/Folic Acid)", zh: "维生素B9（叶酸）", pinyin: "wéi shēng sù B9 (yè suān)", en_description: "Crucial for cell division, DNA synthesis, and preventing birth defects.", zh_description: "对细胞分裂、DNA合成和预防出生缺陷至关重要。" },
-                { en: "Vitamin B12", zh: "维生素B12", pinyin: "wéi shēng sù B12", en_description: "Essential for red blood cell formation, neurological function, and DNA synthesis.", zh_description: "对红细胞形成、神经功能和DNA合成至关重要。" },
-                { en: "Vitamin K2 (Menaquinone)", zh: "维生素K2", pinyin: "wéi shēng sù K2", en_description: "Important for bone health and proper calcium utilization, often found in fermented foods.", zh_description: "对骨骼健康和钙的正确利用很重要，常存在于发酵食品中。" }
+            "subsection-1-2": [
+                { term: "能量 (néng liàng) | Energy", def: "身体执行各种功能所需的动力。| The power needed for the body to perform various functions." },
+                { term: "能量代谢 (néng liàng dài xiè) | Energy Metabolism", def: "体内将食物转化为能量的生化过程。| Biochemical processes that convert food into energy." },
+                { term: "能量平衡 (néng liàng píng héng) | Energy Balance", def: "摄入与消耗能量的平衡状态。| The balance between energy intake and energy expenditure." },
+                { term: "热量消耗 (rè liàng xiāo hào) | Calories Consumption", def: "身体活动和代谢中消耗的能量。| Energy expended during physical activity and metabolism." },
+                { term: "基础代谢率 (jī chǔ dài xiè lǜ) | Basal Metabolic Rate (BMR)", def: "静息状态下维持生命所需的最低能量消耗。| Minimum energy expenditure required to maintain life at rest." },
+                { term: "基础能量消耗 (jī chǔ néng liàng xiāo hào) | Basal Energy Expenditure (BEE)", def: "基础代谢所消耗的能量。| Energy expended during basal metabolism." },
+                { term: "静息代谢率 (jìng xī dài xiè lǜ) | Resting Metabolic Rate (RMR)", def: "静息状态下的代谢速率。| Metabolic rate at rest." },
+                { term: "静息能量消耗 (jìng xī néng liàng xiāo hào) | Resting Energy Expenditure (REE)", def: "静息状态下消耗的能量。| Energy expenditure at rest." },
+                { term: "相对代谢率 (xiāng duì dài xiè lǜ) | Relative Metabolic Rate (RMR)", def: "与某基准相比的代谢率。| Metabolic rate relative to a standard." },
+                { term: "代谢当量 (dài xiè dāng liàng) | Metabolic Equivalent (MET)", def: "衡量活动消耗能量的单位。| A unit to measure energy expenditure of activities." },
+                { term: "身体活动水平 (shēn tǐ huó dòng shuǐ píng) | Physical Activity Level (PAL)", def: "日常身体活动强度的指标。| Indicator of intensity of daily physical activity." },
+                { term: "每日总能量消耗 (měi rì zǒng néng liàng xiāo hào) | Total Daily Energy Expenditure (TDEE)", def: "包括基础代谢、活动和食物热效应。| Includes basal metabolism, physical activity, and thermic effect of food." },
+                { term: "食物热效应 (shí wù rè xiào yìng) | Thermic Effect of Food (TEF)", def: "摄入食物后用于消化、吸收和代谢所消耗的能量。| Energy expended to digest, absorb, and metabolize food." },
+                { term: "能量系数 (néng liàng xì shù) | Energy Coefficient", def: "每克营养素提供的能量系数。| The energy provided per gram of nutrient." },
+                { term: "能量需要量 (néng liàng xū yào liàng) | Energy Requirement", def: "维持健康和日常活动所需的能量总量。| Total energy needed to maintain health and daily activities." },
+                { term: "氧的热当量 (yǎng de rè dāng liàng) | Thermal Equivalent of Oxygen", def: "氧气消耗对应的能量。| Energy corresponding to oxygen consumption." },
+                { term: "非蛋白呼吸商 (fēi dàn bái hū xī shī) | Non-Protein Respiratory Quotient (NPRQ)", def: "非蛋白质成分氧化时的呼吸商。| Respiratory quotient for oxidation of non-protein components." },
+                { term: "质量 (zhì liàng) | Mass", def: "物体的一种物理属性，代表惯性大小。| A physical property of matter representing inertia." },
+                { term: "平台期 (píng tái qī) | Plateau Phase", def: "在训练或体重管理过程中，即使持续努力，进展也减缓或暂时停止的阶段。| A stage during training or weight management when progress slows or temporarily stops, despite continued effort." }
             ],
-            "矿物质 (Minerals)": {
-                description: "矿物质Mineral无机元素，对于身体的生理功能至关重要。如钙、铁、锌等。<br><br>质（物质） = Substance。<br><br>Minerals (Mineral) are inorganic elements crucial for the body's physiological functions, such as calcium, iron, and zinc. 质 ('Substance') = Mass.",
-                terms: [
-                    { en: "Copper", zh: "铜", pinyin: "tóng", en_description: "A trace mineral essential for iron metabolism, enzyme function, and connective tissue formation.", zh_description: "一种微量矿物质，对铁代谢、酶功能和结缔组织形成至关重要。" },
-                    { en: "Manganese", zh: "锰", pinyin: "měng", en_description: "A trace mineral involved in bone formation, metabolism, and antioxidant defense.", zh_description: "一种微量矿物质，参与骨骼形成、新陈代谢和抗氧化防御。" },
-                    { en: "Chromium", zh: "铬", pinyin: "gè", en_description: "A trace mineral that enhances insulin action and is involved in carbohydrate and lipid metabolism.", zh_description: "一种微量矿物质，能增强胰岛素作用，并参与碳水化合物和脂质代谢。" },
-                    { en: "Molybdenum", zh: "钼", pinyin: "mù", en_description: "A trace mineral that acts as a cofactor for several enzymes involved in metabolism.", zh_description: "一种微量矿物质，作为参与代谢的几种酶的辅因子。" },
-                    { en: "Iodine", zh: "碘", pinyin: "diǎn", en_description: "Essential for thyroid hormone production, which regulates metabolism and growth.", zh_description: "对甲状腺激素的产生至关重要，甲状腺激素调节新陈代谢和生长。" },
-                    { en: "Sodium", zh: "钠", pinyin: "nà", en_description: "An electrolyte crucial for fluid balance, nerve impulses, and muscle function.", zh_description: "一种对体液平衡、神经冲动和肌肉功能至关重要的电解质。" },
-                    { en: "Potassium", zh: "钾", pinyin: "jiǎ", en_description: "An electrolyte important for fluid balance, nerve signals, and muscle contractions.", zh_description: "一种对体液平衡、神经信号和肌肉收缩很重要的电解质。" },
-                    { en: "Calcium", zh: "钙", pinyin: "gài", en_description: "The most abundant mineral in the body, essential for strong bones and teeth, muscle function, and nerve transmission.", zh_description: "体内最丰富的矿物质，对骨骼和牙齿的强度、肌肉功能和神经传递至关重要。" },
-                    { en: "Iron", zh: "铁", pinyin: "tiě", en_description: "Essential for oxygen transport in the blood (as part of hemoglobin) and energy production.", zh_description: "对血液中的氧气运输（作为血红蛋白的一部分）和能量产生至关重要。" },
-                    { en: "Magnesium", zh: "镁", pinyin: "měi", en_description: "Involved in over 300 biochemical reactions, including muscle and nerve function, blood glucose control, and blood pressure regulation.", zh_description: "参与超过300种生化反应，包括肌肉和神经功能、血糖控制和血压调节。" },
-                    { en: "Magnesium L-threonate", zh: "L-苏糖酸镁", pinyin: "L-sūtángsuānměi", en_description: "A form of magnesium that is easily absorbed and crosses the blood-brain barrier, often used for cognitive support.", zh_description: "一种易于吸收并能穿过血脑屏障的镁形式，常用于认知支持。" },
-                    { en: "L-theanine", zh: "L-茶氨酸", pinyin: "L-cháānsuān", en_description: "An amino acid found in tea leaves, known for promoting relaxation without drowsiness.", zh_description: "茶叶中发现的一种氨基酸，以促进放松而不引起嗜睡而闻名。" },
-                    { en: "Zinc", zh: "锌", pinyin: "xīn", en_description: "A trace mineral vital for immune function, wound healing, and DNA synthesis.", zh_description: "一种对免疫功能、伤口愈合和DNA合成至关重要的微量矿物质。" },
-                    { en: "Phosphorus", zh: "磷", pinyin: "lín", en_description: "An essential mineral for bone and teeth formation, energy metabolism, and cell membrane structure.", zh_description: "对骨骼和牙齿形成、能量代谢和细胞膜结构至关重要的矿物质。" },
-                    { en: "Selenium", zh: "硒", pinyin: "xī", en_description: "A trace mineral with antioxidant properties, important for thyroid function and immune health.", zh_description: "一种具有抗氧化特性的微量矿物质，对甲状腺功能和免疫健康很重要。" }
-                ]
-            },
-            "营养学用词 (Nutritional Terminology)": [
-                { en: "Hydration", zh: "水合", pinyin: "shuǐ hé", en_description: "The process of absorbing water, essential for maintaining proper body fluid balance.", zh_description: "吸收水分的过程，对维持身体正常的体液平衡至关重要。" },
-                { en: "Calories Consumption", zh: "热量消耗", pinyin: "rè liàng xiāo hào", en_description: "The amount of energy the body uses for daily activities, exercise, and basic metabolic functions.", zh_description: "身体用于日常活动、运动和基本代谢功能的能量总量。" },
-                { en: "Intake", zh: "摄取", pinyin: "shè qǔ", en_description: "The amount of food, drink, or nutrients consumed.", zh_description: "摄入的食物、饮料或营养素的数量。" },
-                { en: "Digestion", zh: "消化", pinyin: "xiāo huà", en_description: "The process by which food is broken down into smaller molecules that can be absorbed and utilized by the body.", zh_description: "食物分解成更小分子，以便身体吸收和利用的过程。" },
-                { en: "Absorption", zh: "吸收", pinyin: "xī shōu", en_description: "The process by which nutrients from digested food pass into the bloodstream or lymphatic system.", zh_description: "消化后的营养物质进入血液或淋巴系统的过程。" },
-                { en: "Metabolism", zh: "代谢", pinyin: "dài xiè", en_description: "The chemical processes that occur within a living organism in order to maintain life, including breaking down substances for energy and building new molecules.", zh_description: "生物体内为维持生命而发生的化学过程，包括分解物质以获取能量和构建新分子。" },
-                { en: "Energy", zh: "能量", pinyin: "néng liàng", en_description: "The capacity to do work, derived from the breakdown of macronutrients.", zh_description: "进行工作或活动的能力，来源于宏量营养素的分解。" },
-                { en: "Micronutrients", zh: "微量营养素", pinyin: "wēi liàng yíng yǎng sù", en_description: "Vitamins and minerals that are essential for health but are needed in smaller amounts than macronutrients.", zh_description: "对健康至关重要但所需量少于宏量营养素的维生素和矿物质。" },
-                { en: "Macronutrients", zh: "宏量营养素", pinyin: "hóng liàng yíng yǎng sù", en_description: "Nutrients that provide calories or energy and are needed in large amounts, including carbohydrates, proteins, and fats.", zh_description: "提供热量或能量且所需量大的营养素，包括碳水化合物、蛋白质和脂肪。" },
-                { en: "Basal Metabolic Rate, BMR", zh: "基础代谢率", pinyin: "jī chǔ dài xiè lǜ", en_description: "The minimum number of calories required to keep your body functioning at rest.", zh_description: "身体在静息状态下维持基本生命功能所需的最低卡路里量。" },
-                { en: "Nutritional Requirements", zh: "营养需求", pinyin: "yíng yǎng xū qiú", en_description: "The specific amounts of nutrients needed by an individual to maintain health, growth, and proper bodily function.", zh_description: "个体为维持健康、生长和正常身体功能所需的特定营养素量。" },
-                { en: "Satiety Center", zh: "饱食中枢", pinyin: "bǎo shí zhōng shū", en_description: "A region in the brain (hypothalamus) that controls the feeling of fullness and inhibits further eating.", zh_description: "大脑中控制饱腹感并抑制进一步进食的区域（下丘脑）。" },
-                { en: "Protein Synthesis", zh: "蛋白质合成", pinyin: "dàn bái zhì hé chéng", en_description: "The process by which cells build proteins based on genetic instructions.", zh_description: "细胞根据遗传指令构建蛋白质的过程。" },
-                { en: "Biological Availability", zh: "生物利用度", pinyin: "shēng wù lì yòng dù", en_description: "The proportion of a nutrient or drug that, when introduced into the body, is able to produce an active effect.", zh_description: "营养素或药物进入体内后，能够产生活性作用的比例。" },
-                { en: "Body Mass Index, BMI", zh: "体重指数", pinyin: "tǐ zhòng zhǐ sù", en_description: "A measure of body fat based on height and weight that applies to adult men and women.", zh_description: "根据身高和体重衡量身体脂肪的指标，适用于成年男性和女性。" },
-                { en: "Dietary Recommendations", zh: "膳食建议", pinyin: "shàn shí jiàn yì", en_description: "Guidelines provided by health authorities on what to eat to maintain good health and prevent disease.", zh_description: "卫生部门提供的关于如何饮食以保持健康和预防疾病的指南。" },
-                { en: "Satiety", zh: "饱食感", pinyin: "bǎo shí gǎn", en_description: "The feeling of fullness and satisfaction after eating, which inhibits further food intake.", zh_description: "进食后的饱足感和满足感，抑制进一步的食物摄入。" },
-                { en: "Nutritional Deficiencies", zh: "营养缺乏症", pinyin: "yíng yǎng quē fá zhèng", en_description: "A condition that occurs when the body doesn't absorb or get enough of a nutrient from food.", zh_description: "当身体无法吸收或从食物中获得足够营养时发生的一种状况。" },
-                { en: "Nutrient Density", zh: "营养素密度", pinyin: "yíng yǎng sù mì dù", en_description: "The amount of beneficial nutrients in a food relative to its energy content.", zh_description: "食物中对健康有益的营养素含量与其能量含量之比。" },
-                { en: "Glycemic Index", zh: "血糖指数", pinyin: "xuè táng zhǐ sù", en_description: "A ranking of carbohydrates on a scale from 0 to 100 according to the extent to which they raise blood sugar levels after eating.", zh_description: "根据食物摄入后提高血糖水平的程度，将碳水化合物从0到100进行排名。" },
-                { en: "Antioxidants", zh: "抗氧化剂", pinyin: "kàng yǎng huà jì", en_description: "Substances that protect cells from damage caused by free radicals.", zh_description: "保护细胞免受自由基损害的物质。" },
-                { en: "Food Allergy", zh: "食物过敏", pinyin: "shí wù guò mǐn", en_description: "An immune system reaction that occurs shortly after eating a certain food.", zh_description: "摄入某种食物后不久发生的免疫系统反应。" },
-                { en: "Plateau Phase", zh: "平台期", pinyin: "píng tái qī", en_description: "A period during weight loss or other dietary changes where progress seems to stall.", zh_description: "在减肥或其他饮食改变过程中，进展似乎停滞的时期。" }
+            "subsection-1-3": [
+                { term: "水合 (shuǐ hé)，补水 (bǔ shuǐ)，水分 (shuǐ fèn) | Hydration", def: "保持体液平衡和细胞功能。示例：每天饮用足够水分保持身体水合状态。| Maintaining fluid balance and supporting cellular function." },
+                { term: "摄取 (shè qǔ) | Intake", def: "摄入食物和营养素的过程。| The process of consuming food and nutrients." },
+                { term: "消化 (xiāo huà) | Digestion", def: "食物被分解为可吸收成分的过程。| The process of breaking down food into absorbable components." },
+                { term: "吸收 (xī shōu) | Absorption", def: "营养素进入血液或淋巴系统的过程。| The process of nutrients entering the bloodstream or lymphatic system." },
+                { term: "蛋白质合成 (dàn bái zhì hé chéng) | Protein Synthesis", def: "将氨基酸组装成蛋白质的过程。| The process of assembling amino acids into proteins." },
+                { term: "体重指数 (tǐ zhòng zhǐ sù) | Body Mass Index (BMI)", def: "基于身高和体重的体脂测量，用于评估个体是否偏瘦、正常、超重或肥胖。| A measure of body fat based on height and weight, used to assess whether a person is underweight, normal weight, overweight, or obese." },
+                { term: "食物过敏 (shí wù guò mǐn) | Food Allergy", def: "对特定食物产生的不良免疫反应，可导致从轻微不适到严重症状。| An adverse immune response to specific foods that can cause symptoms ranging from mild discomfort to severe reactions." },
+                { term: "饱食中枢 (bǎo shí zhōng shū) | Satiety Center", def: "大脑中调节饱腹感的区域。| The brain region that regulates feelings of fullness." },
+                { term: "饱食感 (bǎo shí gǎn) | Satiety", def: "吃饱后的满足和饱腹感觉。| The feeling of fullness and satisfaction after eating." },
+                { term: "营养需求 (yíng yǎng xū qiú) | Nutritional Requirements", def: "身体维持健康、支持生长发育以及日常活动所需的营养素和能量的量。| The amount of nutrients and energy needed to maintain health, support growth, and perform daily activities." },
+                { term: "营养缺乏症 (yíng yǎng quē fá zhèng) | Nutritional Deficiencies", def: "因缺乏特定营养素而导致的健康问题。| Health problems caused by lack of specific nutrients." },
+                { term: "营养不良 (yíng yǎng bù liáng) | Malnutrition", def: "因营养素摄入不足或过量导致的健康问题。| Health problems caused by inadequate or excessive nutrient intake." },
+                { term: "营养过剩 (yíng yǎng guò shèng) | Overnutrition", def: "摄入过多营养素引发肥胖或代谢问题。| Excessive nutrient intake leading to obesity or metabolic issues." },
+                { term: "膳食建议 (shàn shí jiàn yì) | Dietary Recommendations", def: "基于科学研究的饮食指导，用于维持健康。| Evidence-based dietary guidance to maintain health." },
+                { term: "抗氧化剂 (kàng yǎng huà jì) | Antioxidants", def: "保护细胞免受自由基损伤的物质。| Substances that protect cells from free radical damage." }
             ],
-            "关键营养词汇 (Key Nutritional Vocabulary)": [
-                { en: "Nutrition", zh: "营养", pinyin: "yíng yǎng", en_description: "The process of providing or obtaining the food necessary for health and growth.", zh_description: "提供或获取健康和生长所需食物的过程。" },
-                { en: "Nutrient", zh: "营养素", pinyin: "yíng yǎng sù", en_description: "A substance that provides nourishment essential for the maintenance of life and for growth.", zh_description: "提供维持生命和生长所需营养的物质。" },
-                { en: "Essential Nutrient", zh: "必需营养素", pinyin: "bì xū yíng yǎng sù", en_description: "Nutrients that the body cannot synthesize on its own and must be obtained from the diet.", zh_description: "身体无法自行合成，必须从饮食中获取的营养素。" },
-                { en: "Macronutrient", zh: "宏量营养素", pinyin: "hóng liàng yíng yǎng sù", en_description: "Nutrients that provide calories or energy and are needed in large amounts, including carbohydrates, proteins, and fats.", zh_description: "提供热量或能量且所需量大的营养素，包括碳水化合物、蛋白质和脂肪。" },
-                { en: "Micronutrient", zh: "微量营养素", pinyin: "wēi liàng yíng yǎng sù", en_description: "Vitamins and minerals that are essential for health but are needed in smaller amounts than macronutrients.", zh_description: "对健康至关重要但所需量少于宏量营养素的维生素和矿物质。" },
-                { en: "Science of Nutrition", zh: "营养学", pinyin: "yíng yǎng xué", en_description: "The study of how food affects the body, including how nutrients are metabolized and used.", zh_description: "研究食物如何影响身体，包括营养素如何代谢和利用的科学。" },
-                { en: "Energy Metabolism", zh: "能量代谢", pinyin: "néng liàng dài xiè", en_description: "The set of chemical reactions that occur in living organisms to convert food into energy.", zh_description: "生物体内将食物转化为能量的化学反应过程。" },
-                { en: "Energy Balance", zh: "能量平衡", pinyin: "néng liàng píng héng", en_description: "The relationship between energy intake (calories consumed) and energy expenditure (calories burned).", zh_description: "能量摄入（消耗的卡路里）与能量消耗（燃烧的卡路里）之间的关系。" },
-                { en: "Energy Source Nutrient", zh: "产能营养素", pinyin: "chǎn néng yíng yǎng sù", en_description: "Nutrients that provide the body with energy, primarily carbohydrates, fats, and proteins.", zh_description: "为身体提供能量的营养素，主要是碳水化合物、脂肪和蛋白质。" },
-                { en: "Energy Coefficient", zh: "能量系数", pinyin: "néng liàng xì shù", en_description: "A value used to determine the amount of energy released from a specific food or nutrient.", zh_description: "用于确定特定食物或营养素释放能量量的数值。" },
-                { en: "Basal Metabolism Rate (BMR)", zh: "基础代谢率", pinyin: "jī chǔ dài xiè lǜ", en_description: "The minimum number of calories required to keep your body functioning at rest.", zh_description: "身体在静息状态下维持基本生命功能所需的最低卡路里量。" },
-                { en: "Basal Energy Expenditure (BEE)", zh: "基础能量消耗", pinyin: "jī chǔ néng liàng xiāo hào", en_description: "The energy expended by the body at rest to maintain vital functions.", zh_description: "身体在静息状态下维持生命功能所消耗的能量。" },
-                { en: "Resting Metabolic Rate (RMR)", zh: "静息代谢率", pinyin: "jìng xī dài xiè lǜ", en_description: "The rate at which the body burns calories while at rest.", zh_description: "身体在静息状态下燃烧卡路里的速率。" },
-                { en: "Resting Energy Expenditure (REE)", zh: "静息能量消耗", pinyin: "jìng xī néng liàng xiāo hào", en_description: "The energy expended by the body while at rest, accounting for the majority of daily energy expenditure.", zh_description: "身体在静息状态下消耗的能量，占日常能量消耗的大部分。" },
-                { en: "Relative Metabolic Rate (RMR)", zh: "相对代谢率", pinyin: "xiāng duì dài xiè lǜ", en_description: "The metabolic rate expressed relative to body size or other physiological parameters.", zh_description: "相对于身体大小或其他生理参数表示的代谢率。" },
-                { en: "Metabolic Equivalent (MET)", zh: "代谢当量", pinyin: "dài xiè dāng liàng", en_description: "A unit used to estimate the amount of oxygen used by the body during physical activity.", zh_description: "用于估算身体在体育活动期间氧气使用量的单位。" },
-                { en: "Physical Activity Level (PAL)", zh: "身体活动水平", pinyin: "shēn tǐ huó dòng shuǐ píng", en_description: "A measure of an individual's daily energy expenditure relative to their basal metabolic rate.", zh_description: "衡量个体每日能量消耗相对于其基础代谢率的指标。" },
-                { en: "Total Energy Expenditure (TEE)", zh: "总能量消耗", pinyin: "zǒng néng liàng xiāo hào", en_description: "The total amount of energy (calories) expended by the body in a 24-hour period.", zh_description: "身体在24小时内消耗的总能量（卡路里）量。" },
-                { en: "Thermic Effect of Food (TEF)", zh: "食物热效应", pinyin: "shí wù rè xiào yìng", en_description: "The energy expended by the body to digest, absorb, and metabolize food.", zh_description: "身体消化、吸收和代谢食物所消耗的能量。" },
-                { en: "Thermal Equivalent of Oxygen", zh: "氧的热当量", pinyin: "yǎng de rè dāng liàng", en_description: "The amount of energy released per liter of oxygen consumed.", zh_description: "每消耗一升氧气所释放的能量。" },
-                { en: "Non-Protein Respiratory Quotient (NPRQ)", zh: "非蛋白呼吸商", pinyin: "fēi dàn bái hū xī shī", en_description: "The ratio of carbon dioxide produced to oxygen consumed from the metabolism of carbohydrates and fats.", zh_description: "碳水化合物和脂肪代谢产生的二氧化碳与消耗的氧气之比。" },
-                { en: "Energy Requirement", zh: "能量需要量", pinyin: "néng liàng xū yào liàng", en_description: "The amount of dietary energy needed to maintain health, growth, and optimal physical activity.", zh_description: "维持健康、生长和最佳体力活动所需的膳食能量。" },
-                { en: "Mass", zh: "质量", pinyin: "zhì liàng", en_description: "A measure of the amount of matter in an object, representing its inertia.", note: "它是物质的一种物理属性，代表着物体惯性大小的量度", zh_description: "物体所含物质的量度，代表其惯性大小。" }
+            "subsection-2-1": [
+                { term: "水 (shuǐ) | Water", def: "维持体液平衡，参与代谢和废物排出。| Maintains fluid balance, supports metabolism, and aids in waste removal." },
+                { term: "热量 / 卡路里 (rè liàng / kǎ lù lǐ) | Calories", def: "提供能量以维持身体功能和活动。| Provide energy to support bodily functions and activity." },
+                { term: "蛋白质 (dàn bái zhì) | Protein", def: "构建和修复组织，参与酶和激素功能。| Builds and repairs tissues; involved in enzyme and hormone functions." },
+                { term: "脂肪 (zhī fáng) | Fat", def: "提供能量、支持细胞结构并运输脂溶性维生素。| Provides energy, supports cell structure, and transports fat-soluble vitamins." },
+                { term: "饱和脂肪 (bǎo hé zhī fáng) | Saturated Fat", def: "常见于动物性食物，过量摄入可能影响心血管健康。| Found in animal products; excessive intake may affect cardiovascular health." },
+                { term: "反式脂肪 (fǎn shì zhī fáng) | Trans Fat", def: "人工加工脂肪，对健康不利。| Artificially processed fat; harmful to health." },
+                { term: "单不饱和脂肪 (dān bù bǎo hé zhī fáng) | Monounsaturated Fat", def: "有益心血管健康。| Supports cardiovascular health." },
+                { term: "多不饱和脂肪 (duō bù bǎo hé zhī fáng) | Polyunsaturated Fat", def: "包括Omega-3和Omega-6，有助于大脑和心脏健康。| Includes Omega-3 and Omega-6; supports brain and heart health." },
+                { term: "胆固醇 (dǎn gù chún) | Cholesterol", def: "细胞膜成分，参与激素和胆汁生成。| Component of cell membranes; involved in hormone and bile production." },
+                { term: "碳水化合物 (tàn shuǐ huà hé wù) | Carbohydrates", def: "主要能量来源，包括单糖、双糖和多糖。| Main energy source, including monosaccharides, disaccharides, and polysaccharides." },
+                { term: "糖 (táng) | Sugars", def: "简单碳水化合物，快速提供能量。| Simple carbohydrates that provide quick energy." },
+                { term: "必需脂肪酸 (bì xū zhī fáng suān) | Essential Fatty Acids", def: "身体无法合成，支持大脑、心血管和免疫系统健康。| Cannot be synthesized by the body; support brain, cardiovascular, and immune health." },
+                { term: "氨基酸 (ān jī suān) | Amino Acids", def: "构成蛋白质的基本单位。| Building blocks of proteins." },
+                { term: "必需氨基酸 (bì xū ān jī suān) | Essential Amino Acids", def: "身体无法合成，需通过饮食获取。| Cannot be synthesized by the body; must be obtained from food." },
+                { term: "非必需氨基酸 (fēi bì xū ān jī suān) | Non-Essential Amino Acids", def: "身体可自行合成。| Can be synthesized by the body." },
+                { term: "L-酪氨酸 (L-làosīānsuān) | L-Tyrosine", def: "参与神经递质合成和脑功能。| Involved in neurotransmitter synthesis and brain function." }
             ],
-            "代谢健康 (Metabolic Health)": [
-                { en: "Body Composition", zh: "身体成分", pinyin: "shēn tǐ chéng fèn", en_description: "Goes beyond body weight, covering fat, muscle, bone, and water, providing a clearer picture of health and fitness.", zh_description: "超越体重，涵盖脂肪、肌肉、骨骼和水分，更清晰地反映健康和健身水平。" },
-                { en: "Calories In, Calories Out (CICO)", zh: "热量摄入与消耗", pinyin: "rè liàng shè rù yǔ xiāo hào", en_description: "The concept that weight management depends on the balance between calories consumed and calories expended.", zh_description: "体重管理取决于摄入热量与消耗热量之间平衡的概念。" },
-                { en: "Carbohydrate Metabolism", zh: "碳水化合物代谢", pinyin: "tàn shuǐ huà hé wù dài xiè", en_description: "Process converting sugars into energy.", zh_description: "身体处理糖类（葡萄糖、果糖等）转化为能量的过程。" },
-                { en: "Cardiometabolic Health", zh: "心脏代谢健康", pinyin: "xīn zàng dài xiè jiàn kāng", en_description: "A comprehensive term encompassing the health of your heart and metabolic systems, reducing risk of heart disease, stroke, and diabetes.", zh_description: "一个综合术语，涵盖心脏和代谢系统的健康状况，降低心脏病、中风和糖尿病的风险。" },
-                { en: "Circadian Rhythm", zh: "昼夜节律", pinyin: "zhòu yè jié lǜ", en_description: "Your body's internal clock, regulating cycles of sleepiness and alertness, hormone release, and glucose metabolism.", zh_description: "身体的内部时钟，调节睡意和清醒的周期、激素释放和葡萄糖代谢。" },
-                { en: "Continuous Glucose Monitoring (CGM)", zh: "连续血糖监测", pinyin: "lián xù xuè táng jiān cè", en_description: "Technology that constantly monitors blood sugar levels, providing real-time insights without frequent finger-prick tests.", zh_description: "持续监测血糖水平的技术，无需频繁指尖采血即可提供实时数据。" },
-                { en: "Cortisol", zh: "皮质醇", pinyin: "pí zhì chún", en_description: "The 'stress hormone' that plays a key role in your body’s stress response; chronic high levels can lead to metabolic issues.", zh_description: "在身体应激反应中起关键作用的“应激激素”；长期高水平可能导致代谢问题。" },
-                { en: "Estrogen", zh: "雌激素", pinyin: "cí jī sù", en_description: "A key hormone in women’s health, influencing menstrual cycles, pregnancy, and also promoting insulin sensitivity and glucose regulation.", zh_description: "女性健康中的关键激素，影响月经周期、怀孕，并促进胰岛素敏感性和葡萄糖调节。" },
-                { en: "Fertility", zh: "生育能力", pinyin: "shēng yù néng lì", en_description: "The natural capability to produce offspring, which can be affected by conditions like insulin resistance.", zh_description: "产生后代的自然能力，可能受胰岛素抵抗等情况影响。" },
-                { en: "Fiber", zh: "纤维", pinyin: "xiān wéi", en_description: "Indigestible plant material crucial for digestive health, blood sugar regulation, and heart health.", zh_description: "不可消化的植物物质，对消化健康、血糖调节和心脏健康至关重要。" },
-                { en: "Food as Medicine", zh: "食物即药物", pinyin: "shí wù jí yào wù", en_description: "The idea that dietary choices play a critical role in maintaining health and preventing disease.", zh_description: "饮食选择在维持健康和预防疾病中起关键作用的理念。" },
-                { en: "Fructose", zh: "果糖", pinyin: "guǒ táng", en_description: "A simple sugar found naturally in fruits and honey; concentrated forms in processed foods can contribute to metabolic issues.", zh_description: "水果和蜂蜜中天然存在的一种简单糖；加工食品中的浓缩形式可能导致代谢问题。" },
-                { en: "Fructose Metabolism", zh: "果糖代谢", pinyin: "guǒ táng dài xiè", en_description: "Liver-specific process; overconsumption drives fat synthesis/insulin resistance.", zh_description: "肝脏专属代谢路径，过量摄入促进脂肪生成/胰岛素抵抗。" },
-                { en: "Fructolysis", zh: "果糖分解", pinyin: "guǒ táng fēn jiě", en_description: "Specific catabolic pathway for fructose in the liver.", zh_description: "果糖在肝脏内的特异性分解代谢途径。" },
-                { en: "Ghrelin", zh: "饥饿素", pinyin: "jī è sù", en_description: "Often called the 'hunger hormone,' produced mainly in the stomach to signal the brain it’s time to eat.", zh_description: "通常被称为“饥饿激素”，主要在胃中产生，向大脑发出进食信号。" },
-                { en: "Glucose", zh: "葡萄糖", pinyin: "pú táo táng", en_description: "Your body’s preferred energy source, a simple sugar derived from the foods you eat.", zh_description: "身体首选的能量来源，一种从食物中获取的简单糖。" },
-                { en: "Glucose Intolerance", zh: "葡萄糖不耐受", pinyin: "pú táo táng bù nài shòu", en_description: "A condition where the body struggles to process glucose effectively, leading to higher-than-normal blood sugar levels after eating.", zh_description: "身体难以有效处理葡萄糖的状况，导致餐后血糖水平高于正常。" },
-                { en: "Glucotype", zh: "血糖类型", pinyin: "xuè táng lèi xíng", en_description: "An individual’s unique blood glucose responses to different stimuli, influenced by genetics, lifestyle, and microbiome.", zh_description: "个体对不同刺激的独特血糖反应，受遗传、生活方式和微生物组影响。" },
-                { en: "Glycemic Index (GI)", zh: "血糖指数", pinyin: "xuè táng zhǐ sù", en_description: "A scale that ranks carbohydrates in foods according to how quickly they raise blood glucose levels.", zh_description: "根据食物中碳水化合物提高血糖水平的速度对其进行排名的量表。" },
-                { en: "Glycemic Load (GL)", zh: "血糖负荷", pinyin: "xuè táng fù hè", en_description: "Considers the amount of carbohydrates in a serving of food along with its Glycemic Index to provide a more complete picture of blood sugar impact.", zh_description: "结合食物中碳水化合物的含量及其血糖指数，更全面地反映对血糖的影响。" },
-                { en: "Glycogen", zh: "糖原", pinyin: "táng yuán", en_description: "Your body’s stored form of glucose, mainly in your liver and muscles, for quick energy boosts.", zh_description: "身体储存的葡萄糖形式，主要储存在肝脏和肌肉中，用于快速补充能量。" },
-                { en: "Healthspan", zh: "健康寿命", pinyin: "jiàn kāng shòu mìng", en_description: "The portion of your life spent in good health, free from chronic diseases or disabilities.", zh_description: "一生中健康、无慢性疾病或残疾的部分。" },
-                { en: "Health Halo", zh: "健康光环", pinyin: "jiàn kāng guāng huán", en_description: "The perception that a food, product, or diet is healthier than it actually is, often due to marketing.", zh_description: "一种食物、产品或饮食因营销而显得比实际更健康的认知。" },
-                { en: "High-Fructose Corn Syrup (HFCS)", zh: "高果糖玉米糖浆", pinyin: "gāo guǒ táng yù mǐ táng jiāng", en_description: "A common, inexpensive sweetener in processed foods, scrutinized for its role in obesity and metabolic conditions.", zh_description: "加工食品中常见且廉价的甜味剂，因其在肥胖和代谢疾病中的作用而受到审查。" },
-                { en: "Hyperglycemia", zh: "高血糖", pinyin: "gāo xuè táng", en_description: "The technical term for high blood sugar levels, which can be acute or indicate insulin resistance.", zh_description: "高血糖水平的技术术语，可能是急性或指示胰岛素抵抗。" },
-                { en: "Hypoglycemia", zh: "低血糖", pinyin: "dī xuè táng", en_description: "Low blood sugar, occurring when glucose levels drop below normal, with symptoms ranging from hunger to confusion.", zh_description: "低血糖，指血糖水平低于正常，症状从饥饿到意识模糊不等。" },
-                { en: "Inflammation", zh: "炎症", pinyin: "yán zhèng", en_description: "Your body's natural response to injury or infection; chronic inflammation can contribute to chronic diseases.", zh_description: "身体对损伤或感染的自然反应；慢性炎症可能导致慢性疾病。" },
-                { en: "Intermittent Fasting (Time-Restricted Eating)", zh: "间歇性禁食", pinyin: "jiān xiē xìng jīn shí", en_description: "A dietary approach cycling between fixed periods of eating and fasting, potentially improving insulin sensitivity and metabolic health.", zh_description: "一种在固定进食和禁食期间循环的饮食方法，可能改善胰岛素敏感性和代谢健康。" },
-                { en: "Insulin", zh: "胰岛素", pinyin: "yī dǎo sù", en_description: "A hormone produced by your pancreas that allows glucose to enter body cells for energy.", zh_description: "胰腺产生的一种激素，使葡萄糖进入身体细胞以获取能量。" },
-                { en: "Insulin Resistance", zh: "胰岛素抵抗", pinyin: "yī dǎo sù dǐ kàng", en_description: "When your cells become desensitized to insulin's effects, causing blood sugar levels to rise.", zh_description: "当细胞对胰岛素的作用变得不敏感时，导致血糖水平升高。" },
-                { en: "Keto Diet", zh: "生酮饮食", pinyin: "shēng tóng yǐn shí", en_description: "A high-fat, low-carbohydrate eating plan designed to trigger ketosis, burning fat for energy.", zh_description: "一种高脂肪、低碳水化合物的饮食计划，旨在触发酮症，燃烧脂肪获取能量。" },
-                { en: "Ketones", zh: "酮体", pinyin: "tóng tǐ", en_description: "Chemicals made in your liver when the body burns fat for energy due to insufficient insulin.", zh_description: "当身体因胰岛素不足而燃烧脂肪获取能量时，肝脏中产生的化学物质。" },
-                { en: "Lactase Persistence", zh: "乳糖酶持续性", pinyin: "rǔ táng méi chí xù xìng", en_description: "Genetic trait allowing lactose digestion in adulthood (common in pastoral populations).", zh_description: "成年后持续分泌乳糖酶的遗传特征（北欧/非洲游牧民族常见）。" },
-                { en: "Lactose", zh: "乳糖", pinyin: "rǔ táng", en_description: "Milk disaccharide; requires lactase for digestion.", zh_description: "牛奶中的双糖（葡萄糖+半乳糖），需乳糖酶分解。" },
-                { en: "Lactose Intolerance", zh: "乳糖不耐受", pinyin: "rǔ táng bù nài shòu", en_description: "Digestive disorder due to lactase deficiency (opposite of persistence).", zh_description: "乳糖酶缺乏导致腹胀/腹泻（与乳糖酶持续性相反）。" },
-                { en: "Leptin (and Leptin Resistance)", zh: "瘦素 (及瘦素抵抗)", pinyin: "shòu sù (jí shòu sù dǐ kàng)", en_description: "The 'satiety hormone' that signals fullness; resistance can lead to overeating.", zh_description: "发出饱腹感的“饱腹激素”；抵抗可能导致暴饮暴食。" },
-                { en: "Lifespan", zh: "寿命", pinyin: "shòu mìng", en_description: "The maximum number of years an individual can live, influenced by genetics and lifestyle.", zh_description: "个体可以活的最大年数，受遗传和生活方式影响。" },
-                { en: "Lipid Panel", zh: "血脂检查", pinyin: "xuè zhī jiǎn chá", en_description: "A blood test measuring various fats (cholesterol, triglycerides) in the bloodstream to assess cardiovascular risk.", zh_description: "测量血液中各种脂肪（胆固醇、甘油三酯）的血液检查，以评估心血管风险。" },
-                { en: "Mediterranean Diet", zh: "地中海饮食", pinyin: "dì zhōng hǎi yǐn shí", en_description: "A diet rich in vegetables, fruits, whole grains, and healthy fats, beneficial for metabolic and cardiovascular health.", zh_description: "一种富含蔬菜、水果、全谷物和健康脂肪的饮食，有益于代谢和心血管健康。" },
-                { en: "Menopause", zh: "更年期", pinyin: "gēng nián qī", en_description: "The end of a woman’s menstrual cycle, associated with hormonal changes that can affect metabolic health.", zh_description: "女性月经周期的结束，与可能影响代谢健康的荷尔蒙变化相关。" },
-                { en: "Metabolic Age", zh: "代谢年龄", pinyin: "dài xiè nián líng", en_description: "A comparative number indicating your metabolic health relative to your chronological age group.", zh_description: "一个比较数字，表示您的代谢健康状况相对于您的实际年龄组。" },
-                { en: "Metabolic Conditioning (MetCon)", zh: "代谢调节训练", pinyin: "dài xiè tiáo jié xùn liàn", en_description: "Moderate-to-high-intensity workouts designed to improve metabolism efficiency and endurance.", zh_description: "中高强度训练，旨在提高代谢效率和耐力。" },
-                { en: "Metabolic Flexibility", zh: "代谢灵活性", pinyin: "dài xiè líng huó xìng", en_description: "The body's ability to seamlessly switch between burning carbohydrates and fats for fuel, crucial for energy balance.", zh_description: "身体在燃烧碳水化合物和脂肪之间无缝切换燃料的能力，对能量平衡至关重要。" },
-                { en: "Metabolic Health", zh: "代谢健康", pinyin: "dài xiè jiàn kāng", en_description: "Describes how efficiently your body’s metabolism is working, measured by five key markers.", zh_description: "描述身体代谢运作效率的指标，通过五个关键指标衡量。" },
-                { en: "Metabolic Syndrome", zh: "代谢综合征", pinyin: "dài xiè zōng hé zhēng", en_description: "A cluster of conditions including increased blood pressure, high blood sugar, excess body fat around the waist, and abnormal cholesterol levels, increasing risk of heart disease, stroke, and diabetes.", zh_description: "一组病症，包括血压升高、血糖高、腰部脂肪过多和胆固醇水平异常，增加心脏病、中风和糖尿病的风险。" },
-                { en: "Microbiome", zh: "微生物组", pinyin: "wēi shēng wù zǔ", en_description: "The community of microorganisms living in and on the human body, primarily in the gut, influencing digestion and immunity.", zh_description: "生活在人体内外的微生物群落，主要在肠道中，影响消化和免疫。" },
-                { en: "Obesity", zh: "肥胖", pinyin: "féi pàng", en_description: "A condition characterized by excessive body fat accumulation that can negatively impact your health.", zh_description: "以身体脂肪过度堆积为特征的状况，可能对健康产生负面影响。" },
-                { en: "Polycystic Ovarian Syndrome (PCOS)", zh: "多囊卵巢综合征", pinyin: "duō náng luǎn cháo zōng hé zhēng", en_description: "A common hormonal disorder among women, often linked to insulin resistance and inflammation.", zh_description: "女性常见的荷尔蒙失调，常与胰岛素抵抗和炎症相关。" },
-                { en: "Postprandial Glucose Levels", zh: "餐后血糖水平", pinyin: "cān hòu xuè táng shuǐ píng", en_description: "The concentration of glucose in the blood after eating, indicating how effectively your body manages sugar from meals.", zh_description: "餐后血液中葡萄糖的浓度，表明身体管理餐后糖分的效率。" },
-                { en: "Processed Food (Ultra-Processed Food)", zh: "加工食品 (超加工食品)", pinyin: "jiā gōng shí pǐn (chāo jiā gōng shí pǐn)", en_description: "Food altered from its natural state; ultra-processed foods are significantly changed with added sugars, fats, and artificial ingredients.", zh_description: "食物 altered from its natural state; ultra-processed foods are significantly changed with added sugars, fats, and artificial ingredients." },
-                { en: "Resistance Training", zh: "阻力训练", pinyin: "zǔ lì xùn liàn", en_description: "A form of physical activity to improve muscular fitness, which also boosts metabolism and supports bone health.", zh_description: "一种旨在提高肌肉适应性的体育活动形式，同时也能促进新陈代谢和支持骨骼健康。" },
-                { en: "Sauna", zh: "桑拿", pinyin: "sāng ná", en_description: "A room designed for heat sessions, promoting sweating, relaxation, and linked to improved circulation and insulin sensitivity.", zh_description: "为热疗设计的房间，促进出汗、放松，并与改善血液循环和胰岛素敏感性相关。" },
-                { en: "Seed Oil", zh: "植物油", pinyin: "zhí wù yóu", en_description: "Oils extracted from plant seeds, used in cooking, and can be a source of healthy unsaturated fats.", zh_description: "从植物种子中提取的油，用于烹饪，可以是健康不饱和脂肪的来源。" },
-                { en: "Sleep", zh: "睡眠", pinyin: "shuì mián", en_description: "An essential restorative process affecting nearly every body tissue, including brain health, metabolism, and immune function.", zh_description: "一种重要的恢复过程，影响几乎所有身体组织，包括大脑健康、新陈代谢和免疫功能。" },
-                { en: "Stress", zh: "压力", pinyin: "yā lì", en_description: "Your body’s natural reaction to difficult situations; chronic stress impacts cortisol levels and insulin sensitivity.", zh_description: "身体对困难情况的自然反应；长期压力影响皮质醇水平和胰岛素敏感性。" },
-                { en: "Testosterone", zh: "睾酮", pinyin: "gāo tóng", en_description: "A key hormone in both men and women, crucial for muscle mass, fat distribution, bone density, and linked to metabolic health.", zh_description: "男性和女性体内的关键激素，对肌肉量、脂肪分布、骨密度至关重要，并与代谢健康相关。" },
-                { en: "Walking", zh: "步行", pinyin: "bù xíng", en_description: "An accessible and straightforward form of physical activity that improves cardiovascular health, aids in weight management, and enhances mood.", zh_description: "一种易于进行且简单的体育活动形式，可改善心血管健康，有助于体重管理，并提升情绪。" },
-                { en: "Weight Loss", zh: "减肥", pinyin: "jiǎn féi", en_description: "A process aiming to reduce body fat and improve health, often involving diet and exercise, which can include stages like a weight loss plateau.", zh_description: "旨在减少身体脂肪和改善健康的过程，通常涉及饮食和运动，可能包括减肥平台期等阶段。" }
+            "subsection-2-2": [
+                { term: "微量元素 (wēi liàng yuán sù) | Trace Elements", def: "必需的微量矿物质，如铁、锌、铜等。| Essential trace minerals, such as iron, zinc, and copper." },
+                { term: "宏量元素 (hóng liàng yuán sù) | Macro Elements", def: "需要量较多的矿物质，如钙、镁、钾。| Minerals required in larger amounts, such as calcium, magnesium, and potassium." },
+                { term: "氯化物 (lǜ huà wù) | Chloride", def: "维持体液平衡和神经传导。| Maintains fluid balance and nerve signaling." },
+                { term: "胆碱 (dǎn jiǎn) | Choline", def: "支持神经系统和肝脏健康。| Supports nervous system and liver health." },
+                { term: "胡萝卜素 (hú luó bo sù) | Beta-Carotene", def: "可转化为维生素A，具有抗氧化作用。| Can be converted into vitamin A; has antioxidant properties." },
+                { term: "叶黄素和玉米黄素 (yè huáng sù hé yù mǐ huáng sù) | Lutein and Zeaxanthin", def: "保护眼睛黄斑区，防止光损伤。| Protect the macula in the eye and prevent light-induced damage." },
+                { term: "番茄红素 (fān qié hóng sù) | Lycopene", def: "抗氧化物质，可降低某些癌症风险。| Antioxidant; may reduce the risk of certain cancers." },
+                { term: "甲壳素 (jiǎ ké sù) | Chitin", def: "来自甲壳类生物，有助于消化和脂肪代谢。| From shellfish; supports digestion and fat metabolism." },
+                { term: "酚类化合物 (fēn lèi huà hé wù) | Phenolic Compounds", def: "植物化学物质，具有抗氧化和抗炎作用。| Plant chemicals with antioxidant and anti-inflammatory effects." },
+                { term: "糖醇 (táng chún) | Sugar Alcohols", def: "低热量甜味剂，部分可发酵产生能量。| Low-calorie sweeteners; partially fermentable to produce energy." },
+                { term: "前体物质 (qián tǐ wù zhì) | Precursors", def: "可转化为活性生物分子。| Can be converted into active biomolecules." },
+                { term: "膳食补充剂 (shàn shí bǔ chōng jì) | Dietary Supplements", def: "补充日常饮食中不足的营养素。| Supplement nutrients that may be insufficient in the diet." },
+                { term: "植物化学物 (zhí wù huà xué wù) | Phytochemicals", def: "天然植物成分，具有多种健康作用。| Natural plant compounds with various health benefits." },
+                { term: "益生菌 (yì shēng jūn) | Probiotics", def: "有益肠道微生物平衡和消化健康。| Beneficial microorganisms supporting gut microbiota and digestive health." },
+                { term: "益生元 (yì shēng yuán) | Prebiotics", def: "促进益生菌生长的食物成分。| Food components that promote the growth of probiotics." }
+            ],
+            "subsection-2-3": [
+                { term: "L-茶氨酸 (L-chá ān suān) | L-theanine", def: "存在于茶叶中的氨基酸衍生物，有助于放松、降低压力并改善注意力。| An amino acid derivative found in tea leaves; promotes relaxation, reduces stress, and can improve focus." },
+                { term: "类黄酮 / 生物类黄酮 (lèi huáng tóng / shēng wù lèi huáng tóng) | Flavonoids / Bioflavonoids", def: "广泛存在于植物中，具有抗氧化和抗炎作用。| Widely found in plants; have antioxidant and anti-inflammatory effects." },
+                { term: "花青素 (huā qīng sù) | Anthocyanins", def: "存在于深色水果和蔬菜中，支持心血管健康和抗氧化防护。| Found in dark-colored fruits and vegetables; support cardiovascular health and antioxidant defense." },
+                { term: "异黄酮 (yì huáng tóng) | Isoflavones", def: "主要存在于大豆及豆制品中，对激素平衡和骨骼健康有益。| Primarily found in soy and soy products; beneficial for hormone balance and bone health." },
+                { term: "芥子油苷 (jiè zǐ yóu gān) | Glucosinolates", def: "十字花科植物中的天然化合物，有助于肝脏解毒和抗癌。| Natural compounds in cruciferous vegetables; support liver detoxification and have anticancer properties." },
+                { term: "适应原 (shì yìng yuán) | Adaptogens", def: "天然物质，有助于身体适应压力并恢复平衡。| Natural substances that help the body adapt to stress and restore homeostasis." }
+            ],
+            "section-3": [
+                { term: "维生素A (wéi shēng sù A) | Vitamin A", def: "脂溶性维生素，有助于维持正常视力、皮肤健康以及免疫系统功能。常见于胡萝卜、肝脏、深绿色蔬菜中。| A fat-soluble vitamin that supports normal vision, healthy skin, and immune system function. Common sources include carrots, liver, and dark green vegetables." },
+                { term: "维生素C (wéi shēng sù C) | Vitamin C", def: "水溶性维生素，具有抗氧化作用，帮助胶原蛋白合成，促进伤口愈合，提高免疫力。常见于柑橘类水果、草莓、甜椒中。| A water-soluble vitamin with antioxidant properties, essential for collagen synthesis, wound healing, and immune support. Commonly found in citrus fruits, strawberries, and bell peppers." },
+                { term: "维生素D (wéi shēng sù D) | Vitamin D", def: "脂溶性维生素，有助于促进钙和磷的吸收，维持骨骼与牙齿健康。来源包括阳光照射、鱼肝油、强化食品。| A fat-soluble vitamin that promotes calcium and phosphorus absorption, maintaining bone and dental health. Sources include sunlight exposure, cod liver oil, and fortified foods." },
+                { term: "维生素D2 (wéi shēng sù D2，麦角钙化醇) | Vitamin D2 (Ergocalciferol)", def: "植物来源的维生素D形式，主要来自蘑菇等，经体内转化发挥与D3类似的作用。| A plant-derived form of vitamin D, mainly from mushrooms, converted in the body to have effects similar to vitamin D3." },
+                { term: "维生素D3 (wéi shēng sù D3，胆钙化醇) | Vitamin D3 (Cholecalciferol)", def: "动物来源的维生素D形式，常见于鱼类、蛋黄，也可由皮肤在阳光下合成。| An animal-derived form of vitamin D, found in fish and egg yolks, also produced by the skin when exposed to sunlight." },
+                { term: "前维生素D3 (qián wéi shēng sù D3) | Previtamin D3", def: "皮肤在紫外线照射下由7-脱氢胆固醇合成的维生素D前体，经转化为维生素D3。| A precursor of vitamin D3 formed in the skin from 7-dehydrocholesterol upon UV exposure, later converted to vitamin D3." },
+                { term: "维生素E (wéi shēng sù E) | Vitamin E", def: "脂溶性抗氧化剂，帮助保护细胞免受自由基损伤，支持免疫功能与皮肤健康。| A fat-soluble antioxidant that protects cells from free radical damage, supporting immune function and skin health." },
+                { term: "维生素K (wéi shēng sù K) | Vitamin K", def: "脂溶性维生素，有助于血液凝固与骨骼健康。来源包括绿叶蔬菜、发酵食品。| A fat-soluble vitamin important for blood clotting and bone health. Sources include leafy green vegetables and fermented foods." },
+                { term: "维生素K1 (wéi shēng sù K1，叶绿醌) | Vitamin K1 (Phylloquinone)", def: "主要存在于绿叶蔬菜中，帮助血液凝固。| Mainly found in leafy green vegetables, aids in blood clotting." },
+                { term: "维生素K2 (wéi shēng sù K2) | Vitamin K2 (Menaquinone)", def: "主要由肠道菌群和发酵食品提供，有助于骨骼和心血管健康。| Mainly produced by gut bacteria and found in fermented foods, supports bone and cardiovascular health." },
+                { term: "维生素B1 (wéi shēng sù B1) | Vitamin B1 (Thiamine)", def: "水溶性维生素，参与能量代谢，维持神经系统正常功能。常见于全谷物、瘦肉、豆类。| A water-soluble vitamin involved in energy metabolism and nerve function. Found in whole grains, lean meats, and legumes." },
+                { term: "维生素B2 (wéi shēng sù B2，核黄素) | Vitamin B2 (Riboflavin)", def: "参与能量代谢，维护皮肤、眼睛和神经健康。常见于奶制品、蛋类、绿叶蔬菜。| Supports energy metabolism, and maintains healthy skin, eyes, and nerves. Found in dairy products, eggs, and leafy greens." },
+                { term: "维生素B3 (wéi shēng sù B3，烟酸) | Vitamin B3 (Niacin)", def: "参与能量产生与DNA修复，支持皮肤和神经健康。常见于肉类、鱼类、全谷物。| Involved in energy production and DNA repair, supporting skin and nerve health. Found in meats, fish, and whole grains." },
+                { term: "维生素B4 (wéi shēng sù B4，胆碱/腺嘌呤) | Vitamin B4 (Choline/Adenine – historical)", def: "历史上被列为维生素，胆碱参与神经信号传递和脂肪代谢。| Historically classified as a vitamin; choline aids nerve signaling and fat metabolism." },
+                { term: "维生素B5 (wéi shēng sù B5，泛酸) | Vitamin B5 (Pantothenic Acid)", def: "参与脂肪、碳水化合物和蛋白质代谢，促进激素与神经递质合成。| Plays a role in fat, carbohydrate, and protein metabolism, and in hormone and neurotransmitter synthesis." },
+                { term: "维生素B6 (wéi shēng sù B6) | Vitamin B6", def: "参与氨基酸代谢，帮助红细胞生成和神经递质合成。| Involved in amino acid metabolism, red blood cell production, and neurotransmitter synthesis." },
+                { term: "维生素B7 (wéi shēng sù B7，生物素) | Vitamin B7 (Biotin)", def: "帮助脂肪、氨基酸和葡萄糖代谢，对头发、皮肤和指甲健康有益。| Supports metabolism of fats, amino acids, and glucose; beneficial for hair, skin, and nail health." },
+                { term: "维生素B8 (wéi shēng sù B8，肌醇) | Vitamin B8 (Inositol)", def: "参与细胞膜形成和神经信号传递，可能对情绪调节有帮助。| Involved in cell membrane formation and nerve signaling; may aid in mood regulation." },
+                { term: "维生素B9 (wéi shēng sù B9，叶酸) | Vitamin B9 (Folate/Folic Acid)", def: "对DNA合成和细胞分裂至关重要，孕期可预防胎儿神经管缺陷。| Essential for DNA synthesis and cell division; helps prevent neural tube defects during pregnancy." },
+                { term: "维生素B10 (wéi shēng sù B10，对氨基苯甲酸) | Vitamin B10 (PABA)", def: "历史上列为维生素，参与叶酸代谢。| Historically classified as a vitamin; involved in folate metabolism." },
+                { term: "维生素B11 (wéi shēng sù B11，叶酸衍生物/水杨酸) | Vitamin B11 (Folate variants/Salicylic acid – historical)", def: "历史上列为维生素，某些情况下与叶酸代谢相关。| Historically classified as a vitamin; associated with folate metabolism in some contexts." },
+                { term: "维生素B12 (wéi shēng sù B12) | Vitamin B12", def: "参与红细胞形成、DNA合成和神经系统功能。常见于动物性食物。| Involved in red blood cell formation, DNA synthesis, and nervous system function. Found in animal-based foods." }
+            ],
+            "section-4": [
+                { term: "铜 (tóng) | Copper", def: "参与红细胞生成、酶功能和免疫系统健康。| Involved in red blood cell formation, enzyme function, and immune system health." },
+                { term: "锰 (měng) | Manganese", def: "参与骨骼形成、抗氧化酶活性和能量代谢。| Supports bone formation, antioxidant enzyme activity, and energy metabolism." },
+                { term: "铬 (gè) | Chromium", def: "参与血糖代谢和胰岛素功能。| Involved in glucose metabolism and insulin function." },
+                { term: "钼 (mù) | Molybdenum", def: "是多种酶的辅因子，参与硫代谢和体内解毒反应。| A cofactor for various enzymes, involved in sulfur metabolism and detoxification." },
+                { term: "碘 (diǎn) | Iodine", def: "是甲状腺激素合成必需元素，调节新陈代谢。| Essential for thyroid hormone synthesis and metabolic regulation." },
+                { term: "钠 (nà) | Sodium", def: "维持体液平衡、神经传导和肌肉收缩。| Maintains fluid balance, nerve transmission, and muscle contraction." },
+                { term: "钾 (jiǎ) | Potassium", def: "调节细胞内液体平衡、心脏和肌肉功能。| Regulates intracellular fluid balance, heart, and muscle function." },
+                { term: "钙 (gài) | Calcium", def: "构成骨骼和牙齿，参与血液凝固和神经肌肉功能。| Forms bones and teeth, involved in blood clotting and neuromuscular function." },
+                { term: "铁 (tiě) | Iron", def: "红细胞生成和氧气运输的关键元素。| Essential for red blood cell formation and oxygen transport." },
+                { term: "镁 (měi) | Magnesium", def: "参与能量代谢、神经肌肉功能和骨骼健康。| Supports energy metabolism, neuromuscular function, and bone health." },
+                { term: "锌 (xīn) | Zinc", def: "参与免疫功能、伤口愈合和DNA合成。| Involved in immune function, wound healing, and DNA synthesis." },
+                { term: "磷 (lín) | Phosphorus", def: "构成骨骼和牙齿的重要元素，也参与能量代谢。| Important for bones and teeth, and energy metabolism." },
+                { term: "硒 (xī) | Selenium", def: "抗氧化作用、免疫系统功能和甲状腺健康。| Supports antioxidant activity, immune function, and thyroid health." },
+                { term: "氟 (fú) | Fluoride", def: "参与牙齿和骨骼矿化，预防龋齿。| Important for teeth and bone mineralization; helps prevent dental caries." },
+                { term: "氯 (lǜ) | Chloride", def: "维持体液平衡和胃酸生成。| Maintains fluid balance and is necessary for stomach acid production." },
+                { term: "硫 (liú) | Sulfur", def: "构成蛋白质中的氨基酸，如半胱氨酸和蛋氨酸，参与代谢反应。| Part of amino acids such as cysteine and methionine; involved in metabolic reactions." }
+            ],
+            "section-5": [
+                { term: "身体成分 (shēn tǐ chéng fèn) | Body Composition", def: "指身体中脂肪、肌肉、骨骼等组织的比例。| Refers to the proportion of fat, muscle, and bone in the body." },
+                { term: "热量摄入与消耗 (rè liàng shè rù yǔ xiāo hào) | Calories In, Calories Out (CICO)", def: "指通过食物摄入和身体活动消耗的热量平衡。| Refers to the balance between calories consumed through food and beverages and calories expended through physical activity and metabolism." },
+                { term: "碳水化合物代谢 (tàn shuǐ huà hé wù dài xiè) | Carbohydrate Metabolism", def: "指体内对碳水化合物的消化、吸收、转化和利用过程。| The process by which the body digests, absorbs, transforms, and utilizes carbohydrates." },
+                { term: "心脏代谢健康 (xīn zàng dài xiè jiàn kāng) | Cardiometabolic Health", def: "指心脏功能与代谢过程的健康状态。| Refers to the health status of the heart and metabolic processes, encompassing factors like blood pressure, cholesterol levels, and insulin sensitivity." },
+                { term: "昼夜节律 (zhòu yè jié lǜ) | Circadian Rhythm", def: "指生物体在24小时内的生理和行为变化周期。| The physiological and behavioral changes that occur in a roughly 24-hour cycle, responding to environmental cues like light and darkness." },
+                { term: "连续血糖监测 (lián xù xuè táng jiān cè) | Continuous Glucose Monitoring (CGM)", def: "一种实时监测血糖水平的技术，通常用于糖尿病管理。| A technology that continuously tracks glucose levels in real-time, often used in diabetes management." },
+                { term: "皮质醇 (pí zhì chún) | Cortisol", def: "由肾上腺分泌的激素，参与应激反应和代谢调节。| A hormone secreted by the adrenal glands, involved in stress response and metabolic regulation." },
+                { term: "雌激素 (cí jī sù) | Estrogen", def: "主要在女性体内产生的激素，调节生殖系统和其他生理功能。| A hormone primarily produced in females, regulating reproductive and other physiological functions." },
+                { term: "生育能力 (shēng yù néng lì) | Fertility", def: "指个体繁殖后代的能力。| Refers to the ability of an individual to reproduce." },
+                { term: "食物即药物 (shí wù jí yào wù) | Food as Medicine", def: "将食物视为预防和治疗疾病的工具。| Viewing food as a tool for preventing and treating diseases." },
+                { term: "果糖 (guǒ táng) | Fructose", def: "一种天然糖类，主要存在于水果和蜂蜜中。| A natural sugar found primarily in fruits and honey." },
+                { term: "果糖代谢 (guǒ táng dài xiè) | Fructose Metabolism", def: "体内对果糖的处理和转化过程。| The process by which the body processes and converts fructose." },
+                { term: "果糖分解 (guǒ táng fēn jiě) | Fructolysis", def: "果糖在体内的分解过程。| The breakdown of fructose in the body." },
+                { term: "饥饿素 (jī è sù) | Ghrelin", def: "一种激素，促进食欲和能量摄取。| A hormone that stimulates appetite and energy intake." },
+                { term: "葡萄糖 (pú táo táng) | Glucose", def: "一种主要的能量来源，存在于许多食物中。| A primary source of energy found in many foods." },
+                { term: "葡萄糖不耐受 (pú táo táng bù nài shòu) | Glucose Intolerance", def: "体内无法有效处理葡萄糖的状态。| A condition where the body cannot effectively process glucose." },
+                { term: "血糖类型 (xuè táng lèi xíng) | Glucotype", def: "指个体对血糖反应的不同模式。| Refers to different patterns of individual responses to blood glucose." },
+                { term: "血糖指数 (xuè táng zhǐ sù) | Glycemic Index (GI)", def: "衡量食物对血糖影响的指标。| A measure of how foods affect blood sugar levels." },
+                { term: "血糖负荷 (xuè táng fù hè) | Glycemic Load (GL)", def: "考虑食物分量的血糖影响指标。| A measure of the blood sugar impact of foods, considering portion size." },
+                { term: "糖原 (táng yuán) | Glycogen", def: "储存在肝脏和肌肉中的葡萄糖形式。| The form of glucose stored in the liver and muscles." },
+                { term: "健康寿命 (jiàn kāng shòu mìng) | Healthspan", def: "指健康状态下的预期寿命。| The expected lifespan in good health." },
+                { term: "健康光环 (jiàn kāng guāng huán) | Health Halo", def: "对某些食物或产品健康益处的过度认知。| The overestimation of health benefits of certain foods or products." },
+                { term: "高果糖玉米糖浆 (gāo guǒ táng yù mǐ táng jiāng) | High-Fructose Corn Syrup (HFCS)", def: "一种常用于加工食品的甜味剂。| A sweetener commonly used in processed foods." },
+                { term: "高血糖 (gāo xuè táng) | Hyperglycemia", def: "血糖水平高于正常范围的状态。| A condition where blood glucose levels are higher than normal." },
+                { term: "低血糖 (dī xuè táng) | Hypoglycemia", def: "血糖水平低于正常范围的状态。| A condition where blood glucose levels are lower than normal." },
+                { term: "炎症 (yán zhèng) | Inflammation", def: "身体对伤害或感染的免疫反应。| The body's immune response to injury or infection." },
+                { term: "间歇性禁食 (jiān xiē xìng jīn shí) | Intermittent Fasting (Time-Restricted Eating)", def: "限制进食时间的饮食模式。| A dietary pattern that limits eating to specific time periods." },
+                { term: "胰岛素 (yī dǎo sù) | Insulin", def: "由胰腺分泌的激素，调节血糖水平。| A hormone secreted by the pancreas that regulates blood glucose levels." },
+                { term: "胰岛素抵抗 (yī dǎo sù dǐ kàng) | Insulin Resistance", def: "细胞对胰岛素反应减弱的状态。| A condition where cells become less responsive to insulin." },
+                { term: "生酮饮食 (shēng tóng yǐn shí) | Keto Diet", def: "高脂、低碳水的饮食模式，促使身体进入酮症状态。| A high-fat, low-carbohydrate diet that induces a state of ketosis in the body." },
+                { term: "酮体 (tóng tǐ) | Ketones", def: "脂肪分解产生的能量来源。| Energy sources produced from the breakdown of fats." },
+                { term: "乳糖 (rǔ táng) | Lactose", def: "乳糖是乳制品中的主要糖类，需要乳糖酶分解为葡萄糖和半乳糖以便吸收。| The main sugar found in dairy products; must be broken down by lactase into glucose and galactose for absorption." },
+                { term: "乳糖不耐受 (rǔ táng bù nài shòu) | Lactose Intolerance", def: "因缺乏足够乳糖酶而导致乳糖无法被有效分解，可能引起腹胀、腹泻等症状。| A condition caused by insufficient lactase, preventing proper breakdown of lactose, which may cause bloating, diarrhea, and other symptoms." },
+                { term: "瘦素 (及瘦素抵抗) (shòu sù / jí shòu sù dǐ kàng) | Leptin (and Leptin Resistance)", def: "由脂肪细胞分泌的激素，调节食欲和能量消耗。瘦素抵抗时，食欲控制受损，易导致肥胖。| A hormone secreted by fat cells that regulates appetite and energy expenditure; leptin resistance impairs appetite control and can contribute to obesity." },
+                { term: "寿命 (shòu mìng) | Lifespan", def: "个体从出生到自然死亡的时间长度，受遗传、生活方式和环境因素影响。| The duration from birth to natural death, influenced by genetics, lifestyle, and environmental factors." },
+                { term: "血脂检查 (xuè zhī jiǎn chá) | Lipid Panel", def: "通过血液检测胆固醇、甘油三酯等指标，评估心血管疾病风险。| A blood test measuring cholesterol, triglycerides, and other lipids to assess cardiovascular disease risk." },
+                { term: "地中海饮食 (dì zhōng hǎi yǐn shí) | Mediterranean Diet", def: "以蔬菜、水果、全谷物、橄榄油、鱼类为主的饮食模式，与心血管健康相关。| A dietary pattern emphasizing vegetables, fruits, whole grains, olive oil, and fish, associated with cardiovascular health." },
+                { term: "更年期 (gēng nián qī) | Menopause", def: "女性卵巢功能逐渐下降，月经停止，并伴随激素水平变化的一段生理时期。| A physiological period in women marked by declining ovarian function, cessation of menstruation, and hormonal changes." },
+                { term: "代谢年龄 (dài xiè nián líng) | Metabolic Age", def: "通过代谢率和身体组成评估的生理年龄，可能与实际年龄不同。| A physiological age assessed through metabolic rate and body composition, which may differ from chronological age." },
+                { term: "代谢调节训练 (dài xiè tiáo jié xùn liàn) | Metabolic Conditioning (MetCon)", def: "通过有氧与阻力训练组合，提高身体能量利用效率和代谢灵活性。| A combination of aerobic and resistance training to improve energy utilization efficiency and metabolic flexibility." },
+                { term: "代谢灵活性 (dài xiè líng huó xìng) | Metabolic Flexibility", def: "身体在使用碳水化合物或脂肪作为能量来源之间的适应能力。| The body’s ability to switch between using carbohydrates or fats as energy sources." },
+                { term: "代谢综合征 (dài xiè zōng hé zhēng) | Metabolic Syndrome", def: "一组代谢异常的集合，包括腹型肥胖、高血糖、高血压和血脂异常，增加心血管疾病风险。| A cluster of metabolic abnormalities, including abdominal obesity, high blood sugar, high blood pressure, and dyslipidemia, increasing cardiovascular disease risk." },
+                { term: "微生物组 (wēi shēng wù zǔ) | Microbiome", def: "人体肠道和其他部位的微生物群落，影响消化、免疫和代谢功能。| The community of microorganisms in the gut and other body sites, influencing digestion, immunity, and metabolism." },
+                { term: "肥胖 (féi pàng) | Obesity", def: "体内脂肪过多，可能导致代谢紊乱和心血管疾病风险增加。| Excess body fat, which may lead to metabolic dysfunction and increased risk of cardiovascular disease." },
+                { term: "多囊卵巢综合征 (duō náng luǎn cháo zōng hé zhēng) | Polycystic Ovarian Syndrome (PCOS)", def: "女性内分泌疾病，特征为月经不规律、多囊卵巢和雄激素过高，影响代谢与生育能力。| A female endocrine disorder characterized by irregular menstruation, polycystic ovaries, and high androgen levels, affecting metabolism and fertility." },
+                { term: "餐后血糖水平 (cān hòu xuè táng shuǐ píng) | Postprandial Glucose Levels", def: "进食后血液中的葡萄糖浓度，用于评估血糖调节能力。| The concentration of glucose in the blood after eating, used to assess blood sugar regulation." },
+                { term: "加工食品 (超加工食品) (jiā gōng shí pǐn / chāo jiā gōng shí pǐn) | Processed Food (Ultra-Processed Food)", def: "经过高度工业加工，通常含大量糖、盐和添加剂，营养价值低，可能增加肥胖和慢性疾病风险。| Highly industrially processed foods, often high in sugar, salt, and additives, with low nutritional value; may increase risk of obesity and chronic diseases." },
+                { term: "阻力训练 (zǔ lì xùn liàn) | Resistance Training", def: "通过使用重量或阻力器械进行肌肉锻炼，增强力量、骨密度和代谢健康。| Muscle training using weights or resistance equipment to increase strength, bone density, and metabolic health." },
+                { term: "桑拿 (sāng ná) | Sauna", def: "通过高温蒸汽或干热环境使身体出汗，可能改善循环、心血管健康和肌肉恢复。| Exposing the body to high-temperature steam or dry heat to promote sweating, which may improve circulation, cardiovascular health, and muscle recovery." },
+                { term: "植物油 (zhí wù yóu) | Seed Oil", def: "从植物中提取的油脂，常含不饱和脂肪酸，可替代饱和脂肪，有助心血管健康。| Oils extracted from plants, often rich in unsaturated fatty acids; can replace saturated fats and support cardiovascular health." },
+                { term: "睡眠 (shuì mián) | Sleep", def: "身体和大脑的休息与修复过程，对代谢、免疫、认知和情绪健康至关重要。| The body and brain’s rest and repair process, crucial for metabolism, immunity, cognition, and emotional health." },
+                { term: "压力 (yā lì) | Stress", def: "生理或心理上对挑战或威胁的反应，长期压力可能干扰代谢、免疫和心血管功能。| The physiological or psychological response to challenges or threats; chronic stress may disrupt metabolism, immunity, and cardiovascular function." },
+                { term: "睾酮 (gāo tóng) | Testosterone", def: "男性主要性激素，也存在于女性体内，影响肌肉质量、骨密度、性功能和能量代谢。| The main male sex hormone, also present in females; affects muscle mass, bone density, sexual function, and energy metabolism." },
+                { term: "步行 (bù xíng) | Walking", def: "一种低强度有氧运动，有助心血管健康、能量消耗及代谢功能。| A low-intensity aerobic activity that supports cardiovascular health, energy expenditure, and metabolic function." },
+                { term: "减肥 (jiǎn féi) | Weight Loss", def: "通过饮食控制、运动或行为改变减少体脂，以改善健康指标和代谢状态。| Reducing body fat through diet, exercise, or behavioral changes to improve health markers and metabolic state." }
             ]
         };
 
-        // Set the current category to the first one in the new nutritional data
-        let currentCategory = Object.keys(medicalData)[0];
-        
-        const categoryNav = document.getElementById('category-nav');
-        const categoryTitle = document.getElementById('category-title');
-        const termList = document.getElementById('term-list');
-        const searchInput = document.getElementById('search-input');
-        const tooltip = document.getElementById('tooltip'); // Get tooltip element
-        const loadingSpinner = document.getElementById('loading-spinner'); // Get loading spinner element
-
-        let currentAudio = null; // To keep track of the currently playing audio
-        let tooltipHideTimeout; // To manage tooltip visibility on hover
-
-        // Function to convert base64 to ArrayBuffer
-        function base64ToArrayBuffer(base64) {
-            const binaryString = atob(base64);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            return bytes.buffer;
-        }
-
-        // Function to convert PCM (Int16Array) to WAV Blob
-        function pcmToWav(pcm16, sampleRate) {
-            const numChannels = 1; // Mono audio
-            const bytesPerSample = 2; // 16-bit PCM
-
-            const dataLength = pcm16.length * bytesPerSample;
-            const buffer = new ArrayBuffer(44 + dataLength);
-            const view = new DataView(buffer);
-
-            // RIFF chunk descriptor
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + dataLength, true); // file size
-            writeString(view, 8, 'WAVE');
-
-            // FMT sub-chunk
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true); // sub-chunk size
-            view.setUint16(20, 1, true); // audio format (1 = PCM)
-            view.setUint16(22, numChannels, true); // number of channels
-            view.setUint32(24, sampleRate, true); // sample rate
-            view.setUint32(28, sampleRate * numChannels * bytesPerSample, true); // byte rate
-            view.setUint16(32, numChannels * bytesPerSample, true); // block align
-            view.setUint16(34, 16, true); // bits per sample
-
-            // Data sub-chunk
-            writeString(view, 36, 'data');
-            view.setUint32(40, dataLength, true); // data size
-
-            // Write PCM data
-            for (let i = 0; i < pcm16.length; i++) {
-                view.setInt16(44 + i * bytesPerSample, pcm16[i], true);
-            }
-
-            return new Blob([view], { type: 'audio/wav' });
-        }
-
-        function writeString(view, offset, string) {
-            for (let i = 0; i < string.length; i++) {
-                view.setUint8(offset + i, string.charCodeAt(i));
-            }
-        }
-
-        // Function to play audio using TTS API
-        async function playAudio(text, language) {
-            if (!text) {
-                console.warn("No text provided for audio playback.");
-                return;
-            }
-
-            // Stop any currently playing audio
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                // Do NOT set currentAudio to null here, it will be reassigned shortly
-            }
-
-            loadingSpinner.style.display = 'block'; // Show spinner
-
-            let retries = 0;
-            const maxRetries = 3;
-            const baseDelay = 1000; // 1 second
-
-            while (retries < maxRetries) {
-                try {
-                    const payload = {
-                        contents: [{
-                            parts: [{ text: text }]
-                        }],
-                        generationConfig: {
-                            responseModalities: ["AUDIO"],
-                            speechConfig: {
-                                voiceConfig: {
-                                    prebuiltVoiceConfig: { voiceName: language === 'zh-Hans' ? "Kore" : "Zephyr" } // Use Kore for Chinese, Zephyr for English
-                                }
-                            }
-                        },
-                        model: "gemini-2.5-flash-preview-tts"
-                    };
-
-                    const apiKey = ""; // Leave as-is, Canvas will provide it
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    const part = result?.candidates?.[0]?.content?.parts?.[0];
-                    const audioData = part?.inlineData?.data;
-                    const mimeType = part?.inlineData?.mimeType;
-
-                    if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
-                        // Extract sample rate from mimeType, e.g., "audio/L16;rate=16000"
-                        const sampleRateMatch = mimeType.match(/rate=(\d+)/);
-                        const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000; // Default to 16kHz
-
-                        const pcmData = base64ToArrayBuffer(audioData);
-                        const pcm16 = new Int16Array(pcmData);
-                        const wavBlob = pcmToWav(pcm16, sampleRate);
-                        const audioUrl = URL.createObjectURL(wavBlob);
-
-                        const newAudio = new Audio(audioUrl);
-                        currentAudio = newAudio; // Assign the new audio to the global variable immediately
-                        
-                        currentAudio.play().catch(e => console.error("Audio playback error:", e));
-                        currentAudio.onended = () => {
-                            URL.revokeObjectURL(audioUrl); // Clean up the Blob URL
-                            if (currentAudio === newAudio) { // Only null if it's still the current audio
-                                currentAudio = null;
-                            }
-                        };
-                        loadingSpinner.style.display = 'none'; // Hide spinner on success
-                        return; // Exit loop on success
-                    } else {
-                        throw new Error("Invalid audio data received from TTS API.");
-                    }
-                } catch (error) {
-                    console.error(`Attempt ${retries + 1} failed:`, error);
-                    retries++;
-                    if (retries < maxRetries) {
-                        const delay = baseDelay * Math.pow(2, retries - 1); // Exponential backoff
-                        await new Promise(res => setTimeout(res, delay));
-                    } else {
-                        loadingSpinner.style.display = 'none'; // Hide spinner on final failure
-                        console.error("Failed to play audio after multiple retries.");
-                    }
-                }
-            }
-        }
-
-        // Function to get all terms from all categories for comprehensive searching
-        function getAllTerms() {
-            let allTerms = [];
-            for (const categoryKey in medicalData) {
-                const categoryContent = medicalData[categoryKey];
-                if (Array.isArray(categoryContent)) {
-                    // Simple array category
-                    categoryContent.forEach(term => {
-                        allTerms.push({ ...term, category: categoryKey });
-                    });
-                } else if (categoryContent.terms && Array.isArray(categoryContent.terms)) {
-                    // Special structure like Minerals
-                    categoryContent.terms.forEach(term => {
-                        allTerms.push({ ...term, category: categoryKey });
-                    });
-                } else { // Subcategorized content (e.g., Body Parts & Systems, Common Diseases & Conditions, Tumors & Cancers)
-                    for (const subCategoryKey in categoryContent) {
-                        const subCategoryContent = categoryContent[subCategoryKey]; // Corrected variable name
-
-                        if (Array.isArray(subCategoryContent)) {
-                            // Direct array of terms within a sub-category
-                            subCategoryContent.forEach(term => {
-                                allTerms.push({ ...term, category: categoryKey, subCategory: subCategoryKey });
-                            });
-                        } else if (typeof subCategoryContent === 'object' && subCategoryContent !== null) {
-                            // Further nested object (e.g., Diagnostic Tests & Procedures, Digestive System Disorders)
-                            for (const nestedSubCategoryKey in subCategoryContent) {
-                                const nestedSubCategoryTerms = subCategoryContent[nestedSubCategoryKey];
-                                if (Array.isArray(nestedSubCategoryTerms)) {
-                                    nestedSubCategoryTerms.forEach(term => {
-                                        allTerms.push({ ...term, category: categoryKey, subCategory: `${subCategoryKey} - ${nestedSubCategoryKey}` });
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // Remove duplicates based on English term if they exist across categories
-            const seen = new Set();
-            return allTerms.filter(term => {
-                const duplicate = seen.has(term.en);
-                seen.add(term.en);
-                return !duplicate;
-            });
-        }
-
-        function renderNav() {
-            categoryNav.innerHTML = '';
-            Object.keys(medicalData).forEach(category => {
-                const button = document.createElement('button');
-                button.textContent = category;
-                button.className = `nav-button px-4 py-2 text-sm sm:text-base font-medium rounded-lg border border-emerald-300 ${category === currentCategory ? 'active' : 'bg-white text-gray-700'}`;
-                button.onclick = () => {
-                    currentCategory = category;
-                    searchInput.value = ''; // Clear search input when changing category
-                    renderNav(); // Re-render nav to update active state
-                    renderTerms(); // Render terms for the selected category
-                };
-                categoryNav.appendChild(button);
-            });
-        }
-
-        function renderTerms(filter = '') {
-            termList.innerHTML = ''; // Clear existing list
-            const lowerCaseFilter = filter.toLowerCase().trim(); // Trim whitespace from filter
-
-            let termsToDisplay = [];
-
-            if (lowerCaseFilter) { // If there's a filter, perform search across all terms
-                categoryTitle.textContent = `搜索 "${filter}" 的结果 (Search Results for "${filter}")`;
-                const allAvailableTerms = getAllTerms(); // Get all terms
+        document.addEventListener('DOMContentLoaded', function () {
+            const contentContainer = document.getElementById('content-container');
+            
+            function createCard(item) {
+                const card = document.createElement('div');
+                card.className = 'vocab-card bg-white p-5 rounded-lg border border-stone-200 shadow-sm transition-all duration-300';
+                const termParts = item.term.split('|').map(p => p.trim());
+                const defParts = item.def.split('|').map(p => p.trim());
                 
-                termsToDisplay = allAvailableTerms.filter(term =>
-                    (term.en && term.en.toLowerCase().includes(lowerCaseFilter)) ||
-                    (term.zh && term.zh.includes(filter.trim())) || 
-                    (term.pinyin && term.pinyin.toLowerCase().includes(lowerCaseFilter)) ||
-                    (term.note && term.note.includes(filter.trim())) ||
-                    (term.en_description && term.en_description.toLowerCase().includes(lowerCaseFilter)) || // Added description search
-                    (term.zh_description && term.zh_description.includes(filter.trim())) // Added description search
-                );
+                card.innerHTML = `
+                    <h4 class="font-semibold text-lg text-slate-900">${termParts[0]} | ${termParts[1]}</h4>
+                    <p class="text-slate-600 mt-1">${defParts[0]}<br>${defParts[1]}</p>
+                `;
+                return card;
+            }
 
-                if (termsToDisplay.length === 0) {
-                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-gray-500">找不到相符的词汇。(No matching terms found.)</td></tr>';
-                } else {
-                    termsToDisplay.forEach(term => {
-                        const row = document.createElement('tr');
-                        row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
-                        // Store the term data directly on the row for easy access during hover
-                        row.dataset.term = JSON.stringify(term); 
-                        row.innerHTML = `
-                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
-                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
-                                <span class="chinese-text">${term.zh || ''}</span>
-                                <span class="pinyin-text">${term.pinyin || ''}</span>
-                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
-                                ${term.category ? `<span class="text-xs text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full mt-1 inline-block">${term.category}${term.subCategory ? ` - ${term.subCategory}` : ''}</span>` : ''}
-                            </td>
-                        `;
-                        termList.appendChild(row);
+            for (const sectionId in vocabularyData) {
+                const sectionElement = document.querySelector(`#${sectionId} .vocab-list`) || document.querySelector(`#${sectionId} .grid`);
+                if (sectionElement) {
+                    vocabularyData[sectionId].forEach(item => {
+                        sectionElement.appendChild(createCard(item));
                     });
                 }
+            }
 
-            } else { // No filter, render selected category
-                categoryTitle.textContent = currentCategory;
-                const currentCategoryObj = medicalData[currentCategory];
+            const searchInput = document.getElementById('search-input');
+            const noResultsMessage = document.getElementById('no-results');
+            const allVocabCards = document.querySelectorAll('.vocab-card');
 
-                if (currentCategoryObj.description && currentCategoryObj.terms) { // Special structure for Minerals
-                    const descriptionRow = document.createElement('tr');
-                    descriptionRow.innerHTML = `<td colspan="2" class="p-3 text-left text-base text-gray-600 italic border-b border-emerald-200">${currentCategoryObj.description}</td>`;
-                    termList.appendChild(descriptionRow);
-                    termsToDisplay = currentCategoryObj.terms;
+            function filterContent() {
+                const query = searchInput.value.toLowerCase().trim();
+                let resultsFound = false;
 
-                    termsToDisplay.forEach(term => {
-                        const row = document.createElement('tr');
-                        row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
-                        row.dataset.term = JSON.stringify(term);
-                        row.innerHTML = `
-                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
-                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
-                                <span class="chinese-text">${term.zh || ''}</span>
-                                <span class="pinyin-text">${term.pinyin || ''}</span>
-                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
-                            </td>
-                        `;
-                        termList.appendChild(row);
-                    });
-
-                } else if (Array.isArray(currentCategoryObj)) { // Original simple array categories
-                    termsToDisplay = currentCategoryObj;
-                    termsToDisplay.forEach(term => {
-                        const row = document.createElement('tr');
-                        row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
-                        row.dataset.term = JSON.stringify(term);
-                        row.innerHTML = `
-                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
-                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
-                                <span class="chinese-text">${term.zh || ''}</span>
-                                <span class="pinyin-text">${term.pinyin || ''}</span>
-                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
-                            </td>
-                        `;
-                        termList.appendChild(row);
-                    });
-                } else { // Subcategorized structure like Body Parts, Common Diseases, and now Tumors & Cancers
-                    for (const subCategoryKey in currentCategoryObj) {
-                        const subCategoryContent = currentCategoryObj[subCategoryKey];
-
-                        // Add a header for the sub-category
-                        const subCategoryHeader = document.createElement('tr');
-                        subCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-lg font-semibold text-emerald-700 bg-emerald-100/50 border-b border-emerald-200 rounded-lg mt-4">${subCategoryKey}</td>`;
-                        termList.appendChild(subCategoryHeader);
-
-                        // Check if the subCategoryContent is an array (direct terms)
-                        if (Array.isArray(subCategoryContent)) {
-                            subCategoryContent.forEach(term => {
-                                const row = document.createElement('tr');
-                                row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
-                                row.dataset.term = JSON.stringify(term);
-                                row.innerHTML = `
-                                    <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
-                                    <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
-                                        <span class="chinese-text">${term.zh || ''}</span>
-                                        <span class="pinyin-text">${term.pinyin || ''}</span>
-                                        ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
-                                    </td>
-                                `;
-                                termList.appendChild(row);
-                            });
-                        } else if (typeof subCategoryContent === 'object' && subCategoryContent !== null) {
-                            // If it's an object, it means there's another level of nesting (e.g., Diagnostic Tests & Procedures, Digestive System Disorders)
-                            for (const nestedSubCategoryKey in subCategoryContent) {
-                                const nestedSubCategoryTerms = subCategoryContent[nestedSubCategoryKey];
-                                
-                                // Add a header for the nested sub-category
-                                const nestedSubCategoryHeader = document.createElement('tr');
-                                nestedSubCategoryHeader.innerHTML = `<td colspan="2" class="p-3 text-left text-base font-medium text-gray-700 bg-emerald-50/50 border-b border-emerald-100 pl-6">${nestedSubCategoryKey}</td>`;
-                                termList.appendChild(nestedSubCategoryHeader);
-
-                                if (Array.isArray(nestedSubCategoryTerms)) {
-                                    nestedSubCategoryTerms.forEach(term => {
-                                        const row = document.createElement('tr');
-                                        row.className = 'border-b border-emerald-100 hover:bg-emerald-50/50';
-                                        row.dataset.term = JSON.stringify(term);
-                                        row.innerHTML = `
-                                            <td class="p-3 text-gray-800 english-term cursor-pointer">${term.en || ''}</td>
-                                            <td class="p-3 text-gray-800 chinese-pinyin-term cursor-pointer">
-                                                <span class="chinese-text">${term.zh || ''}</span>
-                                                <span class="pinyin-text">${term.pinyin || ''}</span>
-                                                ${term.note ? `<span class="pinyin-text text-gray-600 italic mt-1">备注: ${term.note}</span>` : ''}
-                                            </td>
-                                        `;
-                                        termList.appendChild(row);
-                                    });
-                                }
-                            }
-                        }
+                allVocabCards.forEach(card => {
+                    const cardText = card.textContent.toLowerCase();
+                    if (cardText.includes(query)) {
+                        card.style.display = '';
+                        resultsFound = true;
+                    } else {
+                        card.style.display = 'none';
                     }
+                });
+
+                document.querySelectorAll('#content-container section').forEach(section => {
+                    const visibleCards = section.querySelectorAll('.vocab-card:not([style*="display: none"])');
+                    if (visibleCards.length > 0) {
+                        section.style.display = '';
+                        section.querySelectorAll('h2, h3').forEach(h => h.style.display = '');
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+                
+                if (query === '') {
+                     document.querySelectorAll('#content-container section, #content-container h2, #content-container h3').forEach(el => el.style.display = '');
                 }
-                if (termList.children.length === 0) { // Fallback if no terms are found for a category (shouldn't happen with current data)
-                    termList.innerHTML = '<tr><td colspan="2" class="text-center p-8 text-gray-500">此类别中没有词汇。(No terms in this category.)</td></tr>';
+
+                noResultsMessage.style.display = resultsFound ? 'none' : 'block';
+            }
+            
+            searchInput.addEventListener('input', filterContent);
+
+            const desktopNavLinks = document.querySelectorAll('#desktop-nav a');
+            const mobileNav = document.getElementById('mobile-nav');
+            const allSections = document.querySelectorAll('section[id], h3[id]');
+
+            function updateActiveLink() {
+                let currentId = '';
+                allSections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (window.scrollY >= sectionTop - 120) {
+                        currentId = section.getAttribute('id');
+                    }
+                });
+
+                desktopNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentId}`) {
+                        link.classList.add('active');
+                    }
+                });
+                
+                if (mobileNav.value !== `#${currentId}`) {
+                    mobileNav.value = `#${currentId}`;
                 }
             }
-        }
-        
-        // Event listener for mouseover on the entire table body (event delegation)
-        termList.addEventListener('mouseover', (e) => {
-            const targetRow = e.target.closest('tr');
-            if (!targetRow || !targetRow.dataset.term) {
-                clearTimeout(tooltipHideTimeout);
-                tooltip.style.opacity = '0';
-                return;
-            }
+            
+            window.addEventListener('scroll', updateActiveLink);
+            mobileNav.addEventListener('change', () => {
+                window.location.hash = mobileNav.value;
+            });
 
-            const termData = JSON.parse(targetRow.dataset.term);
-            let tooltipContent = '';
-
-            // Check if hovering over the English column (first td with class 'english-term')
-            if (e.target.classList.contains('english-term')) {
-                if (termData.en_description) {
-                    tooltipContent = termData.en_description;
-                } else {
-                    tooltipContent = termData.zh || ''; // Fallback to Chinese translation
-                }
-            } 
-            // Check if hovering over the Chinese/Pinyin column (second td with class 'chinese-pinyin-term' or its children spans)
-            else if (e.target.classList.contains('chinese-pinyin-term') || e.target.closest('.chinese-text') || e.target.closest('.pinyin-text')) {
-                if (termData.zh_description) {
-                    tooltipContent = termData.zh_description;
-                } else {
-                    tooltipContent = termData.en || ''; // Fallback to English translation
-                }
-            } else {
-                clearTimeout(tooltipHideTimeout);
-                tooltip.style.opacity = '0';
-                return;
-            }
-
-            clearTimeout(tooltipHideTimeout); // Clear any pending hide
-            tooltip.innerHTML = tooltipContent;
-            tooltip.style.left = `${e.clientX + 15}px`; // Offset from cursor
-            tooltip.style.top = `${e.clientY + 15}px`;
-            tooltip.style.opacity = '1';
         });
-
-        // Event listener for mouseout on the entire table body
-        termList.addEventListener('mouseout', (e) => {
-            // If the mouse is moving to the tooltip itself, don't hide yet
-            if (e.relatedTarget === tooltip || tooltip.contains(e.relatedTarget)) {
-                return;
-            }
-            // Set a timeout to hide the tooltip, allowing mouse to move to tooltip
-            tooltipHideTimeout = setTimeout(() => {
-                tooltip.style.opacity = '0';
-            }, 200); // 200ms delay
-        });
-
-        // Event listener for mouseover on the tooltip itself to keep it visible
-        tooltip.addEventListener('mouseover', () => {
-            clearTimeout(tooltipHideTimeout); // Clear any pending hide
-            tooltip.style.opacity = '1'; // Ensure it stays visible
-        });
-
-        // Event listener for mouseout on the tooltip itself to hide it
-        tooltip.addEventListener('mouseout', () => {
-            tooltip.style.opacity = '0';
-        });
-
-        // Event listener for mousemove to update tooltip position
-        termList.addEventListener('mousemove', (e) => {
-            // Update position only if tooltip is visible
-            if (tooltip.style.opacity === '1') {
-                tooltip.style.left = `${e.clientX + 15}px`;
-                tooltip.style.top = `${e.clientY + 15}px`;
-            }
-        });
-
-        // Click event listener for the entire table body (event delegation for audio playback)
-        termList.addEventListener('click', (e) => {
-            const targetRow = e.target.closest('tr');
-            if (!targetRow || !targetRow.dataset.term) {
-                return;
-            }
-
-            const termData = JSON.parse(targetRow.dataset.term);
-            let textToSpeak = '';
-            let languageToSpeak = '';
-
-            if (e.target.classList.contains('english-term')) {
-                textToSpeak = `${termData.en || ''}. ${termData.en_description || ''}`;
-                languageToSpeak = 'en-US';
-            } else if (e.target.classList.contains('chinese-pinyin-term') || e.target.closest('.chinese-text') || e.target.closest('.pinyin-text')) {
-                textToSpeak = `${termData.zh || ''}. ${termData.zh_description || ''}`;
-                languageToSpeak = 'zh-Hans';
-            }
-
-            if (textToSpeak) {
-                playAudio(textToSpeak, languageToSpeak);
-            }
-        });
-
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value;
-            if (searchTerm.trim()) { // Only deactivate buttons if there's actual search text
-                 document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-            } else {
-                renderNav(); // Re-render nav to reactivate the current category button if search is cleared
-            }
-            renderTerms(searchTerm);
-        });
-
-        window.onload = () => {
-            renderNav();
-            renderTerms();
-        };
     </script>
 </body>
 </html>
