@@ -643,18 +643,177 @@
             'page3': '3. 胃肠病学'
         };
 
+        // --- Start of new audio functionality code ---
+        let currentAudio = null;
+        let audioContext = null;
+
+        // Base64 to ArrayBuffer helper function
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Helper function to convert PCM to WAV
+        function pcmToWav(pcm16Data, sampleRate) {
+            const buffer = new ArrayBuffer(44 + pcm16Data.length * 2);
+            const view = new DataView(buffer);
+            let offset = 0;
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+
+            function writeUint32(view, offset, value) {
+                view.setUint32(offset, value, true);
+            }
+
+            function writeUint16(view, offset, value) {
+                view.setUint16(offset, value, true);
+            }
+
+            writeString(view, offset, 'RIFF'); offset += 4;
+            writeUint32(view, offset, 36 + pcm16Data.length * 2); offset += 4;
+            writeString(view, offset, 'WAVE'); offset += 4;
+            writeString(view, offset, 'fmt '); offset += 4;
+            writeUint32(view, offset, 16); offset += 4;
+            writeUint16(view, offset, 1); offset += 2;
+            writeUint16(view, offset, 1); offset += 2; // Number of channels
+            writeUint32(view, offset, sampleRate); offset += 4;
+            writeUint32(view, offset, sampleRate * 2); offset += 4;
+            writeUint16(view, offset, 2); offset += 2;
+            writeUint16(view, offset, 16); offset += 2;
+            writeString(view, offset, 'data'); offset += 4;
+            writeUint32(view, offset, pcm16Data.length * 2); offset += 4;
+
+            for (let i = 0; i < pcm16Data.length; i++, offset += 2) {
+                view.setInt16(offset, pcm16Data[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+        
+        async function playAudio(text, langCode, button) {
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+
+            const oldIcon = button.innerHTML;
+            button.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            `;
+            button.disabled = true;
+
+            try {
+                const payload = {
+                    contents: [{ parts: [{ text: text }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: {
+                                prebuiltVoiceConfig: { voiceName: (langCode === 'en-US' ? "Charon" : "Kore") }
+                            },
+                            languageCode: langCode
+                        }
+                    },
+                    model: "gemini-2.5-flash-preview-tts"
+                };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (!audioData || !mimeType) {
+                    console.error("Audio data or mime type missing from response");
+                    return;
+                }
+                
+                const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000;
+
+                const pcmData = base64ToArrayBuffer(audioData);
+                const pcm16 = new Int16Array(pcmData);
+                const wavBlob = pcmToWav(pcm16, sampleRate);
+                const audioUrl = URL.createObjectURL(wavBlob);
+                
+                currentAudio = new Audio(audioUrl);
+                currentAudio.play();
+                currentAudio.onended = () => {
+                    URL.revokeObjectURL(audioUrl);
+                    currentAudio = null;
+                    button.innerHTML = oldIcon;
+                    button.disabled = false;
+                };
+
+            } catch (error) {
+                console.error("Error playing audio:", error);
+                button.innerHTML = oldIcon;
+                button.disabled = false;
+            }
+        }
+        // --- End of new audio functionality code ---
+        
+        function createAudioButton(text, langCode) {
+            return `
+                <button onclick="playAudio(this.dataset.text, this.dataset.lang, this)" 
+                        data-text="${text.replace(/"/g, '&quot;')}"
+                        data-lang="${langCode}"
+                        class="ml-2 p-1 rounded-full hover:bg-gray-200 transition-colors duration-200 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-gray-600">
+                        <path d="M13.5 4.5a1.5 1.5 0 00-1.5 1.5v9a1.5 1.5 0 001.5 1.5h1.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5h-1.5zM6 4.5a1.5 1.5 0 00-1.5 1.5v9a1.5 1.5 0 001.5 1.5h1.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H6z"/>
+                    </svg>
+                </button>
+            `;
+        }
+
         function createTermCard(term, pageTitle) {
             const hasPinyin = term.pinyin ? `<span class="text-sm text-gray-500 block mb-1">(${term.pinyin})</span>` : '';
             return `
                 <div class="term-card bg-white rounded-lg p-4 shadow-sm mb-4 border border-gray-200 hover:shadow-md transition-shadow duration-200">
                     <div class="flex-1 pr-4 mb-2 md:mb-0 border-b md:border-b-0 md:border-r border-gray-200">
-                        <p class="font-bold text-gray-900">${term.chineseName}</p>
+                        <div class="flex items-center">
+                            <p class="font-bold text-gray-900">${term.chineseName}</p>
+                            ${createAudioButton(term.chineseName, 'zh-CN')}
+                        </div>
                         ${hasPinyin}
-                        <p class="text-gray-600 mt-1">${term.chineseDescription}</p>
+                        <div class="flex items-center mt-1">
+                            <p class="text-gray-600">${term.chineseDescription}</p>
+                            ${createAudioButton(term.chineseDescription, 'zh-CN')}
+                        </div>
                     </div>
                     <div class="flex-1 pl-0 md:pl-4 pt-2 md:pt-0">
-                        <p class="font-bold text-gray-900">${term.englishName}</p>
-                        <p class="text-gray-600 mt-1">${term.englishDescription}</p>
+                        <div class="flex items-center">
+                            <p class="font-bold text-gray-900">${term.englishName}</p>
+                            ${createAudioButton(term.englishName, 'en-US')}
+                        </div>
+                        <div class="flex items-center mt-1">
+                            <p class="text-gray-600">${term.englishDescription}</p>
+                            ${createAudioButton(term.englishDescription, 'en-US')}
+                        </div>
                         <span class="mt-2 block text-xs text-blue-500">来源: ${pageTitle}</span>
                     </div>
                 </div>
@@ -675,6 +834,11 @@
         }
 
         function showPage(pageId) {
+            // Stop any playing audio when changing pages
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
             const allPages = document.querySelectorAll('.page-content');
             allPages.forEach(page => page.classList.remove('active'));
             document.getElementById('searchResults').style.display = 'none';
@@ -687,6 +851,12 @@
         }
 
         document.getElementById('searchInput').addEventListener('input', function() {
+            // Stop any playing audio when searching
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+
             const query = this.value.toLowerCase();
             const searchResultsContainer = document.getElementById('searchResults');
             const searchResultsContent = document.getElementById('searchResultsContent');
