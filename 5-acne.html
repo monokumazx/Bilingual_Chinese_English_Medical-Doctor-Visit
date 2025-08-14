@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>皮肤科词汇</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .page-content {
+            display: none;
+        }
+        .page-content.active {
+            display: block;
+        }
+        .term-card {
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 768px) {
+            .term-card {
+                flex-direction: row;
+            }
+        }
+        #searchResults {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">皮肤科与痤疮词汇 </h1>
+            <h2 class="text-xl md:text-2xl font-medium text-gray-700">Dermatology and Acne Vocabulary </h2>
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">This section contains bilingual terms for dermatology, acne treatment, and skin types.</p>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="mb-8">
+            <input type="search" id="searchInput" placeholder="搜索词汇 (例如: Pediatrician, 胃肠病学)" class="w-full p-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+        </div>
+
+        <!-- Navigation -->
+        <nav class="sticky top-0 bg-white/90 backdrop-blur-md shadow-lg rounded-xl p-3 mb-8 z-10">
+            <ul class="flex flex-wrap justify-center gap-2 md:gap-4 font-medium text-sm md:text-base">
+                <li><button class="nav-link p-2 px-3 md:px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="showPage('page4')">皮肤病学<br><span class="text-xs text-gray-500">Dermatology</span></button></li>
+                <li><button class="nav-link p-2 px-3 md:px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="showPage('page5')">痤疮治疗<br><span class="text-xs text-gray-500">Acne Treatment</span></button></li>
+                <li><button class="nav-link p-2 px-3 md:px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="showPage('page6')">皮肤类型<br><span class="text-xs text-gray-500">Skin Types</span></button></li>
+            </ul>
+        </nav>
+
+        <!-- Search Results Container -->
+        <div id="searchResults" class="mt-8 bg-white p-6 md:p-8 rounded-xl shadow-lg">
+            <!-- Results will be dynamically inserted here -->
+            <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">搜索结果</h3>
+            <div id="searchResultsContent"></div>
+        </div>
+
+        <!-- Content Pages -->
+        <div id="pages-container" class="mt-8">
+            <!-- Page 4: Dermatology -->
+            <div id="page4" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">皮肤病学 (Dermatology)</h3>
+            </div>
+
+            <!-- Page 5: Acne Treatment -->
+            <div id="page5" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">痤疮治疗 (Acne Treatment)</h3>
+            </div>
+            
+            <!-- Page 6: Skin Types -->
+            <div id="page6" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">皮肤类型 (Skin Types)</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data for all medical terms, parsed from the provided text file.
+        const medicalTerms = {
+            'page4': [
+                {
+                    chineseName: '皮肤病学',
+                    pinyin: 'pí fū bìng xué',
+                    englishName: 'Dermatology',
+                    chineseDescription: '皮肤病学是研究皮肤、头发、指甲及相关疾病的医学分支。',
+                    englishDescription: 'Dermatology is the medical branch that studies diseases of the skin, hair, and nails.'
+                },
+                {
+                    chineseName: '皮肤科医生',
+                    pinyin: 'pí fū kē yī shēng',
+                    englishName: 'Dermatologist',
+                    chineseDescription: '皮肤科医生专门诊断和治疗皮肤、头发、指甲疾病。',
+                    englishDescription: 'A dermatologist specializes in diagnosing and treating diseases of the skin, hair, and nails.'
+                },
+                {
+                    chineseName: '皮疹',
+                    pinyin: 'pí zhěn',
+                    englishName: 'Rash',
+                    chineseDescription: '皮疹是皮肤上出现的异常变化，通常伴有红肿、瘙痒或发炎。',
+                    englishDescription: 'A rash is an abnormal change in the skin, often with redness, itching, or inflammation.'
+                },
+                {
+                    chineseName: '湿疹',
+                    pinyin: 'shī zhěn',
+                    englishName: 'Eczema',
+                    chineseDescription: '湿疹是一种引起皮肤发红、瘙痒和炎症的慢性皮肤病。',
+                    englishDescription: 'Eczema is a chronic skin condition causing redness, itching, and inflammation.'
+                },
+                {
+                    chineseName: '牛皮癣',
+                    pinyin: 'niú pí xuǎn',
+                    englishName: 'Psoriasis',
+                    chineseDescription: '牛皮癣是一种自身免疫性疾病，导致皮肤细胞快速增生，形成厚厚的、银白色的鳞屑。',
+                    englishDescription: 'Psoriasis is an autoimmune disease that causes rapid skin cell buildup, forming thick, silvery scales.'
+                },
+                {
+                    chineseName: '痤疮',
+                    pinyin: 'cuó chuāng',
+                    englishName: 'Acne',
+                    chineseDescription: '痤疮是毛囊堵塞，形成粉刺、丘疹和囊肿。',
+                    englishDescription: 'Acne is a condition where hair follicles become clogged, leading to pimples, pustules, and cysts.'
+                },
+                {
+                    chineseName: '酒渣鼻',
+                    pinyin: 'jiǔ zhā bí',
+                    englishName: 'Rosacea',
+                    chineseDescription: '酒渣鼻是一种慢性皮肤病，导致面部发红、丘疹和可见的血管。',
+                    englishDescription: 'Rosacea is a chronic skin condition causing facial redness, bumps, and visible blood vessels.'
+                },
+                {
+                    chineseName: '痣',
+                    pinyin: 'zhì',
+                    englishName: 'Mole',
+                    chineseDescription: '痣是皮肤上的色素性斑点，通常呈黑色或褐色。',
+                    englishDescription: 'A mole is a pigmented spot on the skin, usually black or brown.'
+                },
+                {
+                    chineseName: '皮肤癌',
+                    pinyin: 'pí fū ái',
+                    englishName: 'Skin cancer',
+                    chineseDescription: '皮肤癌是皮肤细胞异常生长的恶性肿瘤。',
+                    englishDescription: 'Skin cancer is a malignant tumor caused by the abnormal growth of skin cells.'
+                },
+                {
+                    chineseName: '皮肤活组织检查',
+                    pinyin: 'pí fū huó zǔ zhī jiǎn chá',
+                    englishName: 'Skin biopsy',
+                    chineseDescription: '皮肤活组织检查是取下皮肤样本进行实验室分析以诊断疾病。',
+                    englishDescription: 'A skin biopsy is the removal of a skin sample for lab analysis to diagnose a condition.'
+                }
+            ],
+            'page5': [
+                {
+                    chineseName: '痤疮治疗',
+                    pinyin: 'cuó chuāng zhì liáo',
+                    englishName: 'Acne Treatment',
+                    chineseDescription: '针对痤疮的各种治疗方法和药物。',
+                    englishDescription: 'Various treatments and medications for acne.'
+                },
+                {
+                    chineseName: '寻常痤疮',
+                    pinyin: 'xún cháng cuó chuāng',
+                    englishName: 'Acne Vulgaris',
+                    chineseDescription: '最常见的痤疮类型，表现为粉刺、丘疹和脓疱。',
+                    englishDescription: 'The most common type of acne with comedones, papules, and pustules.'
+                },
+                {
+                    chineseName: '黑斑（色素沉着）',
+                    pinyin: 'hēi bān (sè sù chén zhuó)',
+                    englishName: 'Dark Spots (Hyperpigmentation)',
+                    chineseDescription: '皮肤色素沉积，常由痤疮或炎症后遗留。',
+                    englishDescription: 'Skin discoloration due to excess pigment, often post-acne or inflammation.'
+                },
+                {
+                    chineseName: '轻度痤疮',
+                    pinyin: 'qīng dù cuó chuāng',
+                    englishName: 'Mild Acne',
+                    chineseDescription: '痤疮轻微，皮损数量少，通常为白头和黑头。',
+                    englishDescription: 'Mild acne with few lesions, mostly whiteheads and blackheads.'
+                },
+                {
+                    chineseName: '中度痤疮',
+                    pinyin: 'zhōng dù cuó chuāng',
+                    englishName: 'Moderate Acne',
+                    chineseDescription: '痤疮中等严重，有较多丘疹和脓疱。',
+                    englishDescription: 'Moderate severity acne with more papules and pustules.'
+                },
+                {
+                    chineseName: '重度/顽固性痤疮或黑斑',
+                    pinyin: 'zhòng dù / wán gù xìng cuó chuāng huò hēi bān',
+                    englishName: 'Severe / Persistent Acne or Dark Spots',
+                    chineseDescription: '严重且难治的痤疮，可能伴有明显色素沉着。',
+                    englishDescription: 'Severe, persistent acne often accompanied by prominent dark spots.'
+                },
+                {
+                    chineseName: '烟酰胺',
+                    pinyin: 'yān xiān àn',
+                    englishName: 'Niacinamide',
+                    chineseDescription: '抗炎成分，帮助减少痤疮和色素沉着。',
+                    englishDescription: 'Anti-inflammatory agent that reduces acne and hyperpigmentation.'
+                },
+                {
+                    chineseName: '甘醇酸',
+                    pinyin: 'gān chún suān',
+                    englishName: 'Glycolic Acid',
+                    chineseDescription: '促进皮肤去角质，改善痤疮和色斑。',
+                    englishDescription: 'Exfoliates skin to improve acne and pigmentation.'
+                },
+                {
+                    chineseName: '水杨酸',
+                    pinyin: 'shuǐ yáng suān',
+                    englishName: 'Salicylic Acid',
+                    chineseDescription: '能溶解毛孔内油脂，帮助预防粉刺形成。',
+                    englishDescription: 'Dissolves oils in pores, preventing comedones.'
+                },
+                {
+                    chineseName: '过氧化苯甲酰',
+                    pinyin: 'guò yǎng huà běn jiǎ xiān',
+                    englishName: 'Benzoyl Peroxide',
+                    chineseDescription: '杀菌成分，减少痤疮引起的细菌感染。',
+                    englishDescription: 'Antibacterial agent reducing acne-causing bacteria.'
+                },
+                {
+                    chineseName: '布洛芬吡啶甲',
+                    pinyin: 'bù luò fēn pí dìng jiǎ',
+                    englishName: 'Ibuprofen Piconol',
+                    chineseDescription: '抗炎药物，帮助减轻皮肤炎症。',
+                    englishDescription: 'Anti-inflammatory medication reducing skin inflammation.'
+                },
+                {
+                    chineseName: '百里酚',
+                    pinyin: 'bǎi lǐ fēn',
+                    englishName: 'Isopropylmethylphenol',
+                    chineseDescription: '抗菌成分，辅助治疗痤疮。',
+                    englishDescription: 'Antibacterial agent used for acne treatment.'
+                },
+                {
+                    chineseName: '视黄醇 (A醇)',
+                    pinyin: 'shì huáng chún (A chún)',
+                    englishName: 'Retinol (A醇)',
+                    chineseDescription: '促进皮肤细胞更新，改善痤疮。',
+                    englishDescription: 'Promotes skin cell turnover to improve acne.'
+                },
+                {
+                    chineseName: '维A酸类',
+                    pinyin: 'wéi A suān lèi',
+                    englishName: 'Retinoids (维A酸类)',
+                    chineseDescription: '调节皮脂分泌，减少炎症和粉刺。',
+                    englishDescription: 'Regulates sebum, reduces inflammation and comedones.'
+                },
+                {
+                    chineseName: '维甲酸 (第一代维A酸)',
+                    pinyin: 'wéi jiǎ suān',
+                    englishName: 'Tretinoin (First-generation retinoid)',
+                    chineseDescription: '第一代维A酸，用于治疗痤疮和色素沉着。',
+                    englishDescription: 'First-generation retinoid used for acne and pigmentation.'
+                },
+                {
+                    chineseName: '异维A酸 (第二代维A酸)',
+                    pinyin: 'yì wéi A suān',
+                    englishName: 'Isotretinoin (Second-generation retinoid)',
+                    chineseDescription: '强效治疗严重痤疮的维A酸。',
+                    englishDescription: 'Potent retinoid for severe acne treatment.'
+                },
+                {
+                    chineseName: '阿达帕林 (第三代维A酸)',
+                    pinyin: 'ā dá pà lín',
+                    englishName: 'Adapalene (Third-generation retinoid)',
+                    chineseDescription: '新一代维A酸，副作用较低。',
+                    englishDescription: 'Newer retinoid with fewer side effects.'
+                },
+                {
+                    chineseName: '三氟罗汀 (第四代维A酸)',
+                    pinyin: 'sān fú luó tíng',
+                    englishName: 'Trifarotene (Fourth-generation retinoid)',
+                    chineseDescription: '最新一代维A酸，针对特定皮肤层。',
+                    englishDescription: 'Latest retinoid targeting specific skin layers.'
+                },
+                {
+                    chineseName: '克拉斯可酮',
+                    pinyin: 'kè lā sī kě tóng',
+                    englishName: 'Clascoterone',
+                    chineseDescription: '局部激素拮抗剂，用于治疗痤疮。',
+                    englishDescription: 'Topical androgen receptor antagonist for acne.'
+                },
+                {
+                    chineseName: '克林霉素 / 多西环素',
+                    pinyin: 'kè lín méi sù / duō xī huán sù',
+                    englishName: 'Clindamycin / Doxycycline',
+                    chineseDescription: '抗生素，减少细菌感染和炎症。',
+                    englishDescription: 'Antibiotics reducing bacterial infection and inflammation.'
+                },
+                {
+                    chineseName: '螺内酯',
+                    pinyin: 'luó nèi zhǐ',
+                    englishName: 'Spironolactone',
+                    chineseDescription: '激素调节药物，常用于激素型痤疮。',
+                    englishDescription: 'Hormonal regulator for hormone-related acne.'
+                },
+                {
+                    chineseName: 'α-熊果苷',
+                    pinyin: 'Alpha Xióng guǒ gān',
+                    englishName: 'Alpha Arbutin',
+                    chineseDescription: '美白成分，减少色素沉着。',
+                    englishDescription: 'Whitening agent to reduce pigmentation.'
+                },
+                {
+                    chineseName: '壬二酸',
+                    pinyin: 'rén èr suān',
+                    englishName: 'Azelaic Acid',
+                    chineseDescription: '抗菌和抗炎，改善痤疮和色斑。',
+                    englishDescription: 'Antibacterial and anti-inflammatory for acne and pigmentation.'
+                },
+                {
+                    chineseName: '维生素C',
+                    pinyin: 'wéi shēng sù C',
+                    englishName: 'Vitamin C',
+                    chineseDescription: '抗氧化，美白和促进皮肤修复。',
+                    englishDescription: 'Antioxidant that brightens and repairs skin.'
+                },
+                {
+                    chineseName: '曲酸',
+                    pinyin: 'qǔ suān',
+                    englishName: 'Kojic Acid',
+                    chineseDescription: '抑制黑色素生成，减少色斑。',
+                    englishDescription: 'Inhibits melanin production to reduce dark spots.'
+                },
+                {
+                    chineseName: '传明酸',
+                    pinyin: 'chuán míng suān',
+                    englishName: 'Tranexamic Acid',
+                    chineseDescription: '抗炎美白，用于色素沉着治疗。',
+                    englishDescription: 'Anti-inflammatory agent for pigmentation treatment.'
+                },
+                {
+                    chineseName: '甘草酸二钾',
+                    pinyin: 'gān cǎo suān èr jiǎ',
+                    englishName: 'Dipotassium Glycyrrhizate',
+                    chineseDescription: '舒缓抗炎，减少红肿。',
+                    englishDescription: 'Soothing anti-inflammatory reducing redness.'
+                },
+                {
+                    chineseName: '复合精华例（烟酰胺 + 果酸 + 曲酸）',
+                    pinyin: 'fù hé jīng huá lì (yān xiān àn + guǒ suān + qǔ suān)',
+                    englishName: 'Example of Dark Spot Serum (Niacinamide + Glycolic + Kojic)',
+                    chineseDescription: '结合多种成分，针对色斑和肤色不均。',
+                    englishDescription: 'Combination serum targeting dark spots and uneven skin tone.'
+                },
+                {
+                    chineseName: '痘痘 / 粉刺',
+                    pinyin: 'dòu dou / fěn cì',
+                    englishName: 'Pimple',
+                    chineseDescription: '痤疮表现为红色丘疹或脓疱。',
+                    englishDescription: 'Acne lesions such as red bumps or pustules.'
+                },
+                {
+                    chineseName: '黑头',
+                    pinyin: 'hēi tóu',
+                    englishName: 'Blackhead',
+                    chineseDescription: '毛孔堵塞形成的黑色粉刺。',
+                    englishDescription: 'Comedones with open pores filled with debris.'
+                },
+                {
+                    chineseName: '白头',
+                    pinyin: 'bái tóu',
+                    englishName: 'Whitehead',
+                    chineseDescription: '封闭性粉刺，白色小丘疹。',
+                    englishDescription: 'Closed comedones appearing as white bumps.'
+                },
+                {
+                    chineseName: '囊肿性痤疮',
+                    pinyin: 'náng zhǒng xìng cuó chuāng',
+                    englishName: 'Cystic acne',
+                    chineseDescription: '深层囊肿，炎症严重，易留疤。',
+                    englishDescription: 'Deep, inflamed cysts prone to scarring.'
+                },
+                {
+                    chineseName: '痘疤 / 痤疮疤痕',
+                    pinyin: 'dòu bā / cuó chuāng bā hén',
+                    englishName: 'Acne scar',
+                    chineseDescription: '痤疮愈合后留下的瘢痕。',
+                    englishDescription: 'Scarring left after acne heals.'
+                },
+                {
+                    chineseName: '外用药膏',
+                    pinyin: 'wài yòng yào gāo',
+                    englishName: 'Topical cream',
+                    chineseDescription: '涂抹于皮肤表面的治疗药物。',
+                    englishDescription: 'Medication applied externally on the skin.'
+                },
+                {
+                    chineseName: '口服药',
+                    pinyin: 'kǒu fú yào',
+                    englishName: 'Oral medication',
+                    chineseDescription: '通过口服方式服用的治疗药物。',
+                    englishDescription: 'Medication taken orally for acne treatment.'
+                },
+                {
+                    chineseName: '激光治疗',
+                    pinyin: 'jī guāng zhì liáo',
+                    englishName: 'Laser therapy',
+                    chineseDescription: '使用激光治疗痤疮和疤痕。',
+                    englishDescription: 'Laser treatment for acne and scars.'
+                },
+                {
+                    chineseName: '化学换肤',
+                    pinyin: 'huà xué huàn fū',
+                    englishName: 'Chemical peel',
+                    chineseDescription: '通过化学药剂去除皮肤表层，改善肤质。',
+                    englishDescription: 'Chemical agents remove skin surface to improve texture.'
+                },
+                {
+                    chineseName: '白头粉刺',
+                    pinyin: 'bái tóu fěn cì',
+                    englishName: 'Closed comedone (whitehead)',
+                    chineseDescription: '封闭性粉刺，毛孔口封闭。',
+                    englishDescription: 'Closed comedones with blocked pore openings.'
+                },
+                {
+                    chineseName: '黑头粉刺',
+                    pinyin: 'hēi tóu fěn cì',
+                    englishName: 'Open comedone (blackhead)',
+                    chineseDescription: '开放性粉刺，暴露于空气氧化变黑。',
+                    englishDescription: 'Open comedones oxidized by air, appearing black.'
+                },
+                {
+                    chineseName: '丘疹',
+                    pinyin: 'qiū zhěn',
+                    englishName: 'Papule',
+                    chineseDescription: '小而坚硬的红色皮肤突起。',
+                    englishDescription: 'Small, firm red skin bumps.'
+                },
+                {
+                    chineseName: '脓疱',
+                    pinyin: 'nóng páo',
+                    englishName: 'Pustule',
+                    chineseDescription: '含有脓液的炎症性丘疹。',
+                    englishDescription: 'Inflamed lesions filled with pus.'
+                },
+                {
+                    chineseName: '结节',
+                    pinyin: 'jié jié',
+                    englishName: 'Nodule',
+                    chineseDescription: '大而坚硬的皮肤肿块，常伴有炎症。',
+                    englishDescription: 'Large, hard lumps beneath the skin often inflamed.'
+                },
+                {
+                    chineseName: '囊肿',
+                    pinyin: 'náng zhǒng',
+                    englishName: 'Cyst',
+                    chineseDescription: '充满液体或半固体物质的囊状肿块。',
+                    englishDescription: 'Fluid- or semi-solid-filled sac-like lesion.'
+                },
+                {
+                    chineseName: '聚合性痤疮',
+                    pinyin: 'jù hé xìng cuó chuāng',
+                    englishName: 'Acne conglobata',
+                    chineseDescription: '严重痤疮，多个囊肿融合形成。',
+                    englishDescription: 'Severe acne with interconnected cysts.'
+                },
+                {
+                    chineseName: '激素型痘',
+                    pinyin: 'jī sù xíng dòu',
+                    englishName: 'Hormonal acne',
+                    chineseDescription: '与激素变化相关的痤疮，常见于青春期和月经期。',
+                    englishDescription: 'Acne related to hormonal fluctuations, common in puberty or menstruation.'
+                }
+            ],
+            'page6': [
+                {
+                    chineseName: '中性皮肤',
+                    pinyin: 'zhōng xìng pí fū',
+                    englishName: 'Normal skin',
+                    chineseDescription: '平衡良好，不油腻也不干燥，毛孔细小。',
+                    englishDescription: 'Well-balanced, neither too oily nor too dry, with fine pores.'
+                },
+                {
+                    chineseName: '干性皮肤',
+                    pinyin: 'gān xìng pí fū',
+                    englishName: 'Dry skin',
+                    chineseDescription: '感觉紧绷或粗糙，可能出现脱皮和细纹。',
+                    englishDescription: 'Feels tight or rough, may show flaking and fine lines.'
+                },
+                {
+                    chineseName: '油性皮肤',
+                    pinyin: 'yóu xìng pí fū',
+                    englishName: 'Oily skin',
+                    chineseDescription: '有光泽，毛孔粗大，易长粉刺和黑头。',
+                    englishDescription: 'Has a shiny or greasy appearance, enlarged pores, and is prone to pimples and blackheads.'
+                },
+                {
+                    chineseName: '混合性皮肤',
+                    pinyin: 'hùn hé xìng pí fū',
+                    englishName: 'Combination skin',
+                    chineseDescription: 'T区（额头、鼻子和下巴）油腻，脸颊干燥或中性。',
+                    englishDescription: 'Oily in the T-zone (forehead, nose, and chin) and dry or normal on the cheeks.'
+                },
+                {
+                    chineseName: '敏感性皮肤',
+                    pinyin: 'mǐn gǎn xìng pí fū',
+                    englishName: 'Sensitive skin',
+                    chineseDescription: '容易发红、瘙痒或发炎，对护肤品有反应。',
+                    englishDescription: 'Prone to redness, itching, or inflammation, and reacts easily to skincare products.'
+                }
+            ]
+        };
+
+        const pageTitles = {
+            'page4': '皮肤病学',
+            'page5': '痤疮治疗',
+            'page6': '皮肤类型'
+        };
+
+        function createTermCard(term, pageTitle) {
+            const hasPinyin = term.pinyin ? `<span class="text-sm text-gray-500 block mb-1">(${term.pinyin})</span>` : '';
+            return `
+                <div class="term-card bg-white rounded-lg p-4 shadow-sm mb-4 border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex-1 pr-4 mb-2 md:mb-0 border-b md:border-b-0 md:border-r border-gray-200">
+                        <p class="font-bold text-gray-900">${term.chineseName}</p>
+                        ${hasPinyin}
+                        <p class="text-gray-600 mt-1">${term.chineseDescription}</p>
+                    </div>
+                    <div class="flex-1 pl-0 md:pl-4 pt-2 md:pt-0">
+                        <p class="font-bold text-gray-900">${term.englishName}</p>
+                        <p class="text-gray-600 mt-1">${term.englishDescription}</p>
+                        <span class="mt-2 block text-xs text-blue-500">来源: ${pageTitle}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPage(pageId) {
+            const pageContainer = document.getElementById(pageId);
+            const terms = medicalTerms[pageId];
+            if (pageContainer && terms) {
+                const pageTitle = pageTitles[pageId];
+                let content = '';
+                terms.forEach(term => {
+                    content += createTermCard(term, pageTitle);
+                });
+                pageContainer.innerHTML += `<div class="mt-4">${content}</div>`;
+            }
+        }
+
+        function showPage(pageId) {
+            const allPages = document.querySelectorAll('.page-content');
+            allPages.forEach(page => page.classList.remove('active'));
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('pages-container').style.display = 'block';
+            document.getElementById(pageId).classList.add('active');
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('bg-gray-200'));
+            document.querySelector(`button[onclick="showPage('${pageId}')"]`).classList.add('bg-gray-200');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const searchResultsContainer = document.getElementById('searchResults');
+            const searchResultsContent = document.getElementById('searchResultsContent');
+            const pagesContainer = document.getElementById('pages-container');
+
+            if (query.length < 2) {
+                searchResultsContainer.style.display = 'none';
+                pagesContainer.style.display = 'block';
+                return;
+            }
+
+            pagesContainer.style.display = 'none';
+            searchResultsContainer.style.display = 'block';
+            searchResultsContent.innerHTML = '';
+
+            let resultsFound = false;
+            for (const pageId in medicalTerms) {
+                const terms = medicalTerms[pageId];
+                const pageTitle = pageTitles[pageId];
+                terms.forEach(term => {
+                    const match = [
+                        term.chineseName,
+                        term.englishName,
+                        term.chineseDescription,
+                        term.englishDescription,
+                        term.pinyin,
+                        pageTitle
+                    ].some(text => text && text.toLowerCase().includes(query));
+
+                    if (match) {
+                        searchResultsContent.innerHTML += createTermCard(term, pageTitle);
+                        resultsFound = true;
+                    }
+                });
+            }
+
+            if (!resultsFound) {
+                searchResultsContent.innerHTML = `<p class="text-center text-gray-500 p-8">没有找到匹配的结果。</p>`;
+            }
+        });
+
+        // Initial setup on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            Object.keys(medicalTerms).forEach(pageId => {
+                renderPage(pageId);
+            });
+            showPage('page4'); // Show the first page by default
+        });
+    </script>
+</body>
+</html>

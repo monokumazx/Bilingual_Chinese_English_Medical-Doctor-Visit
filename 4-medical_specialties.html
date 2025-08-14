@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专科词汇</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .page-content {
+            display: none;
+        }
+        .page-content.active {
+            display: block;
+        }
+        .term-card {
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 768px) {
+            .term-card {
+                flex-direction: row;
+            }
+        }
+        #searchResults {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">专科词汇</h1>
+            <h2 class="text-xl md:text-2xl font-medium text-gray-700">Medical Specialties Vocabulary</h2>
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">This section contains bilingual terms for clinic types, specialist doctors, pediatrics, and gastroenterology.</p>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="mb-8">
+            <input type="search" id="searchInput" placeholder="搜索词汇 (例如: Pediatrician, 胃肠病学)" class="w-full p-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+        </div>
+
+        <!-- Navigation -->
+        <nav class="sticky top-0 bg-white/90 backdrop-blur-md shadow-lg rounded-xl p-3 mb-8 z-10">
+            <ul class="flex flex-wrap justify-center gap-2 md:gap-4 font-medium text-sm md:text-base">
+                <li><button class="nav-link p-2 px-3 md:px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="showPage('page1-1')">1.1 诊所类型<br><span class="text-xs text-gray-500">Clinic Types</span></button></li>
+                <li><button class="nav-link p-2 px-3 md:px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="showPage('page1-2')">1.2 专科医生<br><span class="text-xs text-gray-500">Specialist Doctors</span></button></li>
+                <li><button class="nav-link p-2 px-3 md:px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="showPage('page2')">2 儿科学<br><span class="text-xs text-gray-500">Pediatrics</span></button></li>
+                <li><button class="nav-link p-2 px-3 md:px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="showPage('page3')">3 胃肠病学<br><span class="text-xs text-gray-500">Gastroenterology</span></button></li>
+            </ul>
+        </nav>
+
+        <!-- Search Results Container -->
+        <div id="searchResults" class="mt-8 bg-white p-6 md:p-8 rounded-xl shadow-lg">
+            <!-- Results will be dynamically inserted here -->
+            <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">搜索结果</h3>
+            <div id="searchResultsContent"></div>
+        </div>
+
+        <!-- Content Pages -->
+        <div id="pages-container" class="mt-8">
+            <!-- Page 1.1: Health Clinics -->
+            <div id="page1-1" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">1.1 诊所类型与专科医生</h3>
+            </div>
+
+            <!-- Page 1.2: Specialist Doctors -->
+            <div id="page1-2" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">1.2 专科医生</h3>
+            </div>
+
+            <!-- Page 2: Pediatrics -->
+            <div id="page2" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">2. 儿科学 (Pediatrics)</h3>
+            </div>
+            
+            <!-- Page 3: Gastroenterology -->
+            <div id="page3" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">3. 胃肠病学 (Gastroenterology)</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data for all medical terms, parsed from the provided text file.
+        const medicalTerms = {
+            'page1-1': [
+                {
+                    chineseName: '全科诊所',
+                    englishName: 'General Practice Clinics',
+                    chineseDescription: '为各年龄段和常见疾病提供内科、外科、妇科、儿科、家庭科和全科等服务。\n涵盖全面的科室：内科、外科、妇科、儿科、家庭科、全科。\n示例：（内+外+妇+儿+家+庭+全+科）= Internal, Surgery, OB-GYN, Pediatrics, Family, and General Medicine',
+                    englishDescription: 'Provide internal medicine, surgery, gynecology, pediatrics, family, and general care for all age groups and common needs.\nThis includes a full range of departments: internal medicine, surgery, gynecology, pediatrics, family medicine, and general medicine.'
+                },
+                {
+                    chineseName: '急诊护理诊所',
+                    englishName: 'Urgent Care Clinics',
+                    chineseDescription: '处理非危及生命但需立即处理的急病或外伤，无需预约。',
+                    englishDescription: 'Treat non-life-threatening illnesses or injuries that require immediate attention without an appointment.'
+                },
+                {
+                    chineseName: '儿科诊所',
+                    englishName: 'Pediatric Clinics',
+                    chineseDescription: '为婴幼儿、儿童和青少年提供专业医疗服务。',
+                    englishDescription: 'Provide specialized medical care for infants, children, and adolescents.'
+                },
+                {
+                    chineseName: '妇女健康诊所',
+                    englishName: 'Women’s Health Clinics',
+                    chineseDescription: '专注于生殖健康、产前检查、妇科以及其他女性特有的健康问题。',
+                    englishDescription: 'Focus on reproductive health, prenatal care, gynecology, and other women-specific health issues.'
+                },
+                {
+                    chineseName: '牙科诊所',
+                    englishName: 'Dental Clinics',
+                    chineseDescription: '提供洗牙、补牙、拔牙、正畸等口腔保健服务。',
+                    englishDescription: 'Offer oral health services including cleaning, fillings, extractions, and orthodontics.'
+                },
+                {
+                    chineseName: '精神健康诊所',
+                    englishName: 'Mental Health Clinics',
+                    chineseDescription: '提供心理咨询、心理治疗及精神类疾病的相关服务。',
+                    englishDescription: 'Provide counseling, therapy, and psychiatric services for emotional and mental disorders.'
+                },
+                {
+                    chineseName: '专科诊所',
+                    englishName: 'Specialty Clinics',
+                    chineseDescription: '专注于特定医学领域，如心脏科、皮肤科、内分泌科等。',
+                    englishDescription: 'Focus on specific areas of medicine such as cardiology, dermatology, endocrinology, etc.'
+                },
+                {
+                    chineseName: '康复诊所',
+                    englishName: 'Rehabilitation Clinics',
+                    chineseDescription: '通过物理治疗、职业治疗等康复服务帮助患者恢复身体功能。',
+                    englishDescription: 'Help patients recover physical function through physical therapy, occupational therapy, and other rehabilitation services.'
+                },
+                {
+                    chineseName: '移动诊所',
+                    englishName: 'Mobile Clinics',
+                    chineseDescription: '通过流动医疗车等方式为偏远或医疗资源不足地区提供医疗服务。',
+                    englishDescription: 'Provide health services via mobile units, often to underserved or remote populations.'
+                },
+                {
+                    chineseName: '公共卫生诊所',
+                    englishName: 'Public Health Clinics',
+                    chineseDescription: '由政府设立，提供预防性服务，如疫苗接种、健康筛查和健康教育。',
+                    englishDescription: 'Run by government agencies to offer preventive care like vaccinations, screenings, and health education.'
+                },
+                {
+                    chineseName: '学生健康中心',
+                    englishName: 'Student Health Clinics',
+                    chineseDescription: '设置在学校或大学校园内，为学生提供健康和保健服务。',
+                    englishDescription: 'Located on school or university campuses to serve students’ health and wellness needs.'
+                },
+                {
+                    chineseName: '成瘾治疗诊所',
+                    englishName: 'Addiction Treatment Clinics',
+                    chineseDescription: '专门为药物滥用和成瘾提供医学支持和心理咨询服务。',
+                    englishDescription: 'Specialize in treating substance abuse and addiction through medical support and counseling.'
+                }
+            ],
+            'page1-2': [
+                {
+                    chineseName: '麻醉师',
+                    pinyin: 'má zuì shī',
+                    englishName: 'Anesthesiologist',
+                    chineseDescription: '麻醉师负责在手术或其他医疗程序中管理麻醉，确保患者无痛和安全。',
+                    englishDescription: 'An anesthesiologist manages anesthesia during surgeries or medical procedures to ensure patient comfort and safety.'
+                },
+                {
+                    chineseName: '遗传学家',
+                    pinyin: 'yí chuán xué jiā',
+                    englishName: 'Geneticist',
+                    chineseDescription: '遗传学家研究基因和遗传疾病，帮助诊断和治疗遗传性疾病。',
+                    englishDescription: 'A geneticist studies genes and hereditary diseases to help diagnose and treat genetic disorders.'
+                },
+                {
+                    chineseName: '血液科医生',
+                    pinyin: 'xuè yè kē yī shēng',
+                    englishName: 'Hematologist',
+                    chineseDescription: '血液科医生专门治疗血液及相关疾病，如贫血、白血病等。',
+                    englishDescription: 'A hematologist specializes in blood diseases such as anemia and leukemia.'
+                },
+                {
+                    chineseName: '临终关怀与姑息治疗专家',
+                    pinyin: 'lín zhōng guān huái yǔ gū xī zhì liáo zhuān jiā',
+                    englishName: 'Hospice and palliative medicine specialist',
+                    chineseDescription: '此专家关注缓解严重疾病患者的疼痛和症状，提升生活质量。',
+                    englishDescription: 'This specialist focuses on relieving pain and symptoms in serious illness to improve quality of life.'
+                },
+                {
+                    chineseName: '传染病医生',
+                    pinyin: 'chuán rǎn bìng yī shēng',
+                    englishName: 'Infectious disease physician',
+                    chineseDescription: '传染病医生诊断和治疗各种传染性疾病。',
+                    englishDescription: 'An infectious disease physician diagnoses and treats infectious diseases.'
+                },
+                {
+                    chineseName: '内科医生',
+                    pinyin: 'nèi kē yī shēng',
+                    englishName: 'Internal Medicine',
+                    chineseDescription: '内科医生负责成人常见和复杂疾病的诊断和治疗。',
+                    englishDescription: 'An internist diagnoses and treats common and complex adult diseases.'
+                },
+                {
+                    chineseName: '肾脏科医生',
+                    pinyin: 'shèn zàng kē yī shēng',
+                    englishName: 'Nephrologist',
+                    chineseDescription: '肾脏科医生专注于肾脏疾病的治疗，如肾衰竭和高血压。',
+                    englishDescription: 'A nephrologist specializes in kidney diseases such as kidney failure and hypertension.'
+                },
+                {
+                    chineseName: '神经科医生',
+                    pinyin: 'shén jīng kē yī shēng',
+                    englishName: 'Neurologist',
+                    chineseDescription: '神经科医生治疗大脑、脊髓及神经系统疾病。',
+                    englishDescription: 'A neurologist treats diseases of the brain, spinal cord, and nervous system.'
+                },
+                {
+                    chineseName: '妇产科医生',
+                    pinyin: 'fù chǎn kē yī shēng',
+                    englishName: 'Obstetrician/gynecologist (OBGYNs)',
+                    chineseDescription: '妇产科医生负责女性生殖健康、怀孕及分娩管理。',
+                    englishDescription: 'An OBGYN manages female reproductive health, pregnancy, and childbirth.'
+                },
+                {
+                    chineseName: '肿瘤科医生',
+                    pinyin: 'zhǒng liú kē yī shēng',
+                    englishName: 'Oncologist',
+                    chineseDescription: '肿瘤科医生专门诊断和治疗癌症。',
+                    englishDescription: 'An oncologist specializes in diagnosing and treating cancer.'
+                },
+                {
+                    chineseName: '骨科医生',
+                    pinyin: 'gǔ kē yī shēng',
+                    englishName: 'Orthopedic surgeon',
+                    chineseDescription: '骨科医生治疗骨骼、关节及肌肉的损伤和疾病。',
+                    englishDescription: 'An orthopedic surgeon treats injuries and diseases of bones, joints, and muscles.'
+                },
+                {
+                    chineseName: '骨科医生',
+                    pinyin: 'gǔ kē yī shēng',
+                    englishName: 'Orthopedist',
+                    chineseDescription: '骨科医生负责骨骼系统疾病和损伤的诊疗。',
+                    englishDescription: 'An orthopedist diagnoses and treats musculoskeletal system disorders and injuries.'
+                },
+                {
+                    chineseName: '整骨医生',
+                    pinyin: 'zhěng gǔ yī shēng',
+                    englishName: 'Osteopath',
+                    chineseDescription: '整骨医生通过手法治疗肌肉骨骼系统问题。',
+                    englishDescription: 'An osteopath uses manual techniques to treat musculoskeletal issues.'
+                },
+                {
+                    chineseName: '耳鼻喉科医生',
+                    pinyin: 'ěr bí hóu kē yī shēng',
+                    englishName: 'Otolaryngologist',
+                    chineseDescription: '耳鼻喉科医生治疗耳、鼻、喉及相关结构疾病。',
+                    englishDescription: 'An otolaryngologist treats diseases of the ear, nose, throat, and related structures.'
+                },
+                {
+                    chineseName: '病理学家',
+                    pinyin: 'bìng lǐ xué jiā',
+                    englishName: 'Pathologist',
+                    chineseDescription: '病理学家通过实验室检查诊断疾病的性质和原因。',
+                    englishDescription: 'A pathologist diagnoses diseases by examining tissues and lab tests.'
+                },
+                {
+                    chineseName: '医疗行政人员',
+                    pinyin: 'yī liáo xíng zhèng rén yuán',
+                    englishName: 'Physician executive',
+                    chineseDescription: '医疗行政人员负责医疗机构的管理和运营。',
+                    englishDescription: 'A physician executive manages and oversees healthcare organizations.'
+                },
+                {
+                    chineseName: '整形外科医生',
+                    pinyin: 'zhěng xíng wài kē yī shēng',
+                    englishName: 'Plastic surgeon',
+                    chineseDescription: '整形外科医生进行修复和美容手术。',
+                    englishDescription: 'A plastic surgeon performs reconstructive and cosmetic surgeries.'
+                },
+                {
+                    chineseName: '足病医生',
+                    pinyin: 'zú bìng yī shēng',
+                    englishName: 'Podiatrist',
+                    chineseDescription: '足病医生专注于足部疾病和伤害的治疗。',
+                    englishDescription: 'A podiatrist specializes in treating foot diseases and injuries.'
+                },
+                {
+                    chineseName: '精神科医生',
+                    pinyin: 'jīng shén kē yī shēng',
+                    englishName: 'Psychiatrist',
+                    chineseDescription: '精神科医生诊断和治疗精神健康问题。',
+                    englishDescription: 'A psychiatrist diagnoses and treats mental health disorders.'
+                },
+                {
+                    chineseName: '肺科医生',
+                    pinyin: 'fèi kē yī shēng',
+                    englishName: 'Pulmonologist',
+                    chineseDescription: '肺科医生治疗肺部和呼吸系统疾病。',
+                    englishDescription: 'A pulmonologist treats lung and respiratory system diseases.'
+                },
+                {
+                    chineseName: '放射科医生',
+                    pinyin: 'fàng shè kē yī shēng',
+                    englishName: 'Radiologist',
+                    chineseDescription: '放射科医生通过医学影像诊断疾病。',
+                    englishDescription: 'A radiologist diagnoses diseases using medical imaging techniques.'
+                },
+                {
+                    chineseName: '风湿科医生',
+                    pinyin: 'fēng shí kē yī shēng',
+                    englishName: 'Rheumatologist',
+                    chineseDescription: '风湿科医生治疗风湿和免疫系统疾病。',
+                    englishDescription: 'A rheumatologist treats rheumatic and autoimmune diseases.'
+                },
+                {
+                    chineseName: '睡眠医学专家',
+                    pinyin: 'shuì mián yī xué zhuān jiā',
+                    englishName: 'Sleep medicine specialist',
+                    chineseDescription: '睡眠医学专家诊断和治疗睡眠障碍。',
+                    englishDescription: 'A sleep medicine specialist diagnoses and treats sleep disorders.'
+                },
+                {
+                    chineseName: '外科医生',
+                    pinyin: 'wài kē yī shēng',
+                    englishName: 'Surgeon',
+                    chineseDescription: '外科医生通过手术治疗疾病和损伤。',
+                    englishDescription: 'A surgeon treats diseases and injuries through surgical procedures.'
+                },
+                {
+                    chineseName: '泌尿科医生',
+                    pinyin: 'mì niào kē yī shēng',
+                    englishName: 'Urologist',
+                    chineseDescription: '泌尿科医生治疗泌尿系统及男性生殖系统疾病。',
+                    englishDescription: 'A urologist treats urinary tract and male reproductive system diseases.'
+                }
+            ],
+            'page2': [
+                {
+                    chineseName: '儿科医生',
+                    pinyin: 'ér kē yī shēng',
+                    englishName: 'Pediatrician',
+                    chineseDescription: '儿科医生是专门负责儿童健康和疾病诊断、治疗的医生。',
+                    englishDescription: 'A pediatrician is a medical doctor specializing in the diagnosis and treatment of illnesses in children.'
+                },
+                {
+                    chineseName: '儿童健康检查',
+                    pinyin: 'ér tóng jiàn kāng jiǎn chá',
+                    englishName: 'Well-child visit',
+                    chineseDescription: '儿童健康检查是定期对儿童进行体格检查和发育评估，确保其健康成长。',
+                    englishDescription: 'A well-child visit is a routine medical check-up for children to monitor their growth and development and ensure good health.'
+                },
+                {
+                    chineseName: '疫苗接种',
+                    pinyin: 'yì miáo jiē zhòng',
+                    englishName: 'Vaccination',
+                    chineseDescription: '疫苗接种是通过注射疫苗来预防儿童传染病的一种有效方法。',
+                    englishDescription: 'Vaccination is the administration of vaccines to protect children from infectious diseases.'
+                },
+                {
+                    chineseName: '生长曲线图',
+                    pinyin: 'shēng zhǎng qū xiàn tú',
+                    englishName: 'Growth chart',
+                    chineseDescription: '生长曲线图用于记录和追踪儿童身高、体重等生长指标的变化。',
+                    englishDescription: 'A growth chart is a tool used to track changes in a child\'s height, weight, and other growth parameters over time.'
+                },
+                {
+                    chineseName: '发烧',
+                    pinyin: 'fā shāo',
+                    englishName: 'Fever',
+                    chineseDescription: '发烧是儿童常见的症状，通常是身体对感染的自然反应。',
+                    englishDescription: 'Fever is a common symptom in children, usually a natural response of the body to infection.'
+                },
+                {
+                    chineseName: '普通感冒',
+                    pinyin: 'pǔ tōng gǎn mào',
+                    englishName: 'Common cold',
+                    chineseDescription: '普通感冒是儿童最常见的呼吸道感染，表现为鼻塞、流涕、咳嗽等症状。',
+                    englishDescription: 'Common cold is the most frequent respiratory infection in children, characterized by nasal congestion, runny nose, and cough.'
+                },
+                {
+                    chineseName: '耳朵感染',
+                    pinyin: 'ěr duǒ gǎn rǎn',
+                    englishName: 'Ear infection',
+                    chineseDescription: '耳朵感染多见于儿童，特别是中耳炎，表现为耳痛和听力下降。',
+                    englishDescription: 'Ear infections, especially otitis media, are common in children and cause ear pain and hearing difficulties.'
+                },
+                {
+                    chineseName: '哮喘',
+                    pinyin: 'xiào chuǎn',
+                    englishName: 'Asthma',
+                    chineseDescription: '哮喘是一种儿童常见的慢性呼吸道疾病，导致气道炎症和呼吸困难。',
+                    englishDescription: 'Asthma is a common chronic respiratory condition in children causing airway inflammation and breathing difficulty.'
+                },
+                {
+                    chineseName: '过敏',
+                    pinyin: 'guò mǐn',
+                    englishName: 'Allergy',
+                    chineseDescription: '过敏是儿童免疫系统对某些物质异常反应，表现为皮疹、呼吸困难等。',
+                    englishDescription: 'Allergy is an abnormal immune response in children to certain substances, resulting in rash, breathing problems, etc.'
+                },
+                {
+                    chineseName: '发展里程碑',
+                    pinyin: 'fā zhǎn lǐ chéng bēi',
+                    englishName: 'Developmental milestones',
+                    chineseDescription: '发展里程碑指儿童在不同年龄段应达到的身体和认知能力标准。',
+                    englishDescription: 'Developmental milestones are standard physical and cognitive skills children are expected to reach at certain ages.'
+                },
+                {
+                    chineseName: '儿童肥胖症',
+                    pinyin: 'ér tóng féi pàng zhèng',
+                    englishName: 'Childhood obesity',
+                    chineseDescription: '儿童肥胖症是儿童体重过度增加，可能引发多种健康问题。',
+                    englishDescription: 'Childhood obesity is excessive body weight in children that can lead to various health complications.'
+                },
+                {
+                    chineseName: '呼吸暂停',
+                    pinyin: 'hū xī zàn tíng',
+                    englishName: 'Apnea',
+                    chineseDescription: '呼吸暂停指婴幼儿在睡眠中短暂停止呼吸的情况。',
+                    englishDescription: 'Apnea is the temporary cessation of breathing in infants or young children during sleep.'
+                },
+                {
+                    chineseName: '侏儒症',
+                    pinyin: 'zhū rú zhèng',
+                    englishName: 'Dwarfism',
+                    chineseDescription: '侏儒症是一种儿童生长异常，导致身材矮小。',
+                    englishDescription: 'Dwarfism is a growth disorder in children resulting in unusually short stature.'
+                },
+                {
+                    chineseName: '脑积水',
+                    pinyin: 'nǎo jī shuǐ',
+                    englishName: 'Hydrocephalus',
+                    chineseDescription: '脑积水是由于脑脊液在大脑中积聚过多而引起的状况。',
+                    englishDescription: 'Hydrocephalus is a condition caused by an excessive buildup of cerebrospinal fluid in the brain.'
+                },
+                {
+                    chineseName: '先天性心脏病',
+                    pinyin: 'xiān tiān xìng xīn zàng bìng',
+                    englishName: 'Congenital heart disease',
+                    chineseDescription: '先天性心脏病是婴儿出生时就存在的心脏结构问题。',
+                    englishDescription: 'Congenital heart disease is a problem with the heart\'s structure present at birth.'
+                },
+                {
+                    chineseName: '髋关节发育不良',
+                    pinyin: 'kuān jié fā yù bù liáng',
+                    englishName: 'Developmental Dysplasia of the Hip (DDH)',
+                    chineseDescription: '髋关节发育不良是指髋关节在婴幼儿或儿童时期发育不完全或异常，导致股骨头与髋臼之间的配合不良，可能引起髋关节不稳定、运动受限或关节早期退行性改变。',
+                    englishDescription: 'Developmental dysplasia of the hip is a condition in which the hip joint does not develop properly during infancy or childhood, resulting in poor alignment between the femoral head and the acetabulum. This can lead to hip instability, limited movement, or early degenerative changes in the joint.'
+                }
+            ],
+            'page3': [
+                {
+                    chineseName: '胃肠病学',
+                    pinyin: 'wèi cháng bìng xué',
+                    englishName: 'Gastroenterology',
+                    chineseDescription: '胃肠病学是研究消化系统疾病的医学分支。',
+                    englishDescription: 'Gastroenterology is the medical branch that studies diseases of the digestive system.'
+                },
+                {
+                    chineseName: '消化系统',
+                    pinyin: 'xiāo huà xì tǒng',
+                    englishName: 'Digestive system',
+                    chineseDescription: '消化系统包括食道、胃、肠道、肝脏、胰腺和胆囊，负责消化和吸收食物。',
+                    englishDescription: 'The digestive system includes the esophagus, stomach, intestines, liver, pancreas, and gallbladder, responsible for digestion and nutrient absorption.'
+                },
+                {
+                    chineseName: '胃食管反流病 (GERD)',
+                    pinyin: 'wèi shí guǎn fǎn liú bìng',
+                    englishName: 'Gastroesophageal reflux disease (GERD)',
+                    chineseDescription: 'GERD是一种消化系统疾病，胃酸反流至食道，引起烧心等症状。',
+                    englishDescription: 'GERD is a digestive disorder where stomach acid flows back into the esophagus, causing symptoms like heartburn.'
+                },
+                {
+                    chineseName: '肠易激综合征 (IBS)',
+                    pinyin: 'cháng yì jí zōng hé zhēng',
+                    englishName: 'Irritable bowel syndrome (IBS)',
+                    chineseDescription: 'IBS是一种常见的肠道功能性疾病，表现为腹痛、腹胀、腹泻或便秘。',
+                    englishDescription: 'IBS is a common functional disorder of the intestines, causing abdominal pain, bloating, diarrhea, or constipation.'
+                },
+                {
+                    chineseName: '克罗恩病',
+                    pinyin: 'kè luó ēn bìng',
+                    englishName: 'Crohn\'s disease',
+                    chineseDescription: '克罗恩病是一种炎症性肠病，可影响消化道的任何部分。',
+                    englishDescription: 'Crohn\'s disease is an inflammatory bowel disease that can affect any part of the digestive tract.'
+                },
+                {
+                    chineseName: '溃疡性结肠炎',
+                    pinyin: 'kuì yáng xìng jié cháng yán',
+                    englishName: 'Ulcerative colitis',
+                    chineseDescription: '溃疡性结肠炎是一种慢性炎症性肠病，仅影响大肠。',
+                    englishDescription: 'Ulcerative colitis is a chronic inflammatory bowel disease that affects only the large intestine.'
+                },
+                {
+                    chineseName: '消化性溃疡',
+                    pinyin: 'xiāo huà xìng kuì yáng',
+                    englishName: 'Peptic ulcer',
+                    chineseDescription: '消化性溃疡是胃或十二指肠内壁形成的溃疡。',
+                    englishDescription: 'A peptic ulcer is a sore that develops on the lining of the stomach or duodenum.'
+                },
+                {
+                    chineseName: '胆结石',
+                    pinyin: 'dǎn jié shí',
+                    englishName: 'Gallstones',
+                    chineseDescription: '胆结石是胆囊内形成的硬块，可能引起腹痛。',
+                    englishDescription: 'Gallstones are hardened deposits that form in the gallbladder and can cause abdominal pain.'
+                },
+                {
+                    chineseName: '腹腔疾病',
+                    pinyin: 'fù qiāng jí bìng',
+                    englishName: 'Celiac disease',
+                    chineseDescription: '腹腔疾病是一种免疫系统对麸质的反应，导致小肠损伤。',
+                    englishDescription: 'Celiac disease is an immune response to gluten, leading to damage in the small intestine.'
+                },
+                {
+                    chineseName: '肝炎',
+                    pinyin: 'gān yán',
+                    englishName: 'Hepatitis',
+                    chineseDescription: '肝炎是肝脏的炎症，通常由病毒感染引起。',
+                    englishDescription: 'Hepatitis is an inflammation of the liver, often caused by a viral infection.'
+                },
+                {
+                    chineseName: '结肠镜检查',
+                    pinyin: 'jié cháng jìng jiǎn chá',
+                    englishName: 'Colonoscopy',
+                    chineseDescription: '结肠镜检查是一种内窥镜检查，用于检查大肠的内部。',
+                    englishDescription: 'A colonoscopy is an endoscopic exam used to visualize the inside of the large intestine.'
+                },
+                {
+                    chineseName: '胃镜检查',
+                    pinyin: 'wèi jìng jiǎn chá',
+                    englishName: 'Endoscopy',
+                    chineseDescription: '胃镜检查是一种通过管状设备检查消化道的方法。',
+                    englishDescription: 'An endoscopy is a procedure to examine the digestive tract using a tubular device.'
+                },
+                {
+                    chineseName: '乳糜泻',
+                    pinyin: 'rǔ mí xiè',
+                    englishName: 'Celiac disease',
+                    chineseDescription: '乳糜泻是一种对麸质过敏的自身免疫性疾病。',
+                    englishDescription: 'Celiac disease is an autoimmune disorder triggered by a reaction to gluten.'
+                },
+                {
+                    chineseName: '息肉',
+                    pinyin: 'xī ròu',
+                    englishName: 'Polyp',
+                    chineseDescription: '息肉是黏膜表面突出的异常组织。',
+                    englishDescription: 'A polyp is an abnormal growth of tissue protruding from a mucous membrane.'
+                },
+                {
+                    chineseName: '排空',
+                    pinyin: 'pái kōng',
+                    englishName: 'Emptying',
+                    chineseDescription: '排空是指将体内或容器内的内容物完全排出或清除的过程，例如胃将食物内容物排入小肠。',
+                    englishDescription: 'Emptying refers to the process of completely expelling or clearing the contents from the body or a container, such as the stomach emptying food into the small intestine.'
+                },
+                {
+                    chineseName: '胃酸倒流（胃食管反流',
+                    pinyin: 'wèi suān dào liú (wèi shí guǎn fǎn liú)',
+                    englishName: 'Acid reflux (Gastroesophageal reflux)',
+                    chineseDescription: '胃酸倒流（胃食管反流）是指胃内容物，包括胃酸，从胃反流入食管，引起烧心、反酸等症状。',
+                    englishDescription: 'Acid reflux (gastroesophageal reflux) refers to stomach contents, including stomach acid, flowing back into the esophagus, causing symptoms such as heartburn and acid regurgitation.'
+                },
+                {
+                    chineseName: '肠胃科医生',
+                    pinyin: 'cháng wèi kē yī shēng',
+                    englishName: 'Gastroenterologist',
+                    chineseDescription: '肠胃科医生是专门诊治胃肠道疾病的医生。',
+                    englishDescription: 'A gastroenterologist is a doctor specializing in diagnosing and treating gastrointestinal diseases.'
+                },
+                {
+                    chineseName: '胃',
+                    pinyin: 'wèi',
+                    englishName: 'Stomach',
+                    chineseDescription: '胃是消化系统中负责食物储存和初步消化的器官。',
+                    englishDescription: 'The stomach is an organ in the digestive system responsible for storing and beginning the digestion of food.'
+                },
+                {
+                    chineseName: '肠',
+                    pinyin: 'cháng',
+                    englishName: 'Intestine',
+                    chineseDescription: '肠是消化道的一部分，主要负责吸收营养和排泄废物。',
+                    englishDescription: 'The intestine is part of the digestive tract responsible for nutrient absorption and waste elimination.'
+                },
+                {
+                    chineseName: '排便',
+                    pinyin: 'pái biàn',
+                    englishName: 'Bowel movement',
+                    chineseDescription: '排便是身体排出消化后的废物的过程。',
+                    englishDescription: 'Bowel movement is the process of the body eliminating waste products after digestion.'
+                },
+                {
+                    chineseName: '消化',
+                    pinyin: 'xiāo huà',
+                    englishName: 'Digestion',
+                    chineseDescription: '消化是将食物分解成身体可以吸收的营养物质的过程。',
+                    englishDescription: 'Digestion is the process of breaking down food into nutrients that the body can absorb.'
+                },
+                {
+                    chineseName: '便秘',
+                    pinyin: 'biàn mì',
+                    englishName: 'Constipation',
+                    chineseDescription: '便秘是排便困难或排便次数减少的情况。',
+                    englishDescription: 'Constipation is a condition of difficult or infrequent bowel movements.'
+                },
+                {
+                    chineseName: '腹泻',
+                    pinyin: 'fù xiè',
+                    englishName: 'Diarrhea',
+                    chineseDescription: '腹泻是指排便次数增多，粪便稀薄。',
+                    englishDescription: 'Diarrhea is a condition characterized by frequent, loose, or watery stools.'
+                },
+                {
+                    chineseName: '反流',
+                    pinyin: 'fǎn liú',
+                    englishName: 'Reflux',
+                    chineseDescription: '反流是胃内容物倒流到食管或口腔的现象。',
+                    englishDescription: 'Reflux is the backward flow of stomach contents into the esophagus or mouth.'
+                },
+                {
+                    chineseName: '溃疡',
+                    pinyin: 'kuì yáng',
+                    englishName: 'Ulcer',
+                    chineseDescription: '溃疡是胃肠道黏膜的破损。',
+                    englishDescription: 'An ulcer is an open sore on the lining of the digestive tract.'
+                }
+            ]
+        };
+
+        const pageTitles = {
+            'page1-1': '1.1 诊所类型',
+            'page1-2': '1.2 专科医生',
+            'page2': '2. 儿科学',
+            'page3': '3. 胃肠病学'
+        };
+
+        function createTermCard(term, pageTitle) {
+            const hasPinyin = term.pinyin ? `<span class="text-sm text-gray-500 block mb-1">(${term.pinyin})</span>` : '';
+            return `
+                <div class="term-card bg-white rounded-lg p-4 shadow-sm mb-4 border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex-1 pr-4 mb-2 md:mb-0 border-b md:border-b-0 md:border-r border-gray-200">
+                        <p class="font-bold text-gray-900">${term.chineseName}</p>
+                        ${hasPinyin}
+                        <p class="text-gray-600 mt-1">${term.chineseDescription}</p>
+                    </div>
+                    <div class="flex-1 pl-0 md:pl-4 pt-2 md:pt-0">
+                        <p class="font-bold text-gray-900">${term.englishName}</p>
+                        <p class="text-gray-600 mt-1">${term.englishDescription}</p>
+                        <span class="mt-2 block text-xs text-blue-500">来源: ${pageTitle}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPage(pageId) {
+            const pageContainer = document.getElementById(pageId);
+            const terms = medicalTerms[pageId];
+            if (pageContainer && terms) {
+                const pageTitle = pageTitles[pageId];
+                let content = '';
+                terms.forEach(term => {
+                    content += createTermCard(term, pageTitle);
+                });
+                pageContainer.innerHTML += `<div class="mt-4">${content}</div>`;
+            }
+        }
+
+        function showPage(pageId) {
+            const allPages = document.querySelectorAll('.page-content');
+            allPages.forEach(page => page.classList.remove('active'));
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('pages-container').style.display = 'block';
+            document.getElementById(pageId).classList.add('active');
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('bg-gray-200'));
+            document.querySelector(`button[onclick="showPage('${pageId}')"]`).classList.add('bg-gray-200');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const searchResultsContainer = document.getElementById('searchResults');
+            const searchResultsContent = document.getElementById('searchResultsContent');
+            const pagesContainer = document.getElementById('pages-container');
+
+            if (query.length < 2) {
+                searchResultsContainer.style.display = 'none';
+                pagesContainer.style.display = 'block';
+                return;
+            }
+
+            pagesContainer.style.display = 'none';
+            searchResultsContainer.style.display = 'block';
+            searchResultsContent.innerHTML = '';
+
+            let resultsFound = false;
+            for (const pageId in medicalTerms) {
+                const terms = medicalTerms[pageId];
+                const pageTitle = pageTitles[pageId];
+                terms.forEach(term => {
+                    const match = [
+                        term.chineseName,
+                        term.englishName,
+                        term.chineseDescription,
+                        term.englishDescription,
+                        term.pinyin,
+                        pageTitle
+                    ].some(text => text && text.toLowerCase().includes(query));
+
+                    if (match) {
+                        searchResultsContent.innerHTML += createTermCard(term, pageTitle);
+                        resultsFound = true;
+                    }
+                });
+            }
+
+            if (!resultsFound) {
+                searchResultsContent.innerHTML = `<p class="text-center text-gray-500 p-8">没有找到匹配的结果。</p>`;
+            }
+        });
+
+        // Initial setup on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            Object.keys(medicalTerms).forEach(pageId => {
+                renderPage(pageId);
+            });
+            showPage('page1-1'); // Show the first page by default
+        });
+    </script>
+</body>
+</html>

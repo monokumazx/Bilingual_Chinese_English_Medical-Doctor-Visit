@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Dermatology Terminology | 交互式皮肤病学术语</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: A two-column SPA layout. Left column for category navigation, right for content display. A header contains the title, a real-time search bar, and a language toggle (EN/CN/Bilingual). This structure was chosen for its intuitive master-detail pattern, which is ideal for exploring a glossary. It allows users to quickly jump between sections without scrolling, and the search/toggle features provide direct control over the content, enhancing usability and speed of information retrieval. -->
+    <!-- Visualization & Content Choices: Report Info: Bilingual glossary of terms. Goal: Inform/Organize. Presentation: Left-sidebar navigation (HTML buttons) and a main content area with definition lists (dl, dt, dd). Interaction: JS-powered navigation to show/hide content sections, a real-time search filter, and a language toggle to control visibility of English/Chinese text. Justification: This approach turns a static document into a dynamic reference tool, prioritizing fast look-up and user control. Library/Method: Vanilla JS and Tailwind CSS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background-color: #F8F7F4;
+            color: #333333;
+        }
+        .lang-cn, .lang-en {
+            display: none;
+        }
+        .bilingual .lang-cn, .bilingual .lang-en {
+            display: block;
+        }
+        .english-only .lang-en {
+            display: block;
+        }
+        .chinese-only .lang-cn {
+            display: block;
+        }
+        .nav-item.active {
+            background-color: #D4A373;
+            color: white;
+        }
+        .nav-item {
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .term-block {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .term-block.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bilingual">
+
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-full md:w-64 lg:w-72 bg-[#EAE7E2] p-4 md:p-6 flex-shrink-0">
+            <h1 class="text-xl font-bold text-[#333333] mb-2">
+                <span class="lang-en">Dermatology Terms</span>
+                <span class="lang-cn">皮肤病学术语</span>
+            </h1>
+            <p class="text-xs text-gray-600 mb-6">
+                <span class="lang-en">Interactive Glossary</span>
+                <span class="lang-cn">交互式词汇表</span>
+            </p>
+            <nav id="navigation" class="space-y-2"></nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 md:p-8 lg:p-10 overflow-y-auto">
+            <header class="mb-8">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-[#333333]">
+                            <span class="lang-en">Terminology Explorer</span>
+                            <span class="lang-cn">术语浏览器</span>
+                        </h2>
+                        <p class="text-gray-500 mt-1">
+                            <span class="lang-en">Select a category, search for a term, or change the language.</span>
+                            <span class="lang-cn">选择类别、搜索术语或切换语言。</span>
+                        </p>
+                    </div>
+                     <!-- Language and Search Controls -->
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <div class="relative flex-grow">
+                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                &#128269;
+                            </span>
+                            <input type="text" id="search-input" placeholder="Search terms..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]">
+                        </div>
+                        <div class="flex rounded-lg border border-gray-300">
+                            <button id="lang-en-btn" class="px-3 py-2 text-sm font-medium hover:bg-gray-200 rounded-l-md">EN</button>
+                            <button id="lang-bilingual-btn" class="px-3 py-2 text-sm font-medium bg-[#D4A373] text-white hover:bg-[#c8935a] border-l border-r">EN/CN</button>
+                            <button id="lang-cn-btn" class="px-3 py-2 text-sm font-medium hover:bg-gray-200 rounded-r-md">CN</button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div id="content-container"></div>
+            
+            <footer class="mt-12 pt-6 border-t border-gray-200 text-sm text-gray-500">
+                <p>
+                    <span class="lang-en">Source: Dr Amanda Oakley, Dermatologist, Hamilton, New Zealand, 1997.</span>
+                    <span class="lang-cn">来源: 阿曼达·奥克利医生, 皮肤科医生, 新西兰汉密尔顿, 1997年。</span>
+                </p>
+                <a href="https://dermnetnz.org/topics/terminology" class="text-[#D4A373] hover:underline" target="_blank">
+                    <span class="lang-en">View Original on DermNet NZ</span>
+                    <span class="lang-cn">在DermNet NZ上查看原文</span>
+                </a>
+            </footer>
+        </main>
+    </div>
+
+<script>
+const terminologyData = [
+    {
+        category: { en: "Introduction", cn: "引言" },
+        content: [
+            {
+                term: { en: "About This Glossary", cn: "关于此词汇表" },
+                definition: {
+                    en: "If you don't find what you are looking for on this page, try DermNet's Glossary of Dermatology Terms. Dermatological diagnoses often have more than one name. DermNet refers to various resources when naming conditions, including the World Health Organisation (WHO)'s International Classification of Diseases (see ICD11 coding tool), and the Systematized Nomenclature of Medicine Clinical Terms (SNOMED CT).",
+                    cn: "如果在此页面上找不到所需内容，可以尝试查阅DermNet的皮肤病学词汇表。皮肤病学诊断通常有不止一个名称。DermNet在命名病症时会参考多种资源，包括世界卫生组织（WHO）的《国际疾病分类》（见ICD11编码工具）和《医学系统命名法临床术语》（SNOMED CT）。"
+                }
+            }
+        ]
+    },
+    {
+        category: { en: "Describing Conditions", cn: "描述状况" },
+        content: [
+            { term: { en: "Lesion", cn: "皮损" }, definition: { en: "Any single area of altered skin. It may be solitary or multiple.", cn: "任何单一的皮肤异常区域。它可以是单个的或多个的。" } },
+            { term: { en: "Rash", cn: "皮疹" }, definition: { en: "A widespread eruption of lesions.", cn: "皮损的广泛性爆发。" } },
+            { term: { en: "Dermatosis", cn: "皮肤病" }, definition: { en: "A generic term for a disease of the skin.", cn: "皮肤疾病的通用术语。" } },
+            { term: { en: "Examination", cn: "检查" }, definition: { en: "When examining the skin, a dermatologist assesses distribution, morphology and arrangement of skin lesions: their number, size, and colour, which sites are involved, their symmetry, shape, and arrangement.", cn: "在检查皮肤时，皮肤科医生会评估皮肤皮损的分布、形态和排列：它们的数量、大小和颜色，涉及的部位，它们的对称性、形状和排列。" } },
+            { term: { en: "Specialised Techniques", cn: "专业技术" }, definition: { en: "Includes Wood's lamp (long wave UVA) examination for pigmentary changes and fluorescent infections, and Dermoscopy for pigmented lesions to diagnose melanoma.", cn: "包括伍德灯（长波UVA）检查用于诊断色素性改变和荧光感染，以及皮肤镜检查用于诊断色素沉着皮损以诊断黑色素瘤。" } }
+        ]
+    },
+    {
+        category: { en: "Structure of the Skin", cn: "皮肤结构" },
+        content: [
+            { term: { en: "Epidermis", cn: "表皮" }, definition: { en: "A complex ‘brick wall’ made of cells called keratinocytes, which produce keratin. Also contains melanocytes (pigment cells), Langerhans cells (immune), and Merkel cells (sensory).", cn: "一个复杂的“砖墙”，由称为角质形成细胞的细胞构成，它们产生角蛋白。还包含黑素细胞（色素细胞）、朗格汉斯细胞（免疫）和默克尔细胞（感觉）。" } },
+            { term: { en: "Basal layer", cn: "基底层" }, definition: { en: "The bottom layer of the epidermis where new cells are continuously produced.", cn: "表皮的底层，新的细胞不断由此产生。" } },
+            { term: { en: "Squamous cells", cn: "鳞状细胞" }, definition: { en: "Flat epithelial cells on the skin surface, arranged in layers (stratified squamous epithelium).", cn: "位于皮肤表面的扁平上皮细胞，分层排列（分层鳞状上皮）。" } },
+            { "term": { "en": "Dermis", "cn": "真皮" }, "definition": { "en": "Connective tissue supporting the epidermis. Contains collagen, elastin, ground substance, fibroblasts, nerves, blood vessels, and more.", "cn": "支持表皮的结缔组织。包含胶原蛋白、弹性蛋白、基质、成纤维细胞、神经、血管等。" } },
+            { "term": { "en": "Collagen", "cn": "胶原蛋白" }, "definition": { "en": "A structural protein making up the bulk of the dermis, produced by fibroblasts.", "cn": "构成真皮大部分的结构蛋白，由成纤维细胞产生。" } },
+            { "term": { "en": "Subcutaneous tissue (Subcutis)", "cn": "皮下组织" }, "definition": { "en": "Made up of adipose cells (fat cells), surrounded by connective tissue, blood vessels, and nerves.", "cn": "由脂肪細胞組成，被結締組織、血管和神經包圍。" } }
+        ]
+    },
+    {
+        category: { en: "Distribution", cn: "分布" },
+        content: [
+            { term: { en: "Acral", cn: "肢端" }, definition: { en: "Relating to or affecting the distal extremities (e.g., ears, fingers, toes).", cn: "与远端肢体（例如，耳朵、手指、脚趾）有关或影响它们。" } },
+            { term: { en: "Blaschko lines", cn: "布拉斯科线" }, definition: { en: "Following a roughly linear, segmental pattern. Many birthmarks follow these lines.", cn: "遵循大致线性、节段性模式。许多胎记遵循这些线。" } },
+            { term: { en: "Dermatomal", cn: "皮节" }, definition: { en: "Lesions confined to one or more skin segments innervated by a single spinal nerve.", cn: "皮损局限于由单个脊神经支配的一个或多个皮肤节段。" } },
+            { term: { en: "Flexural", cn: "褶皱" }, definition: { en: "Related to skin folds, such as the backs of knees, armpits, and groin.", cn: "与皮肤褶皱有关，例如膝盖后部、腋窝和腹股沟。" } },
+            { term: { en: "Koebnerised", cn: "同形反应" }, definition: { en: "The appearance of new skin lesions at the site of trauma.", cn: "新皮损出现在创伤部位。" } },
+            { term: { en: "Symmetrical", cn: "对称性" }, definition: { en: "Both sides of the body are affected in a similar pattern.", cn: "身体两侧以相似的模式受到影响。" } }
+        ]
+    },
+    {
+        category: { en: "Configuration of Lesions", cn: "皮损形态" },
+        content: [
+            { term: { en: "Nummular / Discoid", cn: "钱币状 / 盘状" }, definition: { en: "Round (coin-shaped) lesions.", cn: "圆形（钱币状）皮损。" } },
+            { term: { en: "Linear / Striate", cn: "线状 / 条纹状" }, definition: { en: "A linear shape, often from an external cause like scratching.", cn: "线状形状，通常由外部原因（如抓挠）引起。" } },
+            { term: { en: "Target / Iris lesion", cn: "靶形 / 虹膜样皮损" }, definition: { en: "Concentric rings like a dartboard.", cn: "像飞镖靶一样的同心圆环。" } },
+            { term: { en: "Annular", cn: "环状" }, definition: { en: "Lesions grouped in a circle.", cn: "皮损聚集在一个圆圈中。" } }
+        ]
+    },
+    {
+        category: { en: "Colour", cn: "颜色" },
+        content: [
+            { term: { en: "Hyperpigmentation", cn: "色素沉着" }, definition: { en: "Darkened skin compared to normal.", cn: "皮肤比正常肤色变深。" } },
+            { term: { en: "Hypopigmentation", cn: "色素减退" }, definition: { en: "Skin colour that is paler than normal.", cn: "皮肤颜色比正常肤色苍白。" } },
+            { term: { en: "Erythema", cn: "红斑" }, definition: { en: "Red skin due to increased blood supply.", cn: "由于血液供应增加导致的皮肤发红。" } },
+            { term: { en: "Jaundice", cn: "黄疸" }, definition: { en: "Yellowing of the skin and eyes due to a buildup of bile pigments.", cn: "由于胆汁色素积聚导致的皮肤和眼睛变黄。" } },
+            { term: { en: "Purpura", cn: "紫癜" }, definition: { en: "Bleeding into the skin (petechiae or ecchymoses); does not blanch with pressure.", cn: "皮肤出血（瘀点或瘀斑）；在压力下不会变白。" } }
+        ]
+    },
+    {
+        category: { en: "Morphology", cn: "形态" },
+        content: [
+            { term: { en: "Macule", cn: "斑疹" }, definition: { en: "A small patch of skin altered in colour, but not elevated.", cn: "一小块颜色改变但没有隆起的皮肤斑片。" } },
+            { term: { en: "Papule", cn: "丘疹" }, definition: { en: "Elevated, solid, palpable lesion that is ≤ 1 cm in diameter.", cn: "隆起、实性、可触及的皮损，直径 ≤ 1 厘米。" } },
+            { term: { en: "Plaque", cn: "斑块" }, definition: { en: "A circumscribed, palpable, elevated lesion more than 1 cm in diameter.", cn: "直径超过 1 厘米、有界限、可触及、隆起的皮损。" } },
+            { term: { en: "Vesicle", cn: "水疱" }, definition: { en: "A small blister (≤ 1 cm) that contains liquid.", cn: "一个含有液体的小水泡（≤ 1 厘米）。" } },
+            { "term": { "en": "Bulla", "cn": "大疱" }, "definition": { "en": "A large blister (> 1 cm) that contains liquid.", "cn": "一个含有液体的大水泡（> 1 厘米）。" } },
+            { "term": { "en": "Pustule", "cn": "脓疱" }, "definition": { "en": "A circumscribed lesion that contains pus.", "cn": "一个含有脓液的有界限的皮损。" } },
+            { "term": { "en": "Weal / Wheal", "cn": "风团" }, "definition": { "en": "A transient elevation of the skin due to dermal oedema, indicating urticaria.", "cn": "由于真皮水肿引起的皮肤短暂性隆起，表明荨麻疹。" } }
+        ]
+    },
+    {
+        category: { en: "Skin Surface", cn: "皮肤表面" },
+        content: [
+            { term: { en: "Scaling / Hyperkeratosis", cn: "鳞屑形成 / 角化过度" }, definition: { en: "An increase in the dead cells on the surface of the skin.", cn: "皮肤表面死细胞的增加。" } },
+            { "term": { "en": "Desquamation", "cn": "脱屑" }, "definition": { "en": "Skin coming off in scales.", "cn": "皮肤以鳞屑形式脱落。" } },
+            { "term": { "en": "Psoriasiform", "cn": "银屑病样" }, "definition": { "en": "Large white or silver flakes.", "cn": "大块的白色或银色薄片。" } },
+            { "term": { "en": "Verrucous", "cn": "疣状" }, "definition": { "en": "Warty surface.", "cn": "疣状表面。" } }
+        ]
+    },
+    {
+        category: { en: "Secondary Changes", cn: "继发性改变" },
+        content: [
+            { term: { en: "Lichenification", cn: "苔藓样变" }, definition: { en: "Caused by chronic rubbing, resulting in palpably thickened skin with increased skin markings.", cn: "由慢性摩擦引起，导致皮肤可触及的增厚，皮肤纹理增加。" } },
+            { "term": { "en": "Crusting", "cn": "结痂" }, "definition": { "en": "The result of plasma exuding through an eroded epidermis. Rough on the surface.", "cn": "血漿通過受侵蝕的表皮滲出而形成。表面粗糙。" } },
+            { "term": { "en": "Erosion", "cn": "糜烂" }, "definition": { "en": "A sore due to the superficial or partial destruction of surface tissue.", "cn": "由于表面组织的表层或部分破坏而形成的溃疡。" } },
+            { "term": { "en": "Ulcer", "cn": "溃疡" }, "definition": { "en": "Full-thickness loss of the epidermis plus at least a portion of the dermis.", "cn": "表皮和至少一部分真皮的全层丧失。" } },
+            { "term": { "en": "Fissure", "cn": "裂隙" }, "definition": { "en": "A split, crack, erosion or narrow ulceration of the skin.", "cn": "皮肤的裂口、裂缝、糜烂或狭窄的溃疡。" } }
+        ]
+    },
+    {
+        category: { en: "DermNet Glossary", cn: "DermNet 词汇表" },
+        content: [
+            { "term": { "en": "Aberrant", "cn": "异常的" }, "definition": { "en": "An adjective pertaining to a deviation from normal.", "cn": "指偏离正常的形容词。" } },
+            { "term": { "en": "Aberration", "cn": "偏差" }, "definition": { "en": "The process of deviating from normal, a deviation.", "cn": "偏離正常的過程，一種偏差。" } },
+            { "term": { "en": "Ablation", "cn": "消融" }, "definition": { "en": "The destruction of tissue, often by cautery, cryotherapy or laser.", "cn": "組織的破壞，通常通過燒灼、冷凍療法或激光實現。" } },
+            { "term": { "en": "Ablative", "cn": "消融的" }, "definition": { "en": "An adjective pertaining to ablation, the destruction of tissue by laser, cautery, chemicals, surgery, or radiotherapy.", "cn": "指與消融相關的形容詞，即通過激光、燒灼、化學、手術或放射治療破壞組織。" } },
+            { "term": { "en": "Abnormality", "cn": "異常" }, "definition": { "en": "A noun for a not normal thing. Something that is uncharacteristic or unusual.", "cn": "指不正常事物的名詞。異常是某種非典型的或不尋常的事物。" } },
+            { "term": { "en": "Abscess", "cn": "膿腫" }, "definition": { "en": "A localised collection of pus.", "cn": "局部積聚的膿液。" } },
+            { "term": { "en": "Acantholysis", "cn": "棘層鬆解" }, "definition": { "en": "A histological term for the separation of keratinocytes within the epidermis due to the loss of adhesion between keratinocytes.", "cn": "一個組織學術語，指由於角質形成細胞之間粘附力喪失而導致表皮內的角質形成細胞分離。" } },
+            { "term": { "en": "Acantholytic", "cn": "棘層鬆解的" }, "definition": { "en": "An adjective used in histology to describe the loss of keratinocyte cohesion resulting in 'floating cells'.", "cn": "一個組織學形容詞，用於描述角質形成細胞內聚力喪失，導致 '漂浮細胞'。" } },
+            { "term": { "en": "Acanthoma", "cn": "棘皮瘤" }, "definition": { "en": "A benign tumour located in the prickle cell layer of the epidermis. There are several specific forms of acanthoma.", "cn": "位於表皮棘細胞層的良性腫瘤。棘皮瘤有幾種特定形式。" } },
+            { "term": { "en": "Acanthosis", "cn": "棘層肥厚" }, "definition": { "en": "A histological term for thickening of the epidermis and elongation of the rete ridges due to thickening of the spinous layer and enlargement of rete pegs.", "cn": "一個組織學術語，指由於棘層增厚和真皮乳頭擴大而導致表皮增厚和真皮乳頭延長。" } },
+            { "term": { "en": "Accentuate", "cn": "強調" }, "definition": { "en": "A verb meaning to make more obvious or noticeable.", "cn": "一個動詞，意思是使某事物更明顯或更引人注目。" } },
+            { "term": { "en": "Achromia", "cn": "無色症" }, "definition": { "en": "Loss of colour. In the skin, also called leukoderma or depigmentation, and means a lack or absence of melanin.", "cn": "顏色喪失。在皮膚中，也稱為白斑或色素脫失，意味著缺乏或沒有黑色素。" } },
+            { "term": { "en": "Acneform", "cn": "痤瘡樣" }, "definition": { "en": "An adjective used to describe a resemblance to acne.", "cn": "一個形容詞，用於描述類似於痤瘡的外觀。" } },
+            { "term": { "en": "Acral", "cn": "肢端" }, "definition": { "en": "An adjective relating to or involving a distal site, eg, ear, finger, toe, nose, penis and nipple.", "cn": "指與遠端部位（例如耳朵、手指、腳趾、鼻子、陰莖和乳頭）相關或影響這些部位的形容詞。" } },
+            { "term": { "en": "Acrochordon", "cn": "皮贅" }, "definition": { "en": "A fibroepithelial polyp of the skin, commonly known as a skin tag.", "cn": "一種皮膚纖維上皮息肉，俗稱皮贅。" } },
+            { "term": { "en": "Acrokeratoderma", "cn": "肢端角化病" }, "definition": { "en": "Skin thickening of the hands and feet, usually due to hyperkeratosis.", "cn": "手和腳的皮膚增厚，通常是由於角化過度引起的。" } },
+            { "term": { "en": "Actinic", "cn": "光化的" }, "definition": { "en": "An adjective pertaining to sun or ultraviolet radiation.", "cn": "指與太陽或紫外線輻射有關的形容詞。" } },
+            { "term": { "en": "Actinic keratosis", "cn": "光化性角化病" }, "definition": { "en": "A scaly skin spot showing some atypia of keratinocytes caused by chronic sun exposure.", "cn": "由長期日曬引起的鱗狀皮膚斑點，顯示一些角質形成細胞非典型性。" } },
+            { "term": { "en": "Active substance", "cn": "活性物質" }, "definition": { "en": "An ingredient in a product that has the therapeutic effect.", "cn": "產品中具有治療作用的成分。" } },
+            { "term": { "en": "Acuminate", "cn": "尖細的" }, "definition": { "en": "An adjective used to describe a sharp and tapered point.", "cn": "用於描述尖銳且漸細的點的形容詞。" } },
+            { "term": { "en": "Acute", "cn": "急性" }, "definition": { "en": "An adjective describing a sudden onset, sharp rise, or short course.", "cn": "描述突然發作、急劇上升或病程短暫的形容詞。" } },
+            { "term": { "en": "Adenocarcinoma", "cn": "腺癌" }, "definition": { "en": "A type of cancer derived from a mucin-producing gland.", "cn": "一種源自分泌粘液腺體的癌症類型。" } },
+            { "term": { "en": "Adenoma", "cn": "腺瘤" }, "definition": { "en": "A benign epithelial tumour with glands and gland-like structures.", "cn": "一種具有腺體和腺樣結構的良性上皮腫瘤。" } },
+            { "term": { "en": "Adhesion", "cn": "粘附" }, "definition": { "en": "The process of the sticking together of components, eg, adhesion between keratinocytes.", "cn": "各組件粘附在一起的過程，例如角質形成細胞之間的粘附。" } },
+            { "term": { "en": "Adipocyte", "cn": "脂肪細胞" }, "definition": { "en": "A cell that stores fat, located in subcutaneous tissue.", "cn": "一種儲存脂肪的細胞，位於皮下組織中。" } },
+            { "term": { "en": "Adipose", "cn": "脂肪" }, "definition": { "en": "Fat.", "cn": "脂肪。" } },
+            { "term": { "en": "Adjacent", "cn": "鄰近的" }, "definition": { "en": "An adjective meaning to be next to or adjoining.", "cn": "意思是毗鄰或相鄰的形容詞。" } },
+            { "term": { "en": "Adjunctive therapy", "cn": "輔助療法" }, "definition": { "en": "An additional, often milder, treatment added to improve efficacy or safety of a therapeutic agent.", "cn": "為提高治療劑的療效或安全性而額外添加的、通常較溫和的治療。" } },
+            { "term": { "en": "Adjuvant", "cn": "佐劑" }, "definition": { "en": "A noun and adjective meaning helper or helpful. An extra agent added to improve efficacy.", "cn": "一個名詞和形容詞，意思是輔助或有幫助。為提高療效而額外添加的物質。" } },
+            { "term": { "en": "Adnexa", "cn": "附件" }, "definition": { "en": "An accessory or appendage. In dermatology, an epidermal adnexa may be a hair, nail, or sweat gland.", "cn": "一個附屬物或附件。在皮膚病學中，表皮附件可能是毛髮、指甲或汗腺。" } },
+            { "term": { "en": "Adnexal", "cn": "附件的" }, "definition": { "en": "An adjective pertaining to an adnexa, an accessory or appendage.", "cn": "指與附件或附屬物相關的形容詞。" } },
+            { "term": { "en": "Adrenaline", "cn": "腎上腺素" }, "definition": { "en": "A hormone, neurotransmitter, and drug involved in the fight-flight-fright reaction.", "cn": "一種參與“戰鬥-逃跑-恐懼”反應的激素、神經遞質和藥物。" } },
+            { "term": { "en": "Adrenarche", "cn": "腎上腺初潮" }, "definition": { "en": "The increase in adrenal gland activity just before puberty.", "cn": "青春期前腎上腺活動的增加。" } },
+            { "term": { "en": "Adverse drug reaction", "cn": "藥物不良反應" }, "definition": { "en": "An unexpected, sometimes harmful, event caused by a medication.", "cn": "由藥物引起的意外、有時是有害的事件。" } },
+            { "term": { "en": "Adverse event", "cn": "不良事件" }, "definition": { "en": "Any untoward effect or episode occurring during treatment, but not necessarily due to that treatment.", "cn": "在治療期間發生的任何不良影響或事件，但不一定是由於該治療引起的。" } },
+            { "term": { "en": "Adverse reaction", "cn": "不良反應" }, "definition": { "en": "An unexpected, sometimes harmful, event caused by a treatment or procedure.", "cn": "由治療或程序引起的意外、有時是有害的事件。" } },
+            { "term": { "en": "Aeroallergen", "cn": "空氣過敏原" }, "definition": { "en": "An airborne substance that induces an allergic reaction, like pollen.", "cn": "一種誘發過敏反應的空氣傳播物質，如花粉。" } },
+            { "term": { "en": "Aerobe", "cn": "需氧菌" }, "definition": { "en": "An organism that requires oxygen to live.", "cn": "一種需要氧氣才能生存的生物。" } },
+            { "term": { "en": "Aerobic", "cn": "需氧的" }, "definition": { "en": "An adjective pertaining to an aerobe(s), a requirement for oxygen.", "cn": "指與需氧菌相關的形容詞，即需要氧氣。" } },
+            { "term": { "en": "Aerosol foam", "cn": "氣霧泡沫" }, "definition": { "en": "A solution with a pressurised propellant that emerges as a foam.", "cn": "一種帶有加壓推進劑的溶液，以泡沫形式出現。" } },
+            { "term": { "en": "Aetiology", "cn": "病因學" }, "definition": { "en": "The study of causes and causation. Also the cause of a situation, eg, the aetiology of a disease may be an infection.", "cn": "對原因和因果關係的研究。也指某種情況的原因，例如疾病的病因可能是感染。" } },
+            { "term": { "en": "Aetiopathogenesis", "cn": "病因發病機制" }, "definition": { "en": "Means the cause and the subsequent development of a disorder.", "cn": "意指疾病的病因及其後續的發展。" } },
+            { "term": { "en": "Agglutination", "cn": "凝集" }, "definition": { "en": "The process of clumping.", "cn": "凝結的過程。" } },
+            { "term": { "en": "Agglutinin", "cn": "凝集素" }, "definition": { "en": "A molecule that binds to particles resulting in agglutination (clumping). Commonly an antibody.", "cn": "一種與顆粒結合導致凝集（結塊）的分子。通常是一種抗體。" } },
+            { "term": { "en": "Aggregate", "cn": "聚集體" }, "definition": { "en": "A noun, verb, and adjective pertaining to collect, collection. For example, an aggregate of cells.", "cn": "一個名詞、動詞和形容詞，與收集、集合有關。例如，細胞的聚集體。" } },
+            { "term": { "en": "Aggregation", "cn": "聚集" }, "definition": { "en": "A collection or clustering. For example, aspirin prevents platelet aggregation to form a clot.", "cn": "一種集合或聚集。例如，阿司匹林可防止血小板聚集形成血栓。" } },
+            { "term": { "en": "Agminated", "cn": "簇狀" }, "definition": { "en": "An adjective meaning clustered together.", "cn": "意為聚集在一起的形容詞。" } },
+            { "term": { "en": "Alanine aminotransferase (ALT)", "cn": "丙氨酸氨基轉移酶（ALT）" }, "definition": { "en": "An enzyme measured in the blood to monitor liver damage due to medications, viral infections and other forms of inflammation.", "cn": "血液中測量的一種酶，用於監測因藥物、病毒感染和其他形式炎症引起的肝損傷。" } },
+            { "term": { "en": "Allele", "cn": "等位基因" }, "definition": { "en": "A variant form of a gene found on the same locus of a chromosome.", "cn": "染色體上同一基因座位的基因變異形式。" } },
+            { "term": { "en": "Allergen", "cn": "過敏原" }, "definition": { "en": "A substance capable of inducing an immediate or delayed hypersensitivity reaction (allergy).", "cn": "一種能夠誘發即時或遲發型超敏反應（過敏）的物質。" } },
+            { "term": { "en": "Allergenic", "cn": "致敏的" }, "definition": { "en": "An adjective pertaining to the ability to induce an allergy.", "cn": "指具有誘發過敏能力的形容詞。" } },
+            { "term": { "en": "Allergic reaction", "cn": "過敏反應" }, "definition": { "en": "A medical event due to an immunological response to an allergen.", "cn": "由於對過敏原的免疫反應而引起的醫療事件。" } },
+            { "term": { "en": "Allergy", "cn": "過敏" }, "definition": { "en": "A hypersensitivity reaction of which there are several different types; an abnormal reaction of the immune system to an exogenous agent.", "cn": "一種有多種類型的超敏反應；免疫系統對外源性物質（如花粉或花生）的異常反應。" } },
+            { "term": { "en": "Allodynia", "cn": "痛覺過敏" }, "definition": { "en": "A symptom, and describes when a non-painful stimulus, such as light touch, elicits severe pain.", "cn": "一種症狀，指當非疼痛性刺激（如輕觸）引起劇烈疼痛時的描述。" } },
+            { "term": { "en": "Alopecia", "cn": "脫髮" }, "definition": { "en": "Hair loss due to any cause.", "cn": "由任何原因引起的毛髮脫落。" } },
+            { "term": { "en": "Amblyopia", "cn": "弱視" }, "definition": { "en": "Dimness of vision due to abnormal development of the visual pathway. It results in a 'lazy eye' or 'wandering eye'.", "cn": "由於視覺通路異常發育導致的視力模糊。它導致“懶惰眼”或“遊走眼”。" } },
+            { "term": { "en": "Amelanotic", "cn": "無黑色素的" }, "definition": { "en": "An adjective pertaining to a lack of melanin, the skin pigment.", "cn": "指缺乏皮膚色素黑色素的形容詞。" } },
+            { "term": { "en": "Amenorrhea", "cn": "閉經" }, "definition": { "en": "The temporary or permanent absence of menstruation.", "cn": "月經暫時或永久性停止。" } },
+            { "term": { "en": "Amino acid", "cn": "氨基酸" }, "definition": { "en": "The molecular building block of protein.", "cn": "蛋白質的分子組成部分。" } },
+            { "term": { "en": "Aminoglycoside", "cn": "氨基糖苷" }, "definition": { "en": "A class of antibiotic that inhibits bacterial protein synthesis, mainly used to treat Gram-negative infection.", "cn": "一類抑制細菌蛋白質合成的抗生素，主要用於治療革蘭氏陰性菌感染。" } },
+            { "term": { "en": "Amniocentesis", "cn": "羊膜穿刺術" }, "definition": { "en": "A procedure to remove amniotic fluid from the pregnant uterus to screen for abnormalities in the fetus.", "cn": "一種從懷孕子宮中取出羊水以篩查胎兒異常的程序。" } },
+            { "term": { "en": "Amniotic", "cn": "羊膜的" }, "definition": { "en": "An adjective pertaining to the amnion, the membrane that encloses an embryo/fetus during pregnancy.", "cn": "指與羊膜相關的形容詞，羊膜是在懷孕期間包裹胚胎/胎兒的膜。" } },
+            { "term": { "en": "Amorphous", "cn": "無定形的" }, "definition": { "en": "An adjective describing a lack of form or shape.", "cn": "描述缺乏形狀或形態的形容詞。" } },
+            { "term": { "en": "Amphiphilic", "cn": "兩親的" }, "definition": { "en": "An adjective describing the ability to combine with or dissolve in both lipids and water.", "cn": "描述能夠與脂質和水結合或溶解的形容詞。" } },
+            { "term": { "en": "Amyloid", "cn": "澱粉樣蛋白" }, "definition": { "en": "An abnormal aggregate of proteins deposited in tissue with characteristic staining and appearance on microscopy.", "cn": "沉積在組織中的蛋白質異常聚集體，在顯微鏡下具有特徵性染色和外觀。" } },
+            { "term": { "en": "Amyloidosis", "cn": "澱粉樣變性" }, "definition": { "en": "A disorder characterised by the formation and deposition of amyloid.", "cn": "以澱粉樣蛋白的形成和沉積為特徵的疾病。" } },
+            { "term": { "en": "Anaemia", "cn": "貧血" }, "definition": { "en": "An abnormally low haemoglobin content or number of peripheral red blood cells.", "cn": "血紅蛋白含量或外周紅細胞數量異常低。" } },
+            { "term": { "en": "Anaerobe", "cn": "厭氧菌" }, "definition": { "en": "An organism that does not require oxygen to live.", "cn": "一種不需要氧氣就能生存的生物。" } },
+            { "term": { "en": "Anaerobic", "cn": "厭氧的" }, "definition": { "en": "An adjective pertaining to not requiring or wanting free oxygen.", "cn": "指不需要或不希望遊離氧氣的形容詞。" } },
+            { "term": { "en": "Anaesthesia", "cn": "麻醉" }, "definition": { "en": "A state of chemically induced insensitivity or insensibility.", "cn": "一種由化學物質引起的感覺缺失或無知覺狀態。" } },
+            { "term": { "en": "Anagen", "cn": "生長期" }, "definition": { "en": "The growth phase of the hair follicle.", "cn": "毛囊的生長階段。" } },
+            { "term": { "en": "Anal", "cn": "肛門的" }, "definition": { "en": "An adjective pertaining to the anus, the opening at the end of the bowel.", "cn": "指與肛門（腸道末端的開口）相關的形容詞。" } },
+            { "term": { "en": "Analgesia", "cn": "鎮痛" }, "definition": { "en": "A pain relieving medication.", "cn": "一種緩解疼痛的藥物。" } },
+            { "term": { "en": "Analogue", "cn": "類似物" }, "definition": { "en": "Something similar that can often be substituted, eg, a drug may be an analogue of another if it has a similar structure and action.", "cn": "類似的東西，通常可以被替代，例如，如果一種藥物具有相似的結構和作用，它可能是另一種藥物的類似物。" } },
+            { "term": { "en": "Anaphylaxis", "cn": "過敏性休克" }, "definition": { "en": "An immediate hypersensitivy reaction that can be severe, and potentially fatal, in a sensitised individual.", "cn": "一種即時超敏反應，在致敏個體中可能嚴重甚至致命。" } },
+            { "term": { "en": "Anaplastic", "cn": "退行性變" }, "definition": { "en": "An adjective used in histology to describe specific features usually indicative of malignancy.", "cn": "一個組織學形容詞，用於描述通常表示惡性腫瘤的特定特徵。" } },
+            { "term": { "en": "Anatomical region", "cn": "解剖區域" }, "definition": { "en": "One area of the body. Examples: the head and neck; trunk; upper or lower limb.", "cn": "身體的一個區域。例如：頭頸部、軀幹、上肢或下肢。" } },
+            { "term": { "en": "ANCA", "cn": "ANCA" }, "definition": { "en": "Acronym for antineutrophil cytoplasmic antibody. Used to classify types of vasculitis.", "cn": "抗中性粒細胞胞漿抗體的縮寫。用於分類血管炎的類型。" } },
+            { "term": { "en": "Androgen", "cn": "雄激素" }, "definition": { "en": "A class of steroid hormone responsible for the development of male characteristics.", "cn": "一類負責男性特徵發展的類固醇激素。" } },
+            { "term": { "en": "Androgenetic", "cn": "雄激素性" }, "definition": { "en": "An adjective pertaining to a genetic susceptibility to androgens, the male hormones. Typically used to describe a form of patterned hair loss.", "cn": "指對雄激素（男性激素）具有遺傳易感性的形容詞。通常用於描述一種模式性脫髮。" } },
+            { "term": { "en": "Aneurysm", "cn": "動脈瘤" }, "definition": { "en": "A bulging outwards from a weak point in a blood vessel wall.", "cn": "血管壁薄弱處向外凸出。" } },
+            { "term": { "en": "Angioedema", "cn": "血管性水腫" }, "definition": { "en": "Rapid and temporary swelling deep in the skin or mucous membranes.", "cn": "皮膚或黏膜深層快速且暫時的腫脹。" } },
+            { "term": { "en": "Angiofibroma", "cn": "血管纖維瘤" }, "definition": { "en": "A family of benign (non-cancerous) tumours composed of increased dermal fibroblasts.", "cn": "一類由增多的真皮成纖維細胞組成的良性（非癌性）腫瘤。" } },
+            { "term": { "en": "Angiogenesis", "cn": "血管生成" }, "definition": { "en": "The formation of new blood vessels.", "cn": "新血管的形成。" } },
+            { "term": { "en": "Angiogram", "cn": "血管造影" }, "definition": { "en": "A radiograph that displays blood vessels or lymphatic vessels.", "cn": "一種顯示血管或淋巴管的射線照片。" } },
+            { "term": { "en": "Angiography", "cn": "血管造影術" }, "definition": { "en": "The radiological process to display blood vessels or lymphatic vessels.", "cn": "顯示血管或淋巴管的放射學過程。" } },
+            { "term": { "en": "Angiokeratoma", "cn": "血管角化瘤" }, "definition": { "en": "A capillary vascular malformation composed of epidermal hyperkeratosis overlying a cluster of dilated upper dermal capillaries.", "cn": "一種毛細血管畸形，由表皮角化過度覆蓋在擴張的上真皮毛細血管簇上組成。" } },
+            { "term": { "en": "Angiolipoma", "cn": "血管脂肪瘤" }, "definition": { "en": "A benign encapsulated tumour composed of fat lobules and numerous capillaries.", "cn": "一種由脂肪小葉和大量毛細血管組成的良性囊狀腫瘤。" } },
+            { "term": { "en": "Angioma", "cn": "血管瘤" }, "definition": { "en": "A benign collection of dilated congested blood vessels. On the skin an angioma typically presents as a red papule.", "cn": "一種由擴張充血的血管組成的良性集合。在皮膚上，血管瘤通常表現為紅色丘疹。" } },
+            { "term": { "en": "Angiomyxoma", "cn": "血管粘液瘤" }, "definition": { "en": "An acquired benign neoplasm composed of a mucinous matrix and prominent dilated capillaries.", "cn": "一種由粘液基質和顯著擴張的毛細血管組成的後天性良性腫瘤。" } },
+            { "term": { "en": "Angiotropic", "cn": "向血管性" }, "definition": { "en": "An adjective to describe having an affinity for, or moving towards, blood vessels.", "cn": "指對血管有親和力或向血管移動的形容詞。" } },
+            { "term": { "en": "Anhidrosis", "cn": "無汗症" }, "definition": { "en": "The inability to sweat appropriately; it may be due to an abnormality of the sweat glands or associated with a neurological lesion or disease.", "cn": "無法正常排汗；可能由於汗腺異常或與神經病變或疾病有關。" } },
+            { "term": { "en": "Annular", "cn": "環狀的" }, "definition": { "en": "An adjective describing a ring-like or circular shape.", "cn": "描述環狀或圓形形狀的形容詞。" } },
+            { "term": { "en": "Antenatal", "cn": "產前的" }, "definition": { "en": "Or prenatal, is an adjective meaning before birth.", "cn": "或稱產前，是指出生前的形容詞。" } },
+            { "term": { "en": "Anterior", "cn": "前方的" }, "definition": { "en": "An adjective to describe being towards the front or before. In anatomy, anterior location means on the front surface of a body part.", "cn": "描述朝向前方或在前的形容詞。在解剖學中，前方位置意味著在身體部位的正面。" } },
+            { "term": { "en": "Anti-inflammatory", "cn": "抗炎的" }, "definition": { "en": "An adjective used to describe reducing or combating inflammation. Common usage is as a noun, ie, an anti-inflammatory (drug).", "cn": "用於描述減少或對抗炎症的形容詞。常見用法是作為名詞，即一種抗炎藥。" } },
+            { "term": { "en": "Antibody", "cn": "抗體" }, "definition": { "en": "An immunoglobulin, a protein produced by plasma cells directed against a specific antigen including infections and toxins.", "cn": "一種免疫球蛋白，是由漿細胞產生的蛋白質，針對特定的抗原，包括感染和毒素。" } },
+            { "term": { "en": "Anticonvulsant", "cn": "抗驚厥藥" }, "definition": { "en": "An adjective and noun pertaining to the prevention of convulsions, typically used to describe a family of drugs for the treatment of epilepsy.", "cn": "與預防驚厥相關的形容詞和名詞，通常用於描述一類治療癲癇的藥物。" } },
+            { "term": { "en": "Antigen", "cn": "抗原" }, "definition": { "en": "Any substance that evokes an immediate or delayed immune response.", "cn": "任何能引起即時或遲發免疫反應的物質。" } },
+            { "term": { "en": "Antimicrobial", "cn": "抗菌的" }, "definition": { "en": "An adjective that means being against a microbe; it describes the action of killing or slowing the growth of microorganisms.", "cn": "意思是對抗微生物的形容詞；它描述了殺死或減緩微生物（如細菌、病毒或真菌）生長的行為。" } },
+            { "term": { "en": "Antiproliferative", "cn": "抗增殖的" }, "definition": { "en": "An adjective used to describe a process or agent that reduces the ability of cells to replicate.", "cn": "用於描述減少細胞複製能力的過程或藥劑的形容詞。" } },
+            { "term": { "en": "Apoptotic", "cn": "細胞凋亡的" }, "definition": { "en": "An adjective pertaining to apoptosis, the normal process by which a cell undergoes self-destruction.", "cn": "指與細胞凋亡相關的形容詞，即細胞通過正常過程進行自我毀滅。" } },
+            { "term": { "en": "Arachnid", "cn": "蛛形綱動物" }, "definition": { "en": "An arthropod with four pairs of legs, eg, spider, mite.", "cn": "一種有四對腿的節肢動物，例如蜘蛛、蟎蟲。" } },
+            { "term": { "en": "Arborising", "cn": "樹枝狀的" }, "definition": { "en": "Means treelike branching.", "cn": "意為樹狀分枝。" } },
+            { "term": { "en": "Areola", "cn": "乳暈" }, "definition": { "en": "A circular area. In anatomy, the areola is the pigmented circular area around the breast nipple. It is also used in dermatology to mean a red ring around an inflamed spot.", "cn": "一個圓形區域。在解剖學中，乳暈是乳頭周圍有色素的圓形區域。在皮膚病學中，也指發炎斑點周圍的紅色環。" } },
+            { "term": { "en": "Atrophy", "cn": "萎縮" }, "definition": { "en": "A decrease in size due to a decrease in cell size or number.", "cn": "由於細胞大小或數量減少而導致尺寸減小。" } },
+            { "term": { "en": "Benign", "cn": "良性的" }, "definition": { "en": "Not cancerous, not malignant. A benign tumour is a non-cancerous growth.", "cn": "非癌性的，非惡性的。良性腫瘤是非癌性生長。" } },
+            { "term": { "en": "Biopsy", "cn": "活檢" }, "definition": { "en": "A medical procedure to take a tissue sample from a living patient for microscopic examination.", "cn": "一種醫療程序，從活體患者身上取組織樣本進行顯微鏡檢查。" } },
+            { "term": { "en": "Bulla", "cn": "大疱" }, "definition": { "en": "A circumscribed epidermal lesion containing clear, serous or haemorrhagic fluid that is greater than 0.5 cm in diameter.", "cn": "一個有界限的表皮病變，含有透明、漿液性或出血性液體，直徑大於0.5厘米。" } },
+            { "term": { "en": "Calcinosis", "cn": "鈣沉積" }, "definition": { "en": "The accumulation of calcium salts within soft tissues.", "cn": "鈣鹽在軟組織中的積累。" } },
+            { "term": { "en": "Capillary", "cn": "毛細血管" }, "definition": { "en": "A small blood vessel that carries blood between the arterioles and venules.", "cn": "一種在小動脈和小靜脈之間運輸血液的小血管。" } },
+            { "term": { "en": "Carcinogen", "cn": "致癌物" }, "definition": { "en": "An agent or substance that promotes, causes, or increases the risk of cancer.", "cn": "一種促進、導致或增加癌症風險的藥劑或物質。" } },
+            { "term": { "en": "Carcinogenic", "cn": "致癌的" }, "definition": { "en": "An adjective pertaining to the triggering of cancer development.", "cn": "指觸發癌症發展的形容詞。" } },
+            { "term": { "en": "Carcinoma", "cn": "癌" }, "definition": { "en": "A malignant neoplasm (cancer) of epithelial origin.", "cn": "起源於上皮組織的惡性腫瘤（癌症）。" } },
+            { "term": { "en": "Cartilaginous", "cn": "軟骨的" }, "definition": { "en": "An adjective describing being composed of or resembling cartilage.", "cn": "描述由軟骨組成或類似軟骨的形容詞。" } },
+            { "term": { "en": "Catagen", "cn": "退行期" }, "definition": { "en": "The involutional phase of a hair follicle.", "cn": "毛囊的退化階段。" } },
+            { "term": { "en": "Cellulitis", "cn": "蜂窩織炎" }, "definition": { "en": "An infection of the dermis and subcutaneous tissue.", "cn": "真皮和皮下組織的感染。" } },
+            { "term": { "en": "Chronic", "cn": "慢性的" }, "definition": { "en": "Of long duration or frequent recurrence.", "cn": "病程長或頻繁復發。" } },
+            { "term": { "en": "Cirrhosis", "cn": "肝硬化" }, "definition": { "en": "The end result of chronic inflammation and scarring of the liver.", "cn": "慢性肝臟炎症和瘢痕形成的最終結果。" } },
+            { "term": { "en": "Claudication", "cn": "跛行" }, "definition": { "en": "Muscle pain due to arterial insufficiency. Typically occurs in the legs with exercise.", "cn": "由於動脈供血不足引起的肌肉疼痛。通常在運動時發生在腿部。" } },
+            { "term": { "en": "Cleavage", "cn": "分裂" }, "definition": { "en": "A sharp division or separation into parts.", "cn": "尖銳地分成或分離成幾個部分。" } },
+            { "term": { "en": "Cleft", "cn": "裂" }, "definition": { "en": "A separation, split, or fissure between two parts.", "cn": "兩部分之間的分離、裂開或裂隙。" } },
+            { "term": { "en": "Concentric", "cn": "同心圓的" }, "definition": { "en": "An adjective pertaining to arrangement around a central point, eg, an archery or shooting target.", "cn": "指圍繞中心點排列的形容詞，例如射箭或射擊靶。" } },
+            { "term": { "en": "Concomitant", "cn": "伴隨的" }, "definition": { "en": "An adjective meaning accompanying or at the same time, simultaneous, eg, concomitant treatments.", "cn": "意為伴隨或同時發生的形容詞，例如伴隨治療。" } },
+            { "term": { "en": "Cornoid", "cn": "角狀的" }, "definition": { "en": "An adjective meaning horn-like.", "cn": "意為角狀的形容詞。" } },
+            { "term": { "en": "Corneocyte", "cn": "角質細胞" }, "definition": { "en": "An epidermal cell in the stratum corneum which normally lacks a nucleus.", "cn": "表皮角質層中的表皮細胞，通常沒有細胞核。" } },
+            { "term": { "en": "Crusting", "cn": "結痂" }, "definition": { "en": "The result of plasma exuding through an eroded epidermis. Rough on the surface.", "cn": "血漿通過受侵蝕的表皮滲出而形成。表面粗糙。" } },
+            { "term": { "en": "Dermis", "cn": "真皮" }, "definition": { "en": "The connective tissue supporting the epidermis.", "cn": "支持表皮的結締組織。" } },
+            { "term": { "en": "Dermatitis", "cn": "皮炎" }, "definition": { "en": "Inflammation of the skin, with or without an epidermal component. The term is sometimes used synonymously with eczema.", "cn": "皮膚炎症，可有或無表皮成分。該術語有時與濕疹同義使用。" } },
+            { "term": { "en": "Desquamation", "cn": "脫屑" }, "definition": { "en": "Skin coming off in scales.", "cn": "皮膚以鱗屑形式脫落。" } },
+            { "term": { "en": "Dystrophy", "cn": "營養不良" }, "definition": { "en": "Refers to degeneration or abnormal formation of tissue due to disease or malnutrition. An example is nail dystrophy.", "cn": "指由於疾病或營養不良導致的組織退化或異常形成。一個例子是指甲營養不良。" } },
+            { "term": { "en": "Ecchymosis", "cn": "瘀斑" }, "definition": { "en": "A bruise; a discolouration due to bleeding under the skin.", "cn": "一個瘀傷；由於皮膚下出血引起的變色。" } },
+            { "term": { "en": "Eccrine gland", "cn": "小汗腺" }, "definition": { "en": "The common sweat gland in the skin.", "cn": "皮膚中常見的汗腺。" } },
+            { "term": { "en": "Erythema", "cn": "紅斑" }, "definition": { "en": "Red skin due to increased blood supply. It blanches with pressure.", "cn": "由於血液供應增加導致的皮膚發紅。按壓時會變白。" } },
+            { "term": { "en": "Erythroderma", "cn": "紅皮病" }, "definition": { "en": "Redness affecting at least 90% of the skin surface.", "cn": "影響至少90%皮膚表面的發紅。" } },
+            { "term": { "en": "Eschar", "cn": "焦痂" }, "definition": { "en": "A full thickness scab that develops in a healing wound. Examples include wounds caused by a thermal burn, cauterisation, or chemical burn.", "cn": "在癒合的傷口中形成的完全厚度痂。例子包括由熱燒傷、燒灼或化學燒傷引起的傷口。" } },
+            { "term": { "en": "Fibroblast", "cn": "成纖維細胞" }, "definition": { "en": "A cell that produces collagen and other fibres of the dermis.", "cn": "一種產生膠原蛋白和真皮中其他纖維的細胞。" } },
+            { "term": { "en": "Fissure", "cn": "裂隙" }, "definition": { "en": "A split, crack, erosion or narrow ulceration of the skin.", "cn": "皮膚的裂口、裂縫、糜爛或狹窄的潰瘍。" } },
+            { "term": { "en": "Folliculitis", "cn": "毛囊炎" }, "definition": { "en": "Inflammation of a hair follicle.", "cn": "毛囊的炎症。" } },
+            { "term": { "en": "Fragility", "cn": "脆性" }, "definition": { "en": "The quality of being easily broken or damaged, such as easy bruising and tearing of the skin.", "cn": "易於破裂或受損的特性，如容易瘀傷和皮膚撕裂。" } },
+            { "term": { "en": "Free radical", "cn": "自由基" }, "definition": { "en": "An unstable form of an atom with an unpaired electron that can damage cells and tissues.", "cn": "一種帶有一個不成對電子、可以損害細胞和組織的不穩定原子形式。" } },
+            { "term": { "en": "Fungating", "cn": "真菌樣生長" }, "definition": { "en": "Used in dermatology to describe a tumor erupting like a mushroom.", "cn": "皮膚病學中用於描述腫瘤像蘑菇一樣生長。" } },
+            { "term": { "en": "Furfuraceous", "cn": "糠秕狀" }, "definition": { "en": "Used in dermatology to describe fine, bran-like or powdery skin scale.", "cn": "皮膚病學中用於描述細小、糠狀或粉狀的皮膚鱗屑。" } },
+            { "term": { "en": "Gamete", "cn": "配子" }, "definition": { "en": "A haploid cell for sexual reproduction, such as an ovum or sperm.", "cn": "用於有性生殖的單倍體細胞，如卵子或精子。" } },
+            { "term": { "en": "Gene", "cn": "基因" }, "definition": { "en": "The biological unit of heredity encoded in DNA or RNA.", "cn": "編碼在DNA或RNA中的遺傳生物單位。" } },
+            { "term": { "en": "Generalised", "cn": "廣泛的" }, "definition": { "en": "An adjective meaning widespread or extensive.", "cn": "意為廣泛或廣泛的形容詞。" } },
+            { "term": { "en": "Genome", "cn": "基因組" }, "definition": { "en": "An organism's complete set of genetic material.", "cn": "一個生物體的全套遺傳物質。" } },
+            { "term": { "en": "Genotype", "cn": "基因型" }, "definition": { "en": "The genetic message at a specific gene locus or the entire genome.", "cn": "特定基因座位的遺傳信息或整個基因組。" } },
+            { "term": { "en": "Germline", "cn": "種系" }, "definition": { "en": "The genetic material passed to offspring, or the cells that produce gametes.", "cn": "傳遞給後代的遺傳物質，或產生配子的細胞。" } },
+            { "term": { "en": "Haemangioma", "cn": "血管瘤" }, "definition": { "en": "A benign proliferative blood vessel tumour, often developmental in origin.", "cn": "一種良性增生性血管腫瘤，通常起源於發育。" } },
+            { "term": { "en": "Hyphae", "cn": "菌絲" }, "definition": { "en": "Long filaments of fungi that form the mycelium.", "cn": "形成菌絲體的真菌長絲。" } },
+            { "term": { "en": "Hypogeusia", "cn": "味覺減退" }, "definition": { "en": "Means decreased sense of taste.", "cn": "意為味覺減弱。" } },
+            { "term": { "en": "Hypoglycaemia", "cn": "低血糖" }, "definition": { "en": "A low blood glucose (sugar) level.", "cn": "血糖（糖）水平低。" } },
+            { "term": { "en": "Laser", "cn": "激光" }, "definition": { "en": "An acronym for light amplification of stimulated emission of radiation.", "cn": "受激輻射光放大的縮寫。" } },
+            { "term": { "en": "Latency", "cn": "潛伏期" }, "definition": { "en": "A period of concealment or dormancy. The time between exposure to a disease-causing agent and the onset of symptoms.", "cn": "一段隱藏或休眠的時期。從接觸致病因素到症狀出現的時間。" } },
+            { "term": { "en": "Lateral", "cn": "外側的" }, "definition": { "en": "An adjective relating to the side.", "cn": "與側面相關的形容詞。" } },
+            { "term": { "en": "Lotion", "cn": "洗劑"}, "definition": { "en": "A liquid formulation for topical use that leaves the active ingredient on the skin as it evaporates.", "cn": "一種用於局部使用的液体制劑，蒸發後將活性成分留在皮膚上。" } },
+            { "term": { "en": "Lumen", "cn": "腔"}, "definition": { "en": "The inside of a tubular structure like a blood vessel.", "cn": "管狀結構（如血管）的內部。" } },
+            { "term": { "en": "Lunula", "cn": "甲半月"}, "definition": { "en": "The moon- or crescent-shaped whitish area at the proximal base of a nail.", "cn": "指甲近端基部的月亮或新月形白色區域。" } },
+            { "term": { "en": "Mycosis", "cn": "真菌病" }, "definition": { "en": "An infection of the skin, nails, or hair caused by a fungus. Can also be used for systemic fungal infections.", "cn": "由真菌引起的皮膚、指甲或頭髮感染。也可用於全身性真菌感染。" } },
+            { "term": { "en": "Myeloma", "cn": "骨髓瘤" }, "definition": { "en": "A tumour composed of plasma cells, which is usually found in bone marrow.", "cn": "一種由漿細胞組成的腫瘤，通常在骨髓中發現。" } },
+            { "term": { "en": "Necrobiosis", "cn": "壞死變性" }, "definition": { "en": "A histological term for homogenisation of the dermis, typically associated with granuloma formation.", "cn": "一個組織學術語，指真皮的均質化，通常與肉芽腫形成有關。" } },
+            { "term": { "en": "Necrosis", "cn": "壞死" }, "definition": { "en": "The death of cells or tissues.", "cn": "細胞或組織的死亡。" } },
+            { "term": { "en": "Nodule", "cn": "結節" }, "definition": { "en": "A circumscribed, palpable, elevated solid lesion that is > 1 cm in diameter.", "cn": "直徑 > 1厘米、有界限、可觸及、隆起的實性病變。" } },
+            { "term": { "en": "Nummular", "cn": "錢幣狀的" }, "definition": { "en": "An adjective describing a round (coin-shaped) lesion.", "cn": "描述圓形（錢幣狀）病變的形容詞。" } },
+            { "term": { "en": "Occipital", "cn": "枕骨的" }, "definition": { "en": "An adjective pertaining to the occiput, the back of the head.", "cn": "指與枕骨相關的形容詞，即頭部後部。" } },
+            { "term": { "en": "Occlusive", "cn": "閉塞的" }, "definition": { "en": "An adjective and noun pertaining to occlusion, the blocking, clogging, or sealing of a tube or surface.", "cn": "與閉塞相關的形容詞和名詞，即堵塞、阻塞或密封管子或表面。" } },
+            { "term": { "en": "Ocular", "cn": "眼睛的" }, "definition": { "en": "An adjective pertaining to the eye, so describes being related to or affecting the eye.", "cn": "指與眼睛相關的形容詞，所以描述與眼睛相關或影響眼睛。" } },
+            { "term": { "en": "Oedema", "cn": "水腫" }, "definition": { "en": "Tissue swelling due to excess interstitial fluid.", "cn": "由於過多的組織間液引起的組織腫脹。" } },
+            { "term": { "en": "Ointment", "cn": "油膏" }, "definition": { "en": "A semi-solid formulation for topical use based on lipids (oils) and so tends to have a greasy feel.", "cn": "一種用於局部使用的半固體製劑，以脂質（油）為基礎，因此感覺油膩。" } },
+            { "term": { "en": "Paronychia", "cn": "甲溝炎" }, "definition": { "en": "Inflammation around the nail, an inflammatory process around the edge of a nail.", "cn": "指甲周圍的炎症，即指甲邊緣的炎症過程。" } },
+            { "term": { "en": "Periungual", "cn": "甲周的" }, "definition": { "en": "An adjective pertaining to around a fingernail or toenail.", "cn": "指圍繞手指甲或腳趾甲的形容詞。" } },
+            { "term": { "en": "Petechiae", "cn": "瘀點" }, "definition": { "en": "Small, pinpoint haemorrhages into the skin, which do not blanch on pressure.", "cn": "皮膚中小的、針尖樣出血，按壓時不變白。" } },
+            { "term": { "en": "Phagocyte", "cn": "吞噬細胞" }, "definition": { "en": "A type of cell (eg, macrophage) that engulfs foreign particles such as bacteria and dead cells.", "cn": "一種吞噬外來顆粒（如細菌和死細胞）的細胞類型（例如巨噬細胞）。" } },
+            { "term": { "en": "Photoallergy", "cn": "光變應性" }, "definition": { "en": "An immunological reaction to a chemical that has been activated by light.", "cn": "對經光激活的化學物質產生的免疫反應。" } },
+            { "term": { "en": "Photodermatosis", "cn": "光敏性皮膚病" }, "definition": { "en": "A skin disorder caused or aggravated by ultraviolet radiation or visible light.", "cn": "由紫外線輻射或可見光引起或加重的皮膚病。" } },
+            { "term": { "en": "Phototherapy", "cn": "光療" }, "definition": { "en": "Treatment with light, most commonly ultraviolet light.", "cn": "用光進行治療，最常用的是紫外線。" } },
+            { "term": { "en": "Plaque", "cn": "斑塊" }, "definition": { "en": "A circumscribed, palpable, elevated lesion more than 1 cm in diameter.", "cn": "直徑超過1厘米、有界限、可觸及、隆起的皮損。" } },
+            { "term": { "en": "Polymorphous", "cn": "多形的" }, "definition": { "en": "An adjective to describe having more than one form or shape.", "cn": "用於描述具有多種形式或形狀的形容詞。" } },
+            { "term": { "en": "Proximal", "cn": "近端的" }, "definition": { "en": "An adjective pertaining to a location or distribution closest to a point of origin or attachment.", "cn": "指與起源點或附著點最近的位置或分布的形容詞。" } },
+            { "term": { "en": "Pruritus", "cn": "瘙癢" }, "definition": { "en": "Itch.", "cn": "瘙癢。" } },
+            { "term": { "en": "Pseudocyst", "cn": "假性囊腫" }, "definition": { "en": "A firm lesion that contains fluid or semi-fluid material but, unlike a true cyst, it is not surrounded by a lining.", "cn": "一種含有液體或半液體物質的堅實病變，但與真性囊腫不同的是，它沒有被內襯包圍。" } },
+            { "term": { "en": "Purpura", "cn": "紫癜" }, "definition": { "en": "Bleeding into the skin or mucous membranes; does not blanch with pressure.", "cn": "皮膚或黏膜出血；在壓力下不會變白。" } },
+            { "term": { "en": "Pustule", "cn": "膿疱" }, "definition": { "en": "A small circumscribed epidermal lesion that contains pus.", "cn": "一個含有膿液的小的、有界限的表皮病變。" } },
+            { "term": { "en": "Scaling", "cn": "鱗屑形成" }, "definition": { "en": "An increase in the dead cells on the surface of the skin.", "cn": "皮膚表面死細胞的增加。" } },
+            { "term": { "en": "Sclerosis", "cn": "硬化" }, "definition": { "en": "Hardened scar-like or indurated tissue. In histology, describes increased collagen in the dermis with normal fibroblast numbers.", "cn": "硬化的瘢痕樣或硬結組織。在組織學中，描述真皮中膠原蛋白增加但成纖維細胞數量正常。" } },
+            { "term": { "en": "Sebaceous", "cn": "皮脂的" }, "definition": { "en": "An adjective pertaining to sebum, the oil (fat) produced by sebaceous glands in the skin.", "cn": "指與皮脂（皮膚中皮脂腺產生的油）相關的形容詞。" } },
+            { "term": { "en": "Somatic mutation", "cn": "體細胞突變" }, "definition": { "en": "A gene mutation that has occurred any time after fertilisation and so affects only limited cells, but specifically not the gametes (sperm or ova). A somatic mutation is not inherited or passed on to offspring.", "cn": "在受精後任何時間發生的基因突變，因此只影響有限的細胞，特別是配子（精子或卵子）。體細胞突變不會遺傳給後代。" } },
+            { "term": { "en": "Spongiosis", "cn": "海綿狀水腫" }, "definition": { "en": "A histological term for intercellular swelling of the epidermis resembling a sponge.", "cn": "一個組織學術語，指表皮細胞間的水腫，類似海綿。" } },
+            { "term": { "en": "Thrombus", "cn": "血栓" }, "definition": { "en": "A blood clot that has formed within a blood vessel or the heart.", "cn": "在血管或心臟內形成的血塊。" } },
+            { "term": { "en": "Transverse", "cn": "橫向的" }, "definition": { "en": "An adjective to describe being set across or crosswise. For example, a transverse nail groove is a horizontal groove across the nail plate.", "cn": "描述橫向或橫向放置的形容詞。例如，橫向甲溝是穿過甲板的水平溝。" } },
+            { "term": { "en": "Trauma", "cn": "創傷" }, "definition": { "en": "A physical or emotional injury.", "cn": "身體或情感上的傷害。" } },
+            { "term": { "en": "Trichodynia", "cn": "毛髮痛" }, "definition": { "en": "Also called scalp dysaesthesia, means scalp pain, from the Greek 'thrix' (hair) and 'dynia' (pain).", "cn": "也稱為頭皮感覺異常，意為頭皮疼痛，源自希臘語'thrix'（毛髮）和'dynia'（疼痛）。" } },
+            { "term": { "en": "Urticaria", "cn": "蕁麻疹" }, "definition": { "en": "A family of disorders characterised by transient weals, also called hives.", "cn": "一類以短暫性風團為特徵的疾病家族，也稱為蕁麻疹。" } },
+            { "term": { "en": "Verrucous", "cn": "疣狀的" }, "definition": { "en": "An adjective pertaining to verruca, a wart. Means wart-like, having a thickened scaly undulating surface.", "cn": "指與疣相關的形容詞。意為疣狀的，具有增厚的鱗狀波浪形表面。" } },
+            { "term": { "en": "Vesicle", "cn": "水疱" }, "definition": { "en": "A small blister, a circumscribed lesion less than 0.5 cm in diameter that contains liquid.", "cn": "一個小水泡，直徑小於0.5厘米、有界限、含有液體的病變。" } },
+            { "term": { "en": "Wood lamp", "cn": "伍德燈" }, "definition": { "en": "Emits long wavelength UVA and is used to examine skin pigment changes and fluorescent infections.", "cn": "發射長波長UVA，用於檢查皮膚色素變化和熒光感染。" } },
+            { "term": { "en": "Work up", "cn": "檢查" }, "definition": { "en": "Can be a noun or verb when used in medicine, for investigations or the investigating of a clinical situation such as for the cause of a symptom or prior to treatment.", "cn": "在醫學中可用作名詞或動詞，指對臨床情況進行調查或調查（如症狀的原因或治療前）。" } },
+            { "term": { "en": "Xerosis", "cn": "皮膚乾燥症" }, "definition": { "en": "A name for abnormally dry skin.", "cn": "異常乾燥皮膚的名稱。" } },
+            { "term": { "en": "Zoonosis", "cn": "人畜共患病" }, "definition": { "en": "An infection transmitted to humans from an animal.", "cn": "從動物傳染給人類的感染。" } },
+            { "term": { "en": "Zosteriform", "cn": "帶狀皰疹樣的" }, "definition": { "en": "An adjective pertaining to herpes zoster, zoster-like, unilateral and restricted to a dermatome.", "cn": "指與帶狀皰疹相關的形容詞，帶狀皰疹樣、單側且局限於一個皮節。" } }
+        ]
+    }
+];
+
+document.addEventListener('DOMContentLoaded', function() {
+    const navigation = document.getElementById('navigation');
+    const contentContainer = document.getElementById('content-container');
+    const body = document.body;
+    const searchInput = document.getElementById('search-input');
+
+    function renderContent() {
+        navigation.innerHTML = '';
+        contentContainer.innerHTML = '';
+
+        terminologyData.forEach((section, index) => {
+            const navId = `nav-${index}`;
+            const contentId = `content-${index}`;
+
+            const navButton = document.createElement('button');
+            navButton.id = navId;
+            navButton.className = 'nav-item w-full text-left px-4 py-2 rounded-lg text-gray-700 hover:bg-[#d8bca1]';
+            navButton.innerHTML = `<span class="lang-en">${section.category.en}</span><span class="lang-cn">${section.category.cn}</span>`;
+            navButton.onclick = () => showSection(index);
+            navigation.appendChild(navButton);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.id = contentId;
+            contentDiv.className = 'content-section';
+            
+            let sectionIntro = '';
+            if (section.category.en === "Introduction") {
+                 sectionIntro = `<div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-2xl font-bold mb-4 text-[#333333]">
+                        <span class="lang-en">${section.category.en}</span>
+                        <span class="lang-cn">${section.category.cn}</span>
+                    </h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        <span class="lang-en">${section.content[0].definition.en}</span>
+                        <span class="lang-cn">${section.content[0].definition.cn}</span>
+                    </p>
+                 </div>`;
+            } else {
+                 sectionIntro = `<h3 class="text-2xl font-bold mb-6 text-[#333333] border-b pb-2 border-gray-200">
+                    <span class="lang-en">${section.category.en}</span>
+                    <span class="lang-cn">${section.category.cn}</span>
+                </h3>`;
+            }
+
+            const termsHtml = section.content.map(item => {
+                if (section.category.en === "Introduction") return '';
+                return `
+                    <div class="term-block mb-4">
+                        <dt class="font-bold text-lg text-[#D4A373]">
+                            <span class="lang-en">${item.term.en}</span>
+                            <span class="lang-cn">${item.term.cn}</span>
+                        </dt>
+                        <dd class="text-gray-700 ml-4 mt-1">
+                            <span class="lang-en">${item.definition.en}</span>
+                            <span class="lang-cn">${item.definition.cn}</span>
+                        </dd>
+                    </div>
+                `;
+            }).join('');
+
+            contentDiv.innerHTML = `${sectionIntro}<dl>${termsHtml}</dl>`;
+            contentContainer.appendChild(contentDiv);
+        });
+        showSection(0);
+    }
+
+    function showSection(index) {
+        document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(`content-${index}`).classList.add('active');
+        document.getElementById(`nav-${index}`).classList.add('active');
+    }
+
+    function setLanguage(langClass) {
+        body.className = langClass;
+        document.querySelectorAll('#lang-en-btn, #lang-cn-btn, #lang-bilingual-btn').forEach(b => b.classList.remove('bg-[#D4A373]', 'text-white'));
+        if (langClass === 'english-only') {
+            document.getElementById('lang-en-btn').classList.add('bg-[#D4A373]', 'text-white');
+        } else if (langClass === 'chinese-only') {
+            document.getElementById('lang-cn-btn').classList.add('bg-[#D4A373]', 'text-white');
+        } else {
+            document.getElementById('lang-bilingual-btn').classList.add('bg-[#D4A373]', 'text-white');
+        }
+    }
+    
+    function filterTerms() {
+        const query = searchInput.value.toLowerCase();
+        document.querySelectorAll('.term-block').forEach(block => {
+            const termEn = block.querySelector('.lang-en')?.textContent.toLowerCase() || '';
+            const termCn = block.querySelector('.lang-cn')?.textContent.toLowerCase() || '';
+            if (termEn.includes(query) || termCn.includes(query)) {
+                block.classList.remove('hidden');
+            } else {
+                block.classList.add('hidden');
+            }
+        });
+    }
+
+    document.getElementById('lang-en-btn').onclick = () => setLanguage('english-only');
+    document.getElementById('lang-cn-btn').onclick = () => setLanguage('chinese-only');
+    document.getElementById('lang-bilingual-btn').onclick = () => setLanguage('bilingual');
+    
+    searchInput.addEventListener('input', filterTerms);
+
+    renderContent();
+});
+</script>
+
+</body>
+</html>
