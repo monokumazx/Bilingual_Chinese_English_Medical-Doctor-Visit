@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>皮肤科词汇</title>
+    <title>皮肤科词汇 (With Audio)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,6 +31,38 @@
         #searchResults {
             display: none;
         }
+        .audio-btn {
+            /* Custom styling for the audio buttons */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            padding: 2px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            color: #4b5563;
+            transition: all 0.2s;
+        }
+        .audio-btn:hover {
+            background-color: #d1d5db;
+            color: #1f2937;
+        }
+        .audio-btn:active {
+            transform: scale(0.95);
+        }
+        .audio-btn.playing {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .audio-btn.loading {
+            cursor: not-allowed;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -40,7 +72,7 @@
         <header class="text-center mb-8">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">皮肤科与痤疮词汇 </h1>
             <h2 class="text-xl md:text-2xl font-medium text-gray-700">Dermatology and Acne Vocabulary </h2>
-            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">This section contains bilingual terms for dermatology, acne treatment, and skin types.</p>
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">This section contains bilingual terms for dermatology, acne treatment, and skin types, with an added audio feature.</p>
         </header>
 
         <!-- Search Bar -->
@@ -520,18 +552,215 @@
             'page6': '皮肤类型'
         };
 
+        // Global variable to hold the currently playing audio element
+        let currentAudio = null;
+        let currentButton = null;
+
+        /**
+         * Helper function to convert base64 audio data to an ArrayBuffer.
+         */
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        /**
+         * Converts 16-bit PCM audio data to a WAV format Blob.
+         * The `gemini-2.5-flash-preview-tts` API returns raw signed 16-bit PCM.
+         * This function adds the necessary WAV header to make it a playable audio file.
+         */
+        function pcmToWav(pcmData, sampleRate) {
+            const dataLength = pcmData.length * 2; // 16-bit, so 2 bytes per sample
+            const buffer = new ArrayBuffer(44 + dataLength);
+            const view = new DataView(buffer);
+
+            // WAV header
+            // RIFF chunk
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataLength, true);
+            writeString(view, 8, 'WAVE');
+
+            // fmt chunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM format
+            view.setUint16(22, 1, true); // Mono channel
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true); // Byte rate
+            view.setUint16(32, 2, true); // Block align
+            view.setUint16(34, 16, true); // Bits per sample
+
+            // data chunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataLength, true);
+
+            // Write PCM audio data
+            let offset = 44;
+            for (let i = 0; i < pcmData.length; i++, offset += 2) {
+                view.setInt16(offset, pcmData[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        /**
+         * Helper to write a string to a DataView.
+         */
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        /**
+         * Calls the Gemini API to get TTS audio data and creates a playable Audio object.
+         */
+        async function createAudioPlayer(text, lang) {
+            // Using a default voice name for both languages.
+            const voiceName = lang === 'zh-CN' ? 'Kore' : 'Zephyr';
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: text }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: voiceName }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            // Implement exponential backoff for retries
+            const maxRetries = 5;
+            let retryCount = 0;
+            while (retryCount < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        console.error('API Error:', error);
+                        throw new Error(`API returned status ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+
+                    if (!audioData || !mimeType || !mimeType.startsWith("audio/")) {
+                        throw new Error('Invalid audio data received from API');
+                    }
+
+                    // Extract sample rate from mimeType
+                    const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000; // Default to 16000 if not found
+
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmData);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    
+                    const audio = new Audio(audioUrl);
+                    return audio;
+
+                } catch (error) {
+                    console.error('Error fetching TTS audio:', error);
+                    retryCount++;
+                    if (retryCount < maxRetries) {
+                        const delay = Math.pow(2, retryCount) * 1000;
+                        console.log(`Retrying in ${delay / 1000} seconds...`);
+                        await new Promise(res => setTimeout(res, delay));
+                    } else {
+                        console.error('Max retries exceeded.');
+                        throw error;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Creates a term card with audio buttons.
+         */
         function createTermCard(term, pageTitle) {
             const hasPinyin = term.pinyin ? `<span class="text-sm text-gray-500 block mb-1">(${term.pinyin})</span>` : '';
             return `
                 <div class="term-card bg-white rounded-lg p-4 shadow-sm mb-4 border border-gray-200 hover:shadow-md transition-shadow duration-200">
                     <div class="flex-1 pr-4 mb-2 md:mb-0 border-b md:border-b-0 md:border-r border-gray-200">
-                        <p class="font-bold text-gray-900">${term.chineseName}</p>
+                        <div class="flex items-center mb-1">
+                            <p class="font-bold text-gray-900 mr-2">${term.chineseName}</p>
+                            <button class="audio-btn" data-text="${term.chineseName}" data-lang="zh-CN" aria-label="Play Chinese Name">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="play-icon" viewBox="0 0 16 16">
+                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="loading-icon hidden" viewBox="0 0 16 16">
+                                    <path d="M11.534 7h3.945a.5.5 0 0 1 .494.55l-.104 1a.5.5 0 0 1-.493.45H11.534a.5.5 0 0 1-.49-.58l.128-1.026a.5.5 0 0 1 .49-.42zM5.526 7a.5.5 0 0 1 .49-.42l.128 1.026a.5.5 0 0 1-.49.58H1.561a.5.5 0 0 1-.493-.45L.964 7.55a.5.5 0 0 1 .494-.55h3.945zM8 10.534a.5.5 0 0 1 .42-.49l1.026.128a.5.5 0 0 1 .58.49V14.44a.5.5 0 0 1-.45.493l-1 .104a.5.5 0 0 1-.55-.493v-3.945zM8 4.474a.5.5 0 0 1 .58-.49l1.026.128a.5.5 0 0 1 .49.58V11.56a.5.5 0 0 1-.42.49l-1.026-.128a.5.5 0 0 1-.49-.58V4.474zM10.466 7.55a.5.5 0 0 1 .49-.55H15.91a.5.5 0 0 1 .494.55l-.104 1a.5.5 0 0 1-.493.45h-3.945a.5.5 0 0 1-.49-.58l.128-1.026zM5.526 8.45a.5.5 0 0 1-.49.58H1.561a.5.5 0 0 1-.493-.45l.104-1a.5.5 0 0 1 .494-.55h3.945zM8 10.534a.5.5 0 0 1 .42-.49l1.026.128a.5.5 0 0 1 .58.49V14.44a.5.5 0 0 1-.45.493l-1 .104a.5.5 0 0 1-.55-.493v-3.945zM8 4.474a.5.5 0 0 1 .58-.49l1.026.128a.5.5 0 0 1 .49.58V11.56a.5.5 0 0 1-.42.49l-1.026-.128a.5.5 0 0 1-.49-.58V4.474z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stop-icon hidden" viewBox="0 0 16 16">
+                                    <path d="M.5 3.5A.5.5 0 0 1 1 3h14a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5H1a.5.5 0 0 1-.5-.5v-9zM1 4v8h14V4H1z"/>
+                                </svg>
+                            </button>
+                        </div>
                         ${hasPinyin}
-                        <p class="text-gray-600 mt-1">${term.chineseDescription}</p>
+                        <div class="flex items-center mb-1">
+                            <p class="text-gray-600 mt-1 mr-2">${term.chineseDescription}</p>
+                            <button class="audio-btn" data-text="${term.chineseDescription}" data-lang="zh-CN" aria-label="Play Chinese Description">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="play-icon" viewBox="0 0 16 16">
+                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="loading-icon hidden" viewBox="0 0 16 16">
+                                    <path d="M11.534 7h3.945a.5.5 0 0 1 .494.55l-.104 1a.5.5 0 0 1-.493.45H11.534a.5.5 0 0 1-.49-.58l.128-1.026a.5.5 0 0 1 .49-.42zM5.526 7a.5.5 0 0 1 .49-.42l.128 1.026a.5.5 0 0 1-.49.58H1.561a.5.5 0 0 1-.493-.45L.964 7.55a.5.5 0 0 1 .494-.55h3.945zM8 10.534a.5.5 0 0 1 .42-.49l1.026.128a.5.5 0 0 1 .58.49V14.44a.5.5 0 0 1-.45.493l-1 .104a.5.5 0 0 1-.55-.493v-3.945zM8 4.474a.5.5 0 0 1 .58-.49l1.026.128a.5.5 0 0 1 .49.58V11.56a.5.5 0 0 1-.42.49l-1.026-.128a.5.5 0 0 1-.49-.58V4.474zM10.466 7.55a.5.5 0 0 1 .49-.55H15.91a.5.5 0 0 1 .494.55l-.104 1a.5.5 0 0 1-.493.45h-3.945a.5.5 0 0 1-.49-.58l.128-1.026zM5.526 8.45a.5.5 0 0 1-.49.58H1.561a.5.5 0 0 1-.493-.45l.104-1a.5.5 0 0 1 .494-.55h3.945zM8 10.534a.5.5 0 0 1 .42-.49l1.026.128a.5.5 0 0 1 .58.49V14.44a.5.5 0 0 1-.45.493l-1 .104a.5.5 0 0 1-.55-.493v-3.945zM8 4.474a.5.5 0 0 1 .58-.49l1.026.128a.5.5 0 0 1 .49.58V11.56a.5.5 0 0 1-.42.49l-1.026-.128a.5.5 0 0 1-.49-.58V4.474z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stop-icon hidden" viewBox="0 0 16 16">
+                                    <path d="M.5 3.5A.5.5 0 0 1 1 3h14a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5H1a.5.5 0 0 1-.5-.5v-9zM1 4v8h14V4H1z"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="flex-1 pl-0 md:pl-4 pt-2 md:pt-0">
-                        <p class="font-bold text-gray-900">${term.englishName}</p>
-                        <p class="text-gray-600 mt-1">${term.englishDescription}</p>
+                        <div class="flex items-center mb-1">
+                            <p class="font-bold text-gray-900 mr-2">${term.englishName}</p>
+                            <button class="audio-btn" data-text="${term.englishName}" data-lang="en-US" aria-label="Play English Name">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="play-icon" viewBox="0 0 16 16">
+                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="loading-icon hidden" viewBox="0 0 16 16">
+                                    <path d="M11.534 7h3.945a.5.5 0 0 1 .494.55l-.104 1a.5.5 0 0 1-.493.45H11.534a.5.5 0 0 1-.49-.58l.128-1.026a.5.5 0 0 1 .49-.42zM5.526 7a.5.5 0 0 1 .49-.42l.128 1.026a.5.5 0 0 1-.49.58H1.561a.5.5 0 0 1-.493-.45L.964 7.55a.5.5 0 0 1 .494-.55h3.945zM8 10.534a.5.5 0 0 1 .42-.49l1.026.128a.5.5 0 0 1 .58.49V14.44a.5.5 0 0 1-.45.493l-1 .104a.5.5 0 0 1-.55-.493v-3.945zM8 4.474a.5.5 0 0 1 .58-.49l1.026.128a.5.5 0 0 1 .49.58V11.56a.5.5 0 0 1-.42.49l-1.026-.128a.5.5 0 0 1-.49-.58V4.474zM10.466 7.55a.5.5 0 0 1 .49-.55H15.91a.5.5 0 0 1 .494.55l-.104 1a.5.5 0 0 1-.493.45h-3.945a.5.5 0 0 1-.49-.58l.128-1.026zM5.526 8.45a.5.5 0 0 1-.49.58H1.561a.5.5 0 0 1-.493-.45l.104-1a.5.5 0 0 1 .494-.55h3.945zM8 10.534a.5.5 0 0 1 .42-.49l1.026.128a.5.5 0 0 1 .58.49V14.44a.5.5 0 0 1-.45.493l-1 .104a.5.5 0 0 1-.55-.493v-3.945zM8 4.474a.5.5 0 0 1 .58-.49l1.026.128a.5.5 0 0 1 .49.58V11.56a.5.5 0 0 1-.42.49l-1.026-.128a.5.5 0 0 1-.49-.58V4.474z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stop-icon hidden" viewBox="0 0 16 16">
+                                    <path d="M.5 3.5A.5.5 0 0 1 1 3h14a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5H1a.5.5 0 0 1-.5-.5v-9zM1 4v8h14V4H1z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center mb-1">
+                            <p class="text-gray-600 mt-1 mr-2">${term.englishDescription}</p>
+                            <button class="audio-btn" data-text="${term.englishDescription}" data-lang="en-US" aria-label="Play English Description">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="play-icon" viewBox="0 0 16 16">
+                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="loading-icon hidden" viewBox="0 0 16 16">
+                                    <path d="M11.534 7h3.945a.5.5 0 0 1 .494.55l-.104 1a.5.5 0 0 1-.493.45H11.534a.5.5 0 0 1-.49-.58l.128-1.026a.5.5 0 0 1 .49-.42zM5.526 7a.5.5 0 0 1 .49-.42l.128 1.026a.5.5 0 0 1-.49.58H1.561a.5.5 0 0 1-.493-.45L.964 7.55a.5.5 0 0 1 .494-.55h3.945zM8 10.534a.5.5 0 0 1 .42-.49l1.026.128a.5.5 0 0 1 .58.49V14.44a.5.5 0 0 1-.45.493l-1 .104a.5.5 0 0 1-.55-.493v-3.945zM8 4.474a.5.5 0 0 1 .58-.49l1.026.128a.5.5 0 0 1 .49.58V11.56a.5.5 0 0 1-.42.49l-1.026-.128a.5.5 0 0 1-.49-.58V4.474zM10.466 7.55a.5.5 0 0 1 .49-.55H15.91a.5.5 0 0 1 .494.55l-.104 1a.5.5 0 0 1-.493.45h-3.945a.5.5 0 0 1-.49-.58l.128-1.026zM5.526 8.45a.5.5 0 0 1-.49.58H1.561a.5.5 0 0 1-.493-.45l.104-1a.5.5 0 0 1 .494-.55h3.945zM8 10.534a.5.5 0 0 1 .42-.49l1.026.128a.5.5 0 0 1 .58.49V14.44a.5.5 0 0 1-.45.493l-1 .104a.5.5 0 0 1-.55-.493v-3.945zM8 4.474a.5.5 0 0 1 .58-.49l1.026.128a.5.5 0 0 1 .49.58V11.56a.5.5 0 0 1-.42.49l-1.026-.128a.5.5 0 0 1-.49-.58V4.474z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="stop-icon hidden" viewBox="0 0 16 16">
+                                    <path d="M.5 3.5A.5.5 0 0 1 1 3h14a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5H1a.5.5 0 0 1-.5-.5v-9zM1 4v8h14V4H1z"/>
+                                </svg>
+                            </button>
+                        </div>
                         <span class="mt-2 block text-xs text-blue-500">来源: ${pageTitle}</span>
                     </div>
                 </div>
@@ -549,6 +778,8 @@
                 });
                 pageContainer.innerHTML += `<div class="mt-4">${content}</div>`;
             }
+            // Add listeners after content is rendered
+            addAudioListeners();
         }
 
         function showPage(pageId) {
@@ -561,6 +792,9 @@
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => link.classList.remove('bg-gray-200'));
             document.querySelector(`button[onclick="showPage('${pageId}')"]`).classList.add('bg-gray-200');
+
+            // Add listeners after a page is shown
+            addAudioListeners();
         }
 
         document.getElementById('searchInput').addEventListener('input', function() {
@@ -603,7 +837,83 @@
             if (!resultsFound) {
                 searchResultsContent.innerHTML = `<p class="text-center text-gray-500 p-8">没有找到匹配的结果。</p>`;
             }
+            // Add listeners after search results are rendered
+            addAudioListeners();
         });
+
+        // Function to handle the audio button clicks
+        function addAudioListeners() {
+            const audioButtons = document.querySelectorAll('.audio-btn');
+            audioButtons.forEach(button => {
+                // Remove existing listeners to prevent duplicates
+                button.removeEventListener('click', handleAudioClick);
+                button.addEventListener('click', handleAudioClick);
+            });
+        }
+
+        async function handleAudioClick(event) {
+            const button = event.currentTarget;
+            const textToSpeak = button.dataset.text;
+            const language = button.dataset.lang;
+
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                // Reset the previous button state
+                if (currentButton) {
+                    currentButton.classList.remove('playing');
+                    currentButton.querySelector('.play-icon').classList.remove('hidden');
+                    currentButton.querySelector('.stop-icon').classList.add('hidden');
+                }
+            }
+
+            // If the same button is clicked, just stop the audio and return
+            if (currentAudio && currentButton === button) {
+                currentAudio = null;
+                currentButton = null;
+                return;
+            }
+            
+            // Update the button state to "loading"
+            button.classList.add('loading');
+            button.querySelector('.play-icon').classList.add('hidden');
+            button.querySelector('.loading-icon').classList.remove('hidden');
+
+            try {
+                const audio = await createAudioPlayer(textToSpeak, language);
+                currentAudio = audio;
+                currentButton = button;
+                
+                // Update button state to "playing"
+                button.classList.remove('loading');
+                button.querySelector('.loading-icon').classList.add('hidden');
+                button.classList.add('playing');
+                button.querySelector('.play-icon').classList.add('hidden');
+                button.querySelector('.stop-icon').classList.remove('hidden');
+
+                // Play the audio
+                audio.play();
+
+                // Reset button state when audio ends
+                audio.onended = () => {
+                    button.classList.remove('playing');
+                    button.querySelector('.stop-icon').classList.add('hidden');
+                    button.querySelector('.play-icon').classList.remove('hidden');
+                    currentAudio = null;
+                    currentButton = null;
+                };
+
+            } catch (error) {
+                console.error('Failed to play audio:', error);
+                // Reset button on error
+                button.classList.remove('loading', 'playing');
+                button.querySelector('.loading-icon').classList.add('hidden');
+                button.querySelector('.play-icon').classList.remove('hidden');
+                currentAudio = null;
+                currentButton = null;
+            }
+        }
 
         // Initial setup on page load
         document.addEventListener('DOMContentLoaded', () => {
