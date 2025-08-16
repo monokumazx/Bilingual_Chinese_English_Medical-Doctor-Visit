@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -36,19 +37,16 @@
 <body class="bg-gray-100 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8">
-        <!-- Header -->
         <header class="text-center mb-8">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">专科词汇</h1>
             <h2 class="text-xl md:text-2xl font-medium text-gray-700">Medical Specialties Vocabulary</h2>
             <p class="mt-4 text-gray-600 max-w-2xl mx-auto">这部分包含有关诊所类型、专科医生、儿科和胃肠科的双语术语。<br>This section contains bilingual terms for clinic types, specialist doctors, pediatrics, and gastroenterology.</p>
         </header>
 
-        <!-- Search Bar -->
         <div class="mb-8">
             <input type="search" id="searchInput" placeholder="搜索词汇 (例如: Pediatrician, 胃肠病学)" class="w-full p-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
         </div>
 
-        <!-- Navigation -->
         <nav class="sticky top-0 bg-white/90 backdrop-blur-md shadow-lg rounded-xl p-3 mb-8 z-10">
             <ul class="flex flex-wrap justify-center gap-2 md:gap-4 font-medium text-sm md:text-base">
                 <li><button class="nav-link p-2 px-3 md:px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="showPage('page1-1')">1.1 诊所类型<br><span class="text-xs text-gray-500">Clinic Types</span></button></li>
@@ -58,31 +56,24 @@
             </ul>
         </nav>
 
-        <!-- Search Results Container -->
         <div id="searchResults" class="mt-8 bg-white p-6 md:p-8 rounded-xl shadow-lg">
-            <!-- Results will be dynamically inserted here -->
             <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">搜索结果</h3>
             <div id="searchResultsContent"></div>
         </div>
 
-        <!-- Content Pages -->
         <div id="pages-container" class="mt-8">
-            <!-- Page 1.1: Health Clinics -->
             <div id="page1-1" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
                 <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">1.1 诊所类型与专科医生</h3>
             </div>
 
-            <!-- Page 1.2: Specialist Doctors -->
             <div id="page1-2" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
                 <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">1.2 专科医生</h3>
             </div>
 
-            <!-- Page 2: Pediatrics -->
             <div id="page2" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
                 <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">2. 儿科学 (Pediatrics)</h3>
             </div>
             
-            <!-- Page 3: Gastroenterology -->
             <div id="page3" class="page-content bg-white p-6 md:p-8 rounded-xl shadow-lg">
                 <h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">3. 胃肠病学 (Gastroenterology)</h3>
             </div>
@@ -90,83 +81,96 @@
     </div>
 
     <script>
-        // Data for all medical terms, parsed from the provided text file.
+        // Data for all medical terms
         const medicalTerms = {
             'page1-1': [
                 {
                     chineseName: '全科诊所',
+                    pinyin: 'quán kē zhěn suǒ',
                     englishName: 'General Practice Clinics',
-                    chineseDescription: '为各年龄段和常见疾病提供内科、外科、妇科、儿科、家庭科和全科等服务。\n如一家叫做“内外妇儿家庭全科”的诊所涵盖全面的科室：内科、外科、妇科、儿科、家庭科、全科。\n示例：（内+外+妇+儿+家+庭+全+科）= Internal, Surgery, OB-GYN, Pediatrics, Family, and General Medicine',
-                    englishDescription: 'Provide internal medicine, surgery, gynecology, pediatrics, family, and general care for all age groups and common needs.\nFor example, a clinic called "内外妇儿家庭全科" would includes a full range of departments: internal medicine, surgery, gynecology, pediatrics, family medicine, and general medicine.'
+                    chineseDescription: '为各年龄段和常见疾病提供各类的医科服务。如一家叫做“内外妇儿家庭全科”的诊所涵盖全面的科室示例:（内+外+妇+儿+家+庭+全+科）= Internal, Surgery, OB-GYN, Pediatrics, Family, and General Medicine',
+                    englishDescription: 'Provide general care for all age groups and common needs. For example, a general clinic may include a full range of departments: internal medicine, surgery, gynecology, pediatrics, family medicine, and general medicine.'
                 },
                     {
                     chineseName: '商业医疗办公室 / 大厦',
+                    pinyin: 'shāng yè yī liáo bàn gōng shì / dà shà',
                     englishName: 'Commercial Medical Offices / Buildings',
                     chineseDescription: '指用于医疗相关业务的办公空间或整栋楼宇，既可以是单个办公室，也可以是容纳多个医疗机构的大厦。',
                     englishDescription: 'Refers to office spaces or entire buildings designated for healthcare-related businesses, which can be individual offices or large commercial medical buildings housing multiple medical institutions.'
                 },
                 {
                     chineseName: '急诊护理诊所',
+                    pinyin: 'jí zhěn hù lǐ zhěn suǒ',
                     englishName: 'Urgent Care Clinics',
                     chineseDescription: '处理非危及生命但需立即处理的急病或外伤，无需预约。',
                     englishDescription: 'Treat non-life-threatening illnesses or injuries that require immediate attention without an appointment.'
                 },
                 {
                     chineseName: '儿科诊所',
+                    pinyin: 'ér kē zhěn suǒ',
                     englishName: 'Pediatric Clinics',
                     chineseDescription: '为婴幼儿、儿童和青少年提供专业医疗服务。',
                     englishDescription: 'Provide specialized medical care for infants, children, and adolescents.'
                 },
                 {
                     chineseName: '妇女健康诊所',
+                    pinyin: 'fù nǚ jiàn kāng zhěn suǒ',
                     englishName: 'Women’s Health Clinics',
                     chineseDescription: '专注于生殖健康、产前检查、妇科以及其他女性特有的健康问题。',
                     englishDescription: 'Focus on reproductive health, prenatal care, gynecology, and other women-specific health issues.'
                 },
                 {
                     chineseName: '牙科诊所',
+                    pinyin: 'yá kē zhěn suǒ',
                     englishName: 'Dental Clinics',
                     chineseDescription: '提供洗牙、补牙、拔牙、正畸等口腔保健服务。',
                     englishDescription: 'Offer oral health services including cleaning, fillings, extractions, and orthodontics.'
                 },
                 {
                     chineseName: '精神健康诊所',
+                    pinyin: 'jīng shén jiàn kāng zhěn suǒ',
                     englishName: 'Mental Health Clinics',
                     chineseDescription: '提供心理咨询、心理治疗及精神类疾病的相关服务。',
                     englishDescription: 'Provide counseling, therapy, and psychiatric services for emotional and mental disorders.'
                 },
                 {
                     chineseName: '专科诊所',
+                    pinyin: 'zhuān kē zhěn suǒ',
                     englishName: 'Specialty Clinics',
                     chineseDescription: '专注于特定医学领域，如心脏科、皮肤科、内分泌科等。',
                     englishDescription: 'Focus on specific areas of medicine such as cardiology, dermatology, endocrinology, etc.'
                 },
                 {
                     chineseName: '康复诊所',
+                    pinyin: 'kāng fù zhěn suǒ',
                     englishName: 'Rehabilitation Clinics',
                     chineseDescription: '通过物理治疗、职业治疗等康复服务帮助患者恢复身体功能。',
                     englishDescription: 'Help patients recover physical function through physical therapy, occupational therapy, and other rehabilitation services.'
                 },
                 {
                     chineseName: '移动诊所',
+                    pinyin: 'yí dòng zhěn suǒ',
                     englishName: 'Mobile Clinics',
                     chineseDescription: '通过流动医疗车等方式为偏远或医疗资源不足地区提供医疗服务。',
                     englishDescription: 'Provide health services via mobile units, often to underserved or remote populations.'
                 },
                 {
                     chineseName: '公共卫生诊所',
+                    pinyin: 'gōng gòng wèi shēng zhěn suǒ',
                     englishName: 'Public Health Clinics',
                     chineseDescription: '由政府设立，提供预防性服务，如疫苗接种、健康筛查和健康教育。',
                     englishDescription: 'Run by government agencies to offer preventive care like vaccinations, screenings, and health education.'
                 },
                 {
                     chineseName: '学生健康中心',
+                    pinyin: 'xué shēng jiàn kāng zhōng xīn',
                     englishName: 'Student Health Clinics',
                     chineseDescription: '设置在学校或大学校园内，为学生提供健康和保健服务。',
                     englishDescription: 'Located on school or university campuses to serve students’ health and wellness needs.'
                 },
                 {
                     chineseName: '成瘾治疗诊所',
+                    pinyin: 'chéng yǐn zhì liáo zhěn suǒ',
                     englishName: 'Addiction Treatment Clinics',
                     chineseDescription: '专门为药物滥用和成瘾提供医学支持和心理咨询服务。',
                     englishDescription: 'Specialize in treating substance abuse and addiction through medical support and counseling.'
@@ -493,384 +497,212 @@
                     englishDescription: 'IBS is a common functional disorder of the intestines, causing abdominal pain, bloating, diarrhea, or constipation.'
                 },
                 {
-                    chineseName: '克罗恩病',
-                    pinyin: 'kè luó ēn bìng',
-                    englishName: 'Crohn\'s disease',
-                    chineseDescription: '克罗恩病是一种炎症性肠病，可影响消化道的任何部分。',
-                    englishDescription: 'Crohn\'s disease is an inflammatory bowel disease that can affect any part of the digestive tract.'
-                },
-                {
-                    chineseName: '溃疡性结肠炎',
-                    pinyin: 'kuì yáng xìng jié cháng yán',
-                    englishName: 'Ulcerative colitis',
-                    chineseDescription: '溃疡性结肠炎是一种慢性炎症性肠病，仅影响大肠。',
-                    englishDescription: 'Ulcerative colitis is a chronic inflammatory bowel disease that affects only the large intestine.'
-                },
-                {
-                    chineseName: '消化性溃疡',
-                    pinyin: 'xiāo huà xìng kuì yáng',
-                    englishName: 'Peptic ulcer',
-                    chineseDescription: '消化性溃疡是胃或十二指肠内壁形成的溃疡。',
-                    englishDescription: 'A peptic ulcer is a sore that develops on the lining of the stomach or duodenum.'
-                },
-                {
-                    chineseName: '胆结石',
-                    pinyin: 'dǎn jié shí',
-                    englishName: 'Gallstones',
-                    chineseDescription: '胆结石是胆囊内形成的硬块，可能引起腹痛。',
-                    englishDescription: 'Gallstones are hardened deposits that form in the gallbladder and can cause abdominal pain.'
+                    chineseName: '炎症性肠病 (IBD)',
+                    pinyin: 'yán zhèng xìng cháng bìng',
+                    englishName: 'Inflammatory bowel disease (IBD)',
+                    chineseDescription: 'IBD是一组导致消化道慢性炎症的疾病，包括克罗恩病和溃疡性结肠炎。',
+                    englishDescription: 'IBD is a group of diseases that cause chronic inflammation of the digestive tract, including Crohn\'s disease and ulcerative colitis.'
                 },
                 {
                     chineseName: '腹腔疾病',
                     pinyin: 'fù qiāng jí bìng',
                     englishName: 'Celiac disease',
-                    chineseDescription: '腹腔疾病是一种免疫系统对麸质的反应，导致小肠损伤。',
-                    englishDescription: 'Celiac disease is an immune response to gluten, leading to damage in the small intestine.'
+                    chineseDescription: '腹腔疾病是一种自身免疫性疾病，由摄入麸质引起，导致小肠损伤。',
+                    englishDescription: 'Celiac disease is an autoimmune disorder caused by gluten consumption that damages the small intestine.'
+                },
+                {
+                    chineseName: '消化不良',
+                    pinyin: 'xiāo huà bù liáng',
+                    englishName: 'Indigestion',
+                    chineseDescription: '消化不良是上腹部不适或疼痛的症状，通常在进食后出现。',
+                    englishDescription: 'Indigestion is a symptom of discomfort or pain in the upper abdomen, usually occurring after eating.'
+                },
+                {
+                    chineseName: '便秘',
+                    pinyin: 'biàn mì',
+                    englishName: 'Constipation',
+                    chineseDescription: '便秘是指排便不频繁或排便困难。',
+                    englishDescription: 'Constipation is a condition characterized by infrequent or difficult bowel movements.'
+                },
+                {
+                    chineseName: '腹泻',
+                    pinyin: 'fù xiè',
+                    englishDescription: 'Diarrhea',
+                    chineseDescription: '腹泻是排便次数增多且粪便稀薄。',
+                    englishDescription: 'Diarrhea is a condition of frequent and loose bowel movements.'
+                },
+                {
+                    chineseName: '胃镜检查',
+                    pinyin: 'wèi jìng jiǎn chá',
+                    englishName: 'Endoscopy',
+                    chineseDescription: '胃镜检查是一种通过插入内窥镜来观察食道、胃和十二指肠的医疗程序。',
+                    englishDescription: 'Endoscopy is a medical procedure that involves inserting an endoscope to examine the esophagus, stomach, and duodenum.'
+                },
+                {
+                    chineseName: '结肠镜检查',
+                    pinyin: 'jié cháng jìng jiǎn chá',
+                    englishName: 'Colonoscopy',
+                    chineseDescription: '结肠镜检查是一种通过插入结肠镜来观察大肠和直肠的医疗程序。',
+                    englishDescription: 'Colonoscopy is a medical procedure that involves inserting a colonoscope to examine the large intestine and rectum.'
                 },
                 {
                     chineseName: '肝炎',
                     pinyin: 'gān yán',
                     englishName: 'Hepatitis',
                     chineseDescription: '肝炎是肝脏的炎症，通常由病毒感染引起。',
-                    englishDescription: 'Hepatitis is an inflammation of the liver, often caused by a viral infection.'
+                    englishDescription: 'Hepatitis is the inflammation of the liver, often caused by a viral infection.'
                 },
                 {
-                    chineseName: '结肠镜检查',
-                    pinyin: 'jié cháng jìng jiǎn chá',
-                    englishName: 'Colonoscopy',
-                    chineseDescription: '结肠镜检查是一种内窥镜检查，用于检查大肠的内部。',
-                    englishDescription: 'A colonoscopy is an endoscopic exam used to visualize the inside of the large intestine.'
+                    chineseName: '胆结石',
+                    pinyin: 'dǎn jié shí',
+                    englishName: 'Gallstones',
+                    chineseDescription: '胆结石是胆囊内形成的硬块，可能导致疼痛和消化问题。',
+                    englishDescription: 'Gallstones are hardened deposits that form in the gallbladder, which can cause pain and digestive issues.'
                 },
                 {
-                    chineseName: '胃镜检查',
-                    pinyin: 'wèi jìng jiǎn chá',
-                    englishName: 'Endoscopy',
-                    chineseDescription: '胃镜检查是一种通过管状设备检查消化道的方法。',
-                    englishDescription: 'An endoscopy is a procedure to examine the digestive tract using a tubular device.'
+                    chineseName: '胰腺炎',
+                    pinyin: 'yí xiàn yán',
+                    englishName: 'Pancreatitis',
+                    chineseDescription: '胰腺炎是胰腺的炎症，可能导致腹痛、恶心和呕吐。',
+                    englishDescription: 'Pancreatitis is the inflammation of the pancreas, which can cause abdominal pain, nausea, and vomiting.'
                 },
                 {
-                    chineseName: '乳糜泻',
-                    pinyin: 'rǔ mí xiè',
-                    englishName: 'Celiac disease',
-                    chineseDescription: '乳糜泻是一种对麸质过敏的自身免疫性疾病。',
-                    englishDescription: 'Celiac disease is an autoimmune disorder triggered by a reaction to gluten.'
+                    chineseName: '痔疮',
+                    pinyin: 'zhì chuāng',
+                    englishName: 'Hemorrhoids',
+                    chineseDescription: '痔疮是肛门或直肠下部肿胀和发炎的静脉。',
+                    englishDescription: 'Hemorrhoids are swollen and inflamed veins in the anus or lower rectum.'
                 },
                 {
-                    chineseName: '息肉',
-                    pinyin: 'xī ròu',
-                    englishName: 'Polyp',
-                    chineseDescription: '息肉是黏膜表面突出的异常组织。',
-                    englishDescription: 'A polyp is an abnormal growth of tissue protruding from a mucous membrane.'
+                    chineseName: '克罗恩病',
+                    pinyin: 'kè luó ēn bìng',
+                    englishName: 'Crohn’s disease',
+                    chineseDescription: '克罗恩病是一种导致消化道任何部位慢性炎症的IBD。',
+                    englishDescription: 'Crohn\'s disease is a type of IBD that causes chronic inflammation of any part of the digestive tract.'
                 },
                 {
-                    chineseName: '排空',
-                    pinyin: 'pái kōng',
-                    englishName: 'Emptying',
-                    chineseDescription: '排空是指将体内或容器内的内容物完全排出或清除的过程，例如胃将食物内容物排入小肠。',
-                    englishDescription: 'Emptying refers to the process of completely expelling or clearing the contents from the body or a container, such as the stomach emptying food into the small intestine.'
+                    chineseName: '溃疡性结肠炎',
+                    pinyin: 'kuì yáng xìng jié cháng yán',
+                    englishName: 'Ulcerative colitis',
+                    chineseDescription: '溃疡性结肠炎是一种导致大肠和直肠炎症和溃疡的IBD。',
+                    englishDescription: 'Ulcerative colitis is a type of IBD that causes inflammation and ulcers in the large intestine and rectum.'
                 },
                 {
-                    chineseName: '胃酸倒流（胃食管反流',
-                    pinyin: 'wèi suān dào liú (wèi shí guǎn fǎn liú)',
-                    englishName: 'Acid reflux (Gastroesophageal reflux)',
-                    chineseDescription: '胃酸倒流（胃食管反流）是指胃内容物，包括胃酸，从胃反流入食管，引起烧心、反酸等症状。',
-                    englishDescription: 'Acid reflux (gastroesophageal reflux) refers to stomach contents, including stomach acid, flowing back into the esophagus, causing symptoms such as heartburn and acid regurgitation.'
+                    chineseName: '胆囊切除术',
+                    pinyin: 'dǎn náng qiē chú shù',
+                    englishName: 'Cholecystectomy',
+                    chineseDescription: '胆囊切除术是通过手术切除胆囊。',
+                    englishDescription: 'Cholecystectomy is the surgical removal of the gallbladder.'
                 },
                 {
-                    chineseName: '肠胃科医生',
-                    pinyin: 'cháng wèi kē yī shēng',
-                    englishName: 'Gastroenterologist',
-                    chineseDescription: '肠胃科医生是专门诊治胃肠道疾病的医生。',
-                    englishDescription: 'A gastroenterologist is a doctor specializing in diagnosing and treating gastrointestinal diseases.'
+                    chineseName: '肝硬化',
+                    pinyin: 'gān yìng huà',
+                    englishName: 'Cirrhosis',
+                    chineseDescription: '肝硬化是肝脏因慢性损伤而形成瘢痕组织。',
+                    englishDescription: 'Cirrhosis is the development of scar tissue in the liver due to chronic damage.'
                 },
                 {
-                    chineseName: '胃',
-                    pinyin: 'wèi',
-                    englishName: 'Stomach',
-                    chineseDescription: '胃是消化系统中负责食物储存和初步消化的器官。',
-                    englishDescription: 'The stomach is an organ in the digestive system responsible for storing and beginning the digestion of food.'
-                },
-                {
-                    chineseName: '肠',
-                    pinyin: 'cháng',
-                    englishName: 'Intestine',
-                    chineseDescription: '肠是消化道的一部分，主要负责吸收营养和排泄废物。',
-                    englishDescription: 'The intestine is part of the digestive tract responsible for nutrient absorption and waste elimination.'
-                },
-                {
-                    chineseName: '排便',
-                    pinyin: 'pái biàn',
-                    englishName: 'Bowel movement',
-                    chineseDescription: '排便是身体排出消化后的废物的过程。',
-                    englishDescription: 'Bowel movement is the process of the body eliminating waste products after digestion.'
-                },
-                {
-                    chineseName: '消化',
-                    pinyin: 'xiāo huà',
-                    englishName: 'Digestion',
-                    chineseDescription: '消化是将食物分解成身体可以吸收的营养物质的过程。',
-                    englishDescription: 'Digestion is the process of breaking down food into nutrients that the body can absorb.'
-                },
-                {
-                    chineseName: '便秘',
-                    pinyin: 'biàn mì',
-                    englishName: 'Constipation',
-                    chineseDescription: '便秘是排便困难或排便次数减少的情况。',
-                    englishDescription: 'Constipation is a condition of difficult or infrequent bowel movements.'
-                },
-                {
-                    chineseName: '腹泻',
-                    pinyin: 'fù xiè',
-                    englishName: 'Diarrhea',
-                    chineseDescription: '腹泻是指排便次数增多，粪便稀薄。',
-                    englishDescription: 'Diarrhea is a condition characterized by frequent, loose, or watery stools.'
-                },
-                {
-                    chineseName: '反流',
-                    pinyin: 'fǎn liú',
-                    englishName: 'Reflux',
-                    chineseDescription: '反流是胃内容物倒流到食管或口腔的现象。',
-                    englishDescription: 'Reflux is the backward flow of stomach contents into the esophagus or mouth.'
-                },
-                {
-                    chineseName: '溃疡',
-                    pinyin: 'kuì yáng',
-                    englishName: 'Ulcer',
-                    chineseDescription: '溃疡是胃肠道黏膜的破损。',
-                    englishDescription: 'An ulcer is an open sore on the lining of the digestive tract.'
+                    chineseName: '肠道菌群',
+                    pinyin: 'cháng dào jūn qún',
+                    englishName: 'Gut flora',
+                    chineseDescription: '肠道菌群是生活在消化道中的微生物群体，对健康至关重要。',
+                    englishDescription: 'Gut flora is the community of microorganisms living in the digestive tract, crucial for health.'
                 }
             ]
         };
 
+        // Data for page titles
         const pageTitles = {
-            'page1-1': '1.1 诊所类型',
-            'page1-2': '1.2 专科医生',
-            'page2': '2. 儿科学',
-            'page3': '3. 胃肠病学'
+            'page1-1': '诊所类型与专科医生',
+            'page1-2': '专科医生',
+            'page2': '儿科学 (Pediatrics)',
+            'page3': '胃肠病学 (Gastroenterology)'
         };
 
-        // --- Start of new audio functionality code ---
-        let currentAudio = null;
-        let audioContext = null;
-
-        // Base64 to ArrayBuffer helper function
-        function base64ToArrayBuffer(base64) {
-            const binaryString = atob(base64);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            return bytes.buffer;
-        }
-
-        // Helper function to convert PCM to WAV
-        function pcmToWav(pcm16Data, sampleRate) {
-            const buffer = new ArrayBuffer(44 + pcm16Data.length * 2);
-            const view = new DataView(buffer);
-            let offset = 0;
-
-            function writeString(view, offset, string) {
-                for (let i = 0; i < string.length; i++) {
-                    view.setUint8(offset + i, string.charCodeAt(i));
-                }
-            }
-
-            function writeUint32(view, offset, value) {
-                view.setUint32(offset, value, true);
-            }
-
-            function writeUint16(view, offset, value) {
-                view.setUint16(offset, value, true);
-            }
-
-            writeString(view, offset, 'RIFF'); offset += 4;
-            writeUint32(view, offset, 36 + pcm16Data.length * 2); offset += 4;
-            writeString(view, offset, 'WAVE'); offset += 4;
-            writeString(view, offset, 'fmt '); offset += 4;
-            writeUint32(view, offset, 16); offset += 4;
-            writeUint16(view, offset, 1); offset += 2;
-            writeUint16(view, offset, 1); offset += 2; // Number of channels
-            writeUint32(view, offset, sampleRate); offset += 4;
-            writeUint32(view, offset, sampleRate * 2); offset += 4;
-            writeUint16(view, offset, 2); offset += 2;
-            writeUint16(view, offset, 16); offset += 2;
-            writeString(view, offset, 'data'); offset += 4;
-            writeUint32(view, offset, pcm16Data.length * 2); offset += 4;
-
-            for (let i = 0; i < pcm16Data.length; i++, offset += 2) {
-                view.setInt16(offset, pcm16Data[i], true);
-            }
-
-            return new Blob([view], { type: 'audio/wav' });
-        }
-        
-        async function playAudio(text, langCode, button) {
-            // Stop any currently playing audio
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-            }
-
-            const oldIcon = button.innerHTML;
-            button.innerHTML = `
-                <svg class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-            `;
-            button.disabled = true;
-
-            try {
-                const payload = {
-                    contents: [{ parts: [{ text: text }] }],
-                    generationConfig: {
-                        responseModalities: ["AUDIO"],
-                        speechConfig: {
-                            voiceConfig: {
-                                prebuiltVoiceConfig: { voiceName: (langCode === 'en-US' ? "Charon" : "Kore") }
-                            },
-                            languageCode: langCode
-                        }
-                    },
-                    model: "gemini-2.5-flash-preview-tts"
-                };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-                
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                const part = result?.candidates?.[0]?.content?.parts?.[0];
-                const audioData = part?.inlineData?.data;
-                const mimeType = part?.inlineData?.mimeType;
-
-                if (!audioData || !mimeType) {
-                    console.error("Audio data or mime type missing from response");
-                    return;
-                }
-                
-                const sampleRateMatch = mimeType.match(/rate=(\d+)/);
-                const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000;
-
-                const pcmData = base64ToArrayBuffer(audioData);
-                const pcm16 = new Int16Array(pcmData);
-                const wavBlob = pcmToWav(pcm16, sampleRate);
-                const audioUrl = URL.createObjectURL(wavBlob);
-                
-                currentAudio = new Audio(audioUrl);
-                currentAudio.play();
-                currentAudio.onended = () => {
-                    URL.revokeObjectURL(audioUrl);
-                    currentAudio = null;
-                    button.innerHTML = oldIcon;
-                    button.disabled = false;
-                };
-
-            } catch (error) {
-                console.error("Error playing audio:", error);
-                button.innerHTML = oldIcon;
-                button.disabled = false;
-            }
-        }
-        // --- End of new audio functionality code ---
-        
-        function createAudioButton(text, langCode) {
+        // Function to create a term card with audio functionality
+        const createTermCard = (term) => {
             return `
-                <button onclick="playAudio(this.dataset.text, this.dataset.lang, this)" 
-                        data-text="${text.replace(/"/g, '&quot;')}"
-                        data-lang="${langCode}"
-                        class="ml-2 p-1 rounded-full hover:bg-gray-200 transition-colors duration-200 focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-gray-600">
-                        <path d="M13.5 4.5a1.5 1.5 0 00-1.5 1.5v9a1.5 1.5 0 001.5 1.5h1.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5h-1.5zM6 4.5a1.5 1.5 0 00-1.5 1.5v9a1.5 1.5 0 001.5 1.5h1.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H6z"/>
-                    </svg>
-                </button>
-            `;
-        }
-
-        function createTermCard(term, pageTitle) {
-            const hasPinyin = term.pinyin ? `<span class="text-sm text-gray-500 block mb-1">(${term.pinyin})</span>` : '';
-            return `
-                <div class="term-card bg-white rounded-lg p-4 shadow-sm mb-4 border border-gray-200 hover:shadow-md transition-shadow duration-200">
-                    <div class="flex-1 pr-4 mb-2 md:mb-0 border-b md:border-b-0 md:border-r border-gray-200">
-                        <div class="flex items-center">
-                            <p class="font-bold text-gray-900">${term.chineseName}</p>
-                            ${createAudioButton(term.chineseName, 'zh-CN')}
+                <div class="term-card bg-gray-50 p-6 rounded-lg shadow-md mb-4 flex-grow md:flex-grow-0 md:flex-row md:items-start gap-4 transition-transform duration-200 hover:scale-105 hover:shadow-xl">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-4 mb-2">
+                            <h4 class="text-lg md:text-xl font-semibold text-blue-700">${term.chineseName}</h4>
+                            <button class="text-blue-500 hover:text-blue-700 transition-colors duration-200" onclick="speakText('${term.chineseName}', 'zh-CN')" aria-label="Play audio for Chinese name"><i class="fas fa-volume-up"></i></button>
                         </div>
-                        ${hasPinyin}
-                        <div class="flex items-center mt-1">
-                            <p class="text-gray-600">${term.chineseDescription}</p>
-                            ${createAudioButton(term.chineseDescription, 'zh-CN')}
+                        ${term.pinyin ? `<p class="text-sm font-light text-gray-500 mb-2">${term.pinyin}</p>` : ''}
+                        <div class="flex items-center gap-4 mb-2">
+                            <h5 class="text-md font-medium text-gray-900">${term.englishName}</h5>
+                            <button class="text-blue-500 hover:text-blue-700 transition-colors duration-200" onclick="speakText('${term.englishName}', 'en-US')" aria-label="Play audio for English name"><i class="fas fa-volume-up"></i></button>
                         </div>
-                    </div>
-                    <div class="flex-1 pl-0 md:pl-4 pt-2 md:pt-0">
-                        <div class="flex items-center">
-                            <p class="font-bold text-gray-900">${term.englishName}</p>
-                            ${createAudioButton(term.englishName, 'en-US')}
+                        <div class="mt-4 text-gray-700 space-y-2 text-sm md:text-base">
+                            <div class="flex items-start gap-4">
+                                <p class="flex-1"><strong>中文:</strong> ${term.chineseDescription}</p>
+                                <button class="text-blue-500 hover:text-blue-700 transition-colors duration-200" onclick="speakText('${term.chineseDescription}', 'zh-CN')" aria-label="Play audio for Chinese description"><i class="fas fa-volume-up"></i></button>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <p class="flex-1"><strong>English:</strong> ${term.englishDescription}</p>
+                                <button class="text-blue-500 hover:text-blue-700 transition-colors duration-200" onclick="speakText('${term.englishDescription}', 'en-US')" aria-label="Play audio for English description"><i class="fas fa-volume-up"></i></button>
+                            </div>
                         </div>
-                        <div class="flex items-center mt-1">
-                            <p class="text-gray-600">${term.englishDescription}</p>
-                            ${createAudioButton(term.englishDescription, 'en-US')}
-                        </div>
-                        <span class="mt-2 block text-xs text-blue-500">来源: ${pageTitle}</span>
                     </div>
                 </div>
             `;
-        }
+        };
 
-        function renderPage(pageId) {
+        // Function to render content for a specific page
+        const renderPage = (pageId) => {
             const pageContainer = document.getElementById(pageId);
-            const terms = medicalTerms[pageId];
-            if (pageContainer && terms) {
-                const pageTitle = pageTitles[pageId];
-                let content = '';
-                terms.forEach(term => {
-                    content += createTermCard(term, pageTitle);
-                });
-                pageContainer.innerHTML += `<div class="mt-4">${content}</div>`;
-            }
-        }
+            if (!pageContainer) return;
 
-        function showPage(pageId) {
-            // Stop any playing audio when changing pages
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-            }
+            const terms = medicalTerms[pageId] || [];
+            let contentHtml = `<h3 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 border-b pb-2">${pageTitles[pageId]}</h3>`;
+            terms.forEach(term => {
+                contentHtml += createTermCard(term);
+            });
+            pageContainer.innerHTML = contentHtml;
+        };
+
+        // Function to show a specific page and hide others
+        const showPage = (pageId) => {
             const allPages = document.querySelectorAll('.page-content');
             allPages.forEach(page => page.classList.remove('active'));
-            document.getElementById('searchResults').style.display = 'none';
-            document.getElementById('pages-container').style.display = 'block';
             document.getElementById(pageId).classList.add('active');
 
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => link.classList.remove('bg-gray-200'));
-            document.querySelector(`button[onclick="showPage('${pageId}')"]`).classList.add('bg-gray-200');
-        }
+            const searchResultsContainer = document.getElementById('searchResults');
+            searchResultsContainer.style.display = 'none';
 
-        document.getElementById('searchInput').addEventListener('input', function() {
-            // Stop any playing audio when searching
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
+            // Update active state of navigation buttons
+            const allNavLinks = document.querySelectorAll('.nav-link');
+            allNavLinks.forEach(link => link.classList.remove('bg-gray-200', 'font-bold'));
+            document.querySelector(`[onclick="showPage('${pageId}')"]`).classList.add('bg-gray-200', 'font-bold');
+        };
+        
+        // Text-to-Speech functionality using Web Speech API
+        const speakText = (text, lang) => {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Set the language based on the provided 'lang' parameter
+                utterance.lang = lang;
+
+                // Stop any previous speech to avoid overlap
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('您的浏览器不支持语音合成功能。');
             }
+        };
 
-            const query = this.value.toLowerCase();
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (event) => {
+            const query = event.target.value.toLowerCase().trim();
+            const pagesContainer = document.getElementById('pages-container');
             const searchResultsContainer = document.getElementById('searchResults');
             const searchResultsContent = document.getElementById('searchResultsContent');
-            const pagesContainer = document.getElementById('pages-container');
 
-            if (query.length < 2) {
-                searchResultsContainer.style.display = 'none';
+            if (query === '') {
                 pagesContainer.style.display = 'block';
+                searchResultsContainer.style.display = 'none';
                 return;
             }
 
@@ -893,7 +725,7 @@
                     ].some(text => text && text.toLowerCase().includes(query));
 
                     if (match) {
-                        searchResultsContent.innerHTML += createTermCard(term, pageTitle);
+                        searchResultsContent.innerHTML += createTermCard(term);
                         resultsFound = true;
                     }
                 });
@@ -914,6 +746,3 @@
     </script>
 </body>
 </html>
-
-
-
